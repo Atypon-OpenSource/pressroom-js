@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  pressroom:
+    build: .
+    env_file: .env
+    ports:
+      - 3005:3005
