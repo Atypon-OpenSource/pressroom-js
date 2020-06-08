@@ -2,7 +2,11 @@ const environmentVariable = (name: string): string => {
   const value = process.env[name]
 
   if (value === undefined || value === '') {
-    throw new Error(`Missing environment variable ${name}`)
+    if (process.env.NODE_ENV === 'test') {
+      return ''
+    } else {
+      throw new Error(`Missing environment variable ${name}`)
+    }
   }
 
   return value
