@@ -1,0 +1,121 @@
+import {
+  ContainedModel,
+  isFigure,
+  parseJATSArticle,
+} from '@manuscripts/manuscript-transform'
+import archiver from 'archiver'
+import { Router } from 'express'
+import fs from 'fs-extra'
+import path from 'path'
+
+import { createJSON } from '../lib/create-json'
+import { processElements, XLINK_NAMESPACE } from '../lib/data'
+import { convertWordToJATS } from '../lib/extyles-arc'
+import { jwtAuthentication } from '../lib/jwt-authentication'
+import { logger } from '../lib/logger'
+import { parseXMLFile } from '../lib/parse-xml-file'
+import { sendArchive } from '../lib/send-archive'
+import { createTempDir, removeTempDir } from '../lib/temp-dir'
+import { unzip } from '../lib/unzip'
+import { upload } from '../lib/upload'
+import { wrapAsync } from '../lib/wrap-async'
+
+/**
+ * @swagger
+ *
+ * /import/word-arc:
+ *   post:
+ *     description: Convert Word file to Manuscripts data via Arc
+ *     produces:
+ *       - application/zip
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *        description: multipart form data including Word file
+ *        required: true
+ *        content:
+ *          multipart/form-data:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                file:
+ *                  type: string
+ *                  format: binary
+ *     responses:
+ *       200:
+ *         description: Conversion success
+ */
+export const importWordArc = Router().post(
+  '/import/word-arc',
+  jwtAuthentication('pressroom'),
+  upload.single('file'),
+  wrapAsync(async (req, res) => {
+    logger.debug(`Received ${req.file.originalname}`)
+
+    const dir = createTempDir()
+
+    try {
+      const archive = archiver.create('zip')
+
+      logger.debug('Converting Word file to JATS XML with Arc')
+
+      const docx = await fs.readFile(req.file.path)
+
+      // convert DOCX to JATS via Arc
+      const zip = await convertWordToJATS(docx, req.user.arc)
+
+      // unzip the input
+      await unzip(zip, dir)
+
+      // parse the JATS XML and fix data references
+      const doc = await parseXMLFile(dir + '/manuscript.XML')
+
+      const images = await fs.readdir(dir + '/images')
+
+      for (const image of images) {
+        const { name } = path.parse(image)
+
+        processElements(doc, `//*[@xlink:href="${name}"]`, (element) => {
+          element.setAttributeNS(XLINK_NAMESPACE, 'href', `images/${image}`)
+        })
+      }
+
+      // convert JATS XML to Manuscripts data
+      const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]
+
+      // output JSON
+      const index = createJSON(manuscriptModels)
+      archive.append(index, {
+        name: 'index.manuscript-json',
+      })
+
+      for (const model of manuscriptModels) {
+        if (isFigure(model)) {
+          if (model.originalURL) {
+            if (await fs.pathExists(`${dir}/${model.originalURL}`)) {
+              const name = model._id.replace(':', '_')
+
+              logger.debug(`Adding ${model.originalURL} as Data/${name}`)
+
+              archive.append(
+                fs.createReadStream(`${dir}/${model.originalURL}`),
+                {
+                  name,
+                  prefix: 'Data/',
+                }
+              )
+            } else {
+              logger.warn(`Missing file ${model.originalURL}`)
+            }
+          }
+        }
+      }
+
+      await archive.finalize()
+
+      await sendArchive(res, archive, 'manuscript.manuproj')
+    } finally {
+      await removeTempDir(dir)
+    }
+  })
+)

@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`manifest builder builds basic manifest 1`] = `
+"<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>
+<!DOCTYPE submission PUBLIC \\"-//Atypon//DTD Literatum Content Submission Manifest DTD v4.2 20140519//EN\\" \\"manifest.4.2.dtd\\">
+<submission dtd-version=\\"4.2\\" submission-type=\\"full\\" group-doi=\\"10.0000/test\\"/>"
+`;
+
+exports[`manifest builder builds manifest with processing instructions 1`] = `
+"<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>
+<!DOCTYPE submission PUBLIC \\"-//Atypon//DTD Literatum Content Submission Manifest DTD v4.2 20140519//EN\\" \\"manifest.4.2.dtd\\">
+<submission dtd-version=\\"4.2\\" submission-type=\\"partial\\" group-doi=\\"10.0000/test\\">
+  <processing-instructions>
+    <priority level=\\"high\\"/>
+  </processing-instructions>
+</submission>"
+`;

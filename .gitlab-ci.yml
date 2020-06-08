@@ -5,16 +5,20 @@ stages:
 build:
   stage: build
   script:
+    - cp .env.example .env
     - yarn install --frozen-lockfile --non-interactive
     - yarn run typecheck
     - yarn run lint
-    - yarn run test
+    - yarn run test --ci --coverage --reporters=default --reporters=jest-junit
     - yarn run build
+  coverage: '/Statements\s*:\s*(\d+\.\d+)%/'
   tags:
     - nodejs
   artifacts:
     paths:
       - dist/
+    reports:
+      junit: junit.xml
 
 publish_image:
   stage: publish

@@ -1,0 +1,169 @@
+import { xmlSerializer } from '@manuscripts/manuscript-transform'
+import archiver from 'archiver'
+import { celebrate, Joi } from 'celebrate'
+import { Router } from 'express'
+import fs from 'fs-extra'
+import path from 'path'
+
+import { config } from '../lib/config'
+import { buildManifest } from '../lib/create-manifest'
+import { createPDF } from '../lib/create-pdf'
+import { processElements, XLINK_NAMESPACE } from '../lib/data'
+import { convertWordToJATS } from '../lib/extyles-arc'
+import { convertJATSToWileyML } from '../lib/gaia'
+import { jwtAuthentication } from '../lib/jwt-authentication'
+import { logger } from '../lib/logger'
+import { parseXMLFile } from '../lib/parse-xml-file'
+import { sendArchive } from '../lib/send-archive'
+import { createTempDir, removeTempDir } from '../lib/temp-dir'
+import { unzip } from '../lib/unzip'
+import { upload } from '../lib/upload'
+import { wrapAsync } from '../lib/wrap-async'
+
+/**
+ * @swagger
+ *
+ * /build/literatum-bundle:
+ *   post:
+ *     description: Convert DOCX to JATS/WileyML bundle for Literatum
+ *     produces:
+ *       - application/zip
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *        content:
+ *          multipart/form-data:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                file:
+ *                  type: binary
+ *                doi:
+ *                  type: string
+ *                groupDoi:
+ *                  type: string
+ *                xmlType:
+ *                  type: string
+ *                deposit:
+ *                  type: boolean
+ *            encoding:
+ *              file:
+ *                contentType: application/zip
+ *     responses:
+ *       200:
+ *         description: Conversion success
+ */
+
+export const buildLiteratumBundle = Router().post(
+  '/build/literatum-bundle',
+  jwtAuthentication('pressroom'), // TODO: 'extyles'?
+  upload.single('file'),
+  celebrate({
+    body: {
+      doi: Joi.string().required(),
+      groupDoi: Joi.string().required(),
+      xmlType: Joi.string().allow('jats', 'wileyml'),
+      deposit: Joi.boolean(),
+    },
+  }),
+  wrapAsync(async (req, res) => {
+    const { doi, groupDoi, xmlType = 'jats', deposit } = req.body as {
+      deposit: boolean
+      doi: string
+      groupDoi: string
+      xmlType: string
+    }
+
+    const [, articleID] = doi.split('/', 2) // TODO: only article ID?
+    const [, groupID] = groupDoi.split('/', 2)
+
+    const docx = await fs.readFile(req.file.path)
+
+    // Send DOCX to eXtyles Arc, receive JATS + images in ZIP
+    const zip = await convertWordToJATS(docx, config.arc)
+
+    // unzip the input
+    const dir = createTempDir()
+
+    try {
+      logger.debug(`Extracting ZIP archive to ${dir}`)
+      await unzip(zip, dir)
+
+      const archive = archiver.create('zip')
+
+      const manifest = buildManifest({
+        groupDoi,
+        processingInstructions: {
+          priorityLevel: 'high',
+          // makeLiveCondition: 'no-errors',
+        },
+        submissionType: 'partial',
+      })
+      archive.append(manifest, { name: 'manifest.xml' })
+
+      const doc = await parseXMLFile(dir + '/manuscript.XML')
+
+      const prefix = `${groupID}/${articleID}`
+
+      // fix image references
+      const images = await fs.readdir(dir + '/images')
+
+      for (const image of images) {
+        const { ext, name } = path.parse(image)
+
+        processElements(doc, `//*[@xlink:href="${name}"]`, (element) => {
+          const parentFigure = element.closest('fig')
+
+          const parentFigureID = parentFigure
+            ? parentFigure.getAttribute('id')
+            : null
+
+          const newName = parentFigureID ? `${parentFigureID}${ext}` : image
+
+          const lowerCaseName = newName.toLowerCase()
+
+          const nodeName = element.nodeName.toLowerCase()
+
+          element.setAttributeNS(
+            XLINK_NAMESPACE,
+            'href',
+            `${nodeName}/${lowerCaseName}`
+          )
+
+          archive.append(fs.createReadStream(`${dir}/images/${image}`), {
+            name: lowerCaseName,
+            prefix: `${prefix}/${nodeName}`,
+          })
+        })
+      }
+
+      const jats = xmlSerializer.serializeToString(doc)
+
+      if (xmlType === 'wileyml') {
+        // write WileyML XML file
+        const wileyml = await convertJATSToWileyML(jats)
+        archive.append(wileyml, { name: `${articleID}.xml`, prefix })
+      } else {
+        // write JATS XML file
+        archive.append(jats, { name: `${articleID}.xml`, prefix })
+      }
+
+      // write PDF file
+      await createPDF(dir, 'manuscript.xml', 'manuscript.pdf')
+      archive.append(fs.createReadStream(dir + '/manuscript.pdf'), {
+        name: `${articleID}.pdf`,
+        prefix,
+      })
+
+      await archive.finalize()
+
+      if (deposit) {
+        // TODO: deposit
+      } else {
+        await sendArchive(res, archive)
+      }
+    } finally {
+      await removeTempDir(dir)
+    }
+  })
+)
