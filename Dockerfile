@@ -24,7 +24,7 @@ COPY . .
 
 RUN yarn build
 
-EXPOSE 8080
+EXPOSE 5000
 
 CMD [ "node", "dist/server.js" ]
 
