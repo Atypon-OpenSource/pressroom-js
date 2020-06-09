@@ -19,13 +19,7 @@ import FormData from 'form-data'
 import { logger } from './logger'
 
 const client = axios.create({
-  baseURL: 'https://www.extylesarc.com/api/',
-})
-
-client.interceptors.request.use((config) => {
-  console.log(config.baseURL + axios.getUri(config))
-  console.log(config.data)
-  return config
+  baseURL: 'https://www.extylesarc.com/api',
 })
 
 export interface ExtylesArcAuthentication extends Record<string, string> {
@@ -41,11 +35,11 @@ export const convertWordToJATS = async (
   // TODO: cache the token and login again when it expires?
   const {
     data: { message, status, token },
-  } = await axios.post<{
+  } = await client.post<{
     message: string
     status: string
     token: string
-  }>('https://www.extylesarc.com/api/login', authentication)
+  }>('/login', authentication)
 
   if (status !== 'ok' || !token) {
     throw new Error(`Error signing in: ${message}`)
@@ -59,7 +53,7 @@ export const convertWordToJATS = async (
 
   const {
     data: { job_id },
-  } = await client.post<{ job_id: string }>('create_job', form.getBuffer(), {
+  } = await client.post<{ job_id: string }>('/create_job', form.getBuffer(), {
     headers: { token, ...form.getHeaders() },
   })
 
@@ -69,7 +63,7 @@ export const convertWordToJATS = async (
   do {
     const {
       data: { job_status: status },
-    } = await client.get<{ job_status: string }>('check_job_status', {
+    } = await client.get<{ job_status: string }>('/check_job_status', {
       params: { job_id },
       headers: { token },
     })
@@ -89,7 +83,7 @@ export const convertWordToJATS = async (
 
   logger.debug(`Downloading ${job_id}…`)
 
-  const { data: output } = await client.get<Buffer>('get_results', {
+  const { data: output } = await client.get<Buffer>('/get_results', {
     params: { job_id },
     headers: { token },
     responseType: 'arraybuffer',
