@@ -67,7 +67,12 @@ export default express()
   .use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
   // OpenAPI description for machines
-  .use('/docs.json', (req, res) => res.json(swaggerSpec))
+  .get('/docs.json', (req, res) => res.json(swaggerSpec))
+
+  // root: health check
+  .get('/', (req, res) => {
+    res.json({ uptime: process.uptime() })
+  })
 
   // not found handler
   .use((req, res, next) => {

@@ -28,5 +28,6 @@ EXPOSE 8080
 
 CMD [ "node", "dist/server.js" ]
 
+HEALTHCHECK --interval=5m --timeout=3s CMD curl --fail http://localhost/ || exit 1
 
 

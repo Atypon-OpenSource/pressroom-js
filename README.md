@@ -5,7 +5,8 @@ A web service for manuscript conversion.
 ## Running in Docker
 
 1. `docker-compose up --build`
-2. Open http://0.0.0.0:5000/docs/
+2. Open http://0.0.0.0:5000/ to check the status
+2. Open http://0.0.0.0:5000/docs/ to view the docs
 
 ## Running in macOS
 
