@@ -24,7 +24,7 @@ import { logger } from './lib/logger'
 import { swaggerSpec } from './lib/swagger-spec'
 import { buildGatewayBundle } from './routes/build-gateway-bundle'
 import { buildLiteratumBundle } from './routes/build-literatum-bundle'
-import { buildPickerBundle } from './routes/build-picker-bundle'
+// import { buildPickerBundle } from './routes/build-picker-bundle'
 import { buildSubmissionBundle } from './routes/build-submission-bundle'
 import { exportDocx } from './routes/export-docx'
 import { exportEpub } from './routes/export-epub'
@@ -59,8 +59,8 @@ export default express()
     '/',
     buildSubmissionBundle,
     buildGatewayBundle,
-    buildLiteratumBundle,
-    buildPickerBundle
+    buildLiteratumBundle
+    // buildPickerBundle
   )
 
   // OpenAPI description for people
