@@ -97,6 +97,7 @@
     "typescript": "^3.9.5"
   },
   "engines": {
-    "node": "12.x.x"
+    "node": "12.x.x",
+    "yarn": "1.x.x"
   }
 }
