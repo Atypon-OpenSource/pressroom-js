@@ -14,7 +14,7 @@
     "prettier": "prettier --write 'src/**/*.{js,ts}'",
     "preversion": "npm-run-all --parallel typecheck lint",
     "start": "node dist/server.js",
-    "start:dev": "nodemon --watch src --require dotenv/config dist/server.js",
+    "start:dev": "nodemon --watch dist --require dotenv/config dist/server.js",
     "test": "jest --runInBand --detectOpenHandles",
     "typecheck": "tsc --noEmit",
     "version": "yarn build"
