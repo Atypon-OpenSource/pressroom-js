@@ -17,19 +17,33 @@ import request from 'supertest'
 
 import app from '../../app'
 
-jest.mock('../../lib/jwt-authentication')
+jest.mock('../../lib/api-key-authentication')
 jest.mock('../../lib/extyles-arc')
+jest.mock('../../lib/fetch-literatum-attachment')
 jest.mock('../../lib/gaia')
 jest.mock('../../lib/pandoc')
 jest.setTimeout(30000) // allow time for PDF generation
 
-describe('build gateway bundle', () => {
-  test('builds gateway bundle from DOCX', async () => {
+describe('build submission bundle', () => {
+  test('fetches and builds submission bundle', async () => {
     const response = await request(app)
-      .post('/build/gateway-bundle')
-      .attach('file', __dirname + '/__fixtures__/manuscript.docx')
-      .field('doi', '10.0000/test')
-      .field('issn', '1234-5678')
+      .post('/submission')
+      .send({
+        depositoryCode: 'S1',
+        attachments: [
+          {
+            designation: 'Main Document',
+            format: 'docx',
+            name: 'Manuscript',
+            url: 'https://example.com/manuscript.docx',
+          },
+        ],
+        metadata: {
+          digitalISSN: '1234-5678',
+          doi: '10.0000/1234',
+        },
+      })
+      .set('Content-Type', 'application/json')
 
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/zip')
