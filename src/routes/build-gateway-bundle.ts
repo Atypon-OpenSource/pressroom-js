@@ -62,7 +62,7 @@ import { wrapAsync } from '../lib/wrap-async'
 
 export const buildGatewayBundle = Router().post(
   '/build/gateway-bundle',
-  jwtAuthentication('pressroom'), // TODO: 'extyles'?
+  jwtAuthentication('pressroom-js'), // TODO: 'extyles'?
   upload.single('file'),
   celebrate({
     body: {

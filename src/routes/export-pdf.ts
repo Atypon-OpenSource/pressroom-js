@@ -57,7 +57,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const exportPDF = Router().post(
   '/export/pdf',
-  jwtAuthentication('pressroom'),
+  jwtAuthentication('pressroom-js'),
   upload.single('file'),
   celebrate({
     body: {

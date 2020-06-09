@@ -57,7 +57,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const exportDocx = Router().post(
   '/export/docx',
-  jwtAuthentication('pressroom'),
+  jwtAuthentication('pressroom-js'),
   upload.single('file'),
   celebrate({
     body: {

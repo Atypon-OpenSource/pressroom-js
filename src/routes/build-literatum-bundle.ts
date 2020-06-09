@@ -71,7 +71,7 @@ import { wrapAsync } from '../lib/wrap-async'
 
 export const buildLiteratumBundle = Router().post(
   '/build/literatum-bundle',
-  jwtAuthentication('pressroom'), // TODO: 'extyles'?
+  jwtAuthentication('pressroom-js'), // TODO: 'extyles'?
   upload.single('file'),
   celebrate({
     body: {

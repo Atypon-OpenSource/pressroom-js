@@ -70,7 +70,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const exportLiteratumDO = Router().post(
   '/export/literatum-do',
-  jwtAuthentication('pressroom'),
+  jwtAuthentication('pressroom-js'),
   upload.single('file'),
   celebrate({
     body: {

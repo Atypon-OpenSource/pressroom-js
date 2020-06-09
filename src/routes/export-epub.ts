@@ -57,7 +57,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const exportEpub = Router().post(
   '/export/epub',
-  jwtAuthentication('pressroom'),
+  jwtAuthentication('pressroom-js'),
   upload.single('file'),
   celebrate({
     body: {

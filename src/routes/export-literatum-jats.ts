@@ -58,7 +58,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const exportLiteratumJATS = Router().post(
   '/export/literatum-jats',
-  jwtAuthentication('pressroom'),
+  jwtAuthentication('pressroom-js'),
   upload.single('file'),
   celebrate({
     body: {

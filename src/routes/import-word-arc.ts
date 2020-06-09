@@ -62,7 +62,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const importWordArc = Router().post(
   '/import/word-arc',
-  jwtAuthentication('pressroom'),
+  jwtAuthentication('pressroom-js'),
   upload.single('file'),
   wrapAsync(async (req, res) => {
     logger.debug(`Received ${req.file.originalname}`)
