@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import commandExists from 'command-exists'
 
-process.env.XML_CATALOG_FILES = './node_modules/@jats4r/dtds/schema/catalog.xml'
-
-module.exports = {
-  modulePathIgnorePatterns: ['<rootDir>/dist/'],
-  setupFiles: ['dotenv/config'],
-  testEnvironment: 'jest-environment-jsdom-sixteen',
-  testPathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/node_modules/'],
-  verbose: true,
-}
+export const hasCommands =
+  commandExists.sync('pandoc') && commandExists.sync('prince')

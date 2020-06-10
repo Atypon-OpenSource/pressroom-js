@@ -13,15 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import JSZip from 'jszip'
+import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
 import app from '../../app'
+import { hasCommands } from '../../lib/has-commands'
 
 jest.mock('../../lib/jwt-authentication')
-jest.mock('../../lib/pandoc')
 
 describe('export Literatum JATS', () => {
   test('exports to Literatum JATS', async () => {
+    if (!hasCommands) {
+      jest.doMock('../../lib/pandoc')
+    }
+
     const response = await request(app)
       .post('/export/literatum-jats')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
@@ -32,11 +38,26 @@ describe('export Literatum JATS', () => {
       .field('deposit', false)
       .field('doi', '10.1234/567')
       .field('frontMatterOnly', false)
+      .responseType('blob')
 
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/zip')
     expect(response.get('Content-Disposition')).toBe(
       'attachment; filename="manuscript.zip"'
     )
+
+    if (hasCommands) {
+      const zip = await new JSZip().loadAsync(response.body)
+
+      const xml = await zip.file('manuscript.xml').async('text')
+
+      const doc = parseXml(xml, {
+        dtdload: true,
+        dtdvalid: true,
+        nonet: true,
+      })
+
+      expect(doc.errors.length).toBe(0)
+    }
   })
 })

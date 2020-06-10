@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import commandExists from 'command-exists'
 import JSZip from 'jszip'
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { hasCommands } from '../../lib/has-commands'
 
-const hasCommands = commandExists.sync('pandoc') && commandExists.sync('prince')
+jest.mock('../../lib/jwt-authentication')
 
 describe('export DOCX', () => {
   test('exports to a DOCX file', async () => {
