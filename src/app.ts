@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { errors } from 'celebrate'
+import cors from 'cors'
 import express from 'express'
 import createError from 'http-errors'
 import morgan from 'morgan'
@@ -40,6 +41,9 @@ defineGlobals()
 export default express()
   // log requests
   .use(morgan('combined', { stream: { write: logger.info.bind(logger) } }))
+
+  // cors
+  .use(cors())
 
   // importers
   .use('/', importWord, importWordArc, importZip)
