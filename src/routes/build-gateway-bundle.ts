@@ -78,10 +78,14 @@ export const buildGatewayBundle = Router().post(
       deposit: boolean
     }
 
+    const extension = path.extname(req.file.originalname)
+    if (!/^\.docx?$/.test(extension)) {
+      throw new Error('Only .docx and .doc file extensions are supported')
+    }
     const docx = await fs.readFile(req.file.path)
 
-    // Send DOCX to eXtyles Arc, receive JATS + images in ZIP
-    const zip = await convertWordToJATS(docx, req.user.arc)
+    // Send Word file to eXtyles Arc, receive JATS + images in ZIP
+    const zip = await convertWordToJATS(docx, extension, req.user.arc)
 
     // unzip the input
     const dir = createTempDir()

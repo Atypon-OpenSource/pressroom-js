@@ -67,25 +67,30 @@ export const buildSubmissionBundle = express.Router().post(
   '/submission', // TODO
   apiKeyAuthentication,
   express.json(),
-  celebrate({
-    body: {
-      depositoryCode: Joi.string().required(),
-      attachments: Joi.array()
-        .items(
-          Joi.object({
-            designation: Joi.string().required(),
-            format: Joi.string().required(),
-            name: Joi.string().required(),
-            url: Joi.string().required(),
-          })
-        )
-        .required(),
-      metadata: Joi.object({
-        digitalISSN: Joi.string().required(),
-        doi: Joi.string().required(),
-      }).required(),
+  celebrate(
+    {
+      body: {
+        depositoryCode: Joi.string().required(),
+        attachments: Joi.array()
+          .items(
+            Joi.object({
+              designation: Joi.string().required(),
+              format: Joi.string().required(),
+              name: Joi.string().required(),
+              url: Joi.string().required(),
+            })
+          )
+          .required(),
+        metadata: Joi.object({
+          digitalISSN: Joi.string().required(),
+          doi: Joi.string().required(),
+        }).required(),
+      },
     },
-  }),
+    {
+      allowUnknown: true,
+    }
+  ),
   wrapAsync(async (req, res) => {
     const { depositoryCode, attachments, metadata } = req.body as {
       depositoryCode: string
@@ -100,7 +105,6 @@ export const buildSubmissionBundle = express.Router().post(
         doi: string
       }
     }
-
     const dir = createTempDir()
 
     try {
@@ -131,10 +135,16 @@ export const buildSubmissionBundle = express.Router().post(
             throw new Error('Expected doc or docx attachment')
           }
 
+          const extension = path.extname(attachment.name)
+
+          if (!/^\.docx?$/.test(extension)) {
+            throw new Error('Only .docx and .doc file extensions are supported')
+          }
+
           const buffer = await fs.readFile(`${dir}/${attachment.name}`)
 
           logger.debug(`Converting Word file to JATS XML via Arc`)
-          const zip = await convertWordToJATS(buffer, config.arc)
+          const zip = await convertWordToJATS(buffer, extension, config.arc)
 
           logger.debug(`Extracting ZIP archive to ${dir}`)
           await unzip(zip, dir)

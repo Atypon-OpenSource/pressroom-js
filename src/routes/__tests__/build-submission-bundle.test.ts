@@ -34,7 +34,7 @@ describe('build submission bundle', () => {
           {
             designation: 'Main Document',
             format: 'docx',
-            name: 'Manuscript',
+            name: 'Manuscript.docx',
             url: 'https://example.com/manuscript.docx',
           },
         ],

@@ -30,6 +30,7 @@ export interface ExtylesArcAuthentication extends Record<string, string> {
 
 export const convertWordToJATS = async (
   buffer: Buffer,
+  extension: string,
   authentication: ExtylesArcAuthentication
 ): Promise<Buffer> => {
   // TODO: cache the token and login again when it expires?
@@ -46,7 +47,7 @@ export const convertWordToJATS = async (
   }
 
   const form = new FormData()
-  form.append('input_file_name', 'manuscript.docx')
+  form.append('input_file_name', `manuscript${extension}`)
   form.append('input_file_type', 'FULLTEXT_WITH_IMAGES')
   form.append('editorial_style', 'APA')
   form.append('file', buffer, 'manuscript.docx')
