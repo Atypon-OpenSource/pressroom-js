@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { xmlSerializer } from '@manuscripts/manuscript-transform'
 import archiver from 'archiver'
 import { celebrate, Joi } from 'celebrate'
 import express from 'express'
 import fs from 'fs-extra'
+import path from 'path'
 
 import { apiKeyAuthentication } from '../lib/api-key-authentication'
 import { config } from '../lib/config'
+import { processElements, XLINK_NAMESPACE } from '../lib/data'
 import { convertWordToJATS } from '../lib/extyles-arc'
 import { fetchAttachment } from '../lib/fetch-literatum-attachment'
 import { convertJATSToWileyML } from '../lib/gaia'
 import { logger } from '../lib/logger'
+import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
 import { createTempDir, removeTempDir } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
@@ -135,9 +139,53 @@ export const buildSubmissionBundle = express.Router().post(
           logger.debug(`Extracting ZIP archive to ${dir}`)
           await unzip(zip, dir)
 
-          const jats = await fs.readFile(dir + '/manuscript.XML', 'UTF-8')
+          const doc = await parseXMLFile(dir + '/manuscript.XML')
+
+          // fix image references
+          if (await fs.pathExists(dir + '/images')) {
+            const images = await fs.readdir(dir + '/images')
+
+            for (const image of images) {
+              const { ext, name } = path.parse(image)
+
+              processElements(doc, `//*[@xlink:href="${name}"]`, (element) => {
+                const parentFigure = element.closest('fig')
+
+                const parentFigureID = parentFigure
+                  ? parentFigure.getAttribute('id')
+                  : null
+
+                const newName = parentFigureID
+                  ? `${parentFigureID}${ext}`
+                  : image
+
+                const lowerCaseName = newName.toLowerCase()
+
+                element.setAttributeNS(
+                  XLINK_NAMESPACE,
+                  'href',
+                  `image_a/${lowerCaseName}`
+                )
+
+                archive.append(fs.createReadStream(`${dir}/images/${image}`), {
+                  name: lowerCaseName,
+                  prefix: `${prefix}/image_a/`,
+                })
+              })
+            }
+          }
+
+          const articleIdElement =
+            doc.querySelector(
+              'article-meta > article-id[pub-id-type="publisher-id"]'
+            ) || doc.querySelector('article-meta > article-id')
+
+          if (articleIdElement) {
+            articleIdElement.nodeValue = articleID
+          }
 
           logger.debug(`Converting JATS XML to WileyML`)
+          const jats = xmlSerializer.serializeToString(doc)
           const wileyml = await convertJATSToWileyML(jats)
 
           archive.append(wileyml, {
