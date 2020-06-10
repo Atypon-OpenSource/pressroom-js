@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import commandExists from 'command-exists'
+import JSZip from 'jszip'
 import request from 'supertest'
 
-import app from '../../app'
-
 jest.mock('../../lib/jwt-authentication')
-jest.mock('../../lib/pandoc')
+
+const hasCommands = commandExists.sync('pandoc') && commandExists.sync('prince')
 
 describe('export DOCX', () => {
   test('exports to a DOCX file', async () => {
+    if (!hasCommands) {
+      jest.doMock('../../lib/pandoc')
+    }
+
+    const { default: app } = await import('../../app')
+
     const response = await request(app)
       .post('/export/docx')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
@@ -29,15 +36,31 @@ describe('export DOCX', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .responseType('blob')
 
     expect(response.status).toBe(200)
-    expect(response.get('Content-Type')).toBe(
+    expect(response.type).toBe(
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     )
     expect(response.get('Content-Disposition')).toBe(
       'attachment; filename="manuscript.docx"'
     )
 
-    // expect(response.get('Content-Length')).toBe('12146')
+    if (hasCommands) {
+      const zip = await new JSZip().loadAsync(response.body)
+
+      expect(Object.keys(zip.files).length).toBe(16)
+
+      const xml = await zip.file('word/document.xml').async('text')
+      const doc = new DOMParser().parseFromString(xml, 'application/xml')
+
+      const text = doc.evaluate(
+        'string(//w:p)',
+        doc,
+        doc.createNSResolver(doc),
+        XPathResult.STRING_TYPE
+      )
+      expect(text.stringValue).toBe('A Test Manuscript')
+    }
   })
 })
