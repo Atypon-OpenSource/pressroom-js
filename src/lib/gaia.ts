@@ -22,15 +22,20 @@ const client = axios.create({
 })
 
 export const convertJATSToWileyML = async (xml: string): Promise<string> => {
-  const { data } = await client.post<string>('/', {
-    documents: {
-      $: {
-        type: 'string',
-        string: xml,
+  const { data } = await client.post<string>(
+    '/template/wileyml',
+    {
+      documents: {
+        $: {
+          type: 'string',
+          string: xml,
+        },
       },
+      arguments: {},
     },
-    arguments: {},
-  })
+    {
+      params: { scope: 'pericles' },
+    })
 
   return data
 }
