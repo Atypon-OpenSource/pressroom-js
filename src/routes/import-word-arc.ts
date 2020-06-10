@@ -104,9 +104,13 @@ export const importWordArc = Router().post(
       for (const image of images) {
         const { name } = path.parse(image)
 
-        processElements(doc, `//*[@xlink:href="${name}"]`, (element) => {
-          element.setAttributeNS(XLINK_NAMESPACE, 'href', `images/${image}`)
-        })
+        await processElements(
+          doc,
+          `//*[@xlink:href="${name}"]`,
+          async (element) => {
+            element.setAttributeNS(XLINK_NAMESPACE, 'href', `images/${image}`)
+          }
+        )
       }
 
       // convert JATS XML to Manuscripts data

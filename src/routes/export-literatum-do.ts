@@ -117,7 +117,7 @@ export const exportLiteratumDO = Router().post(
 
       const files = new Map<string, string>()
 
-      processElements(doc, `//img`, (element) => {
+      await processElements(doc, `//img`, async (element) => {
         const src = element.getAttribute('src')
 
         if (src) {

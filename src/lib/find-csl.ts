@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { execFile } from 'child_process'
-import { promisify } from 'util'
+import { Manuscript } from '@manuscripts/manuscripts-json-schema'
+import { pathExists } from 'fs-extra'
 
-export const DEFAULT_CSL = __dirname + '/pandoc/nature.csl'
+export const findCSL = async (
+  dir: string,
+  manuscript: Manuscript
+): Promise<string | undefined> => {
+  if (manuscript.bundle) {
+    const filename = manuscript.bundle.replace(':', '_')
+    const path = dir + '/Data/' + filename
 
-export const pandoc = async (
-  inputPath: string,
-  outputPath: string,
-  args: string[],
-  cwd: string
-): Promise<void> => {
-  await promisify(execFile)(
-    'pandoc',
-    [...args, '--output', outputPath, inputPath],
-    { cwd }
-  )
+    if (await pathExists(path)) {
+      return path
+    }
+  }
 }

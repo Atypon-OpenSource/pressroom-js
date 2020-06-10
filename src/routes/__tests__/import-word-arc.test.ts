@@ -34,6 +34,7 @@ describe('import Word via Arc', () => {
     const response = await request(app)
       .post('/import/word-arc')
       .attach('file', __dirname + '/__fixtures__/manuscript.docx')
+      .responseType('blob')
 
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/zip')

@@ -13,12 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { pandoc } from './pandoc'
+import { DEFAULT_CSL, pandoc } from './pandoc'
+
+const DEFAULT_CSS = __dirname + '/pandoc/example.css'
 
 export const createPDF = async (
   dir: string,
   inputPath: string,
-  outputPath: string
+  outputPath: string,
+  options?: {
+    csl?: string
+    css?: string
+  }
 ): Promise<void> =>
   pandoc(
     inputPath,
@@ -29,8 +35,9 @@ export const createPDF = async (
       '--to=pdf',
       '--filter=pandoc-citeproc',
       '--filter=mathjax-pandoc-filter',
+      `--csl=${options?.csl || DEFAULT_CSL}`,
       '--pdf-engine=prince',
-      `--pdf-engine-opt=--style=${__dirname}/pdf/pandoc-article.css`,
+      `--pdf-engine-opt=--style=${options?.css || DEFAULT_CSS}`,
     ],
     dir
   )

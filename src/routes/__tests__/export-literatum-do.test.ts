@@ -37,6 +37,7 @@ describe('export Literatum DO', () => {
       .field('deposit', false)
       .field('doi', '10.1234/567')
       .field('doType', 'HTML')
+      .responseType('blob')
 
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/zip')

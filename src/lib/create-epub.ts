@@ -13,16 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { pandoc } from './pandoc'
+import { DEFAULT_CSL, pandoc } from './pandoc'
 
 export const createEpub = (
   dir: string,
   inputPath: string,
-  outputPath: string
+  outputPath: string,
+  options?: {
+    csl?: string
+    css?: string
+  }
 ): Promise<void> =>
   pandoc(
     inputPath,
     outputPath,
-    ['--standalone', '--from=jats', '--to=epub', '--filter=pandoc-citeproc'],
+    [
+      '--standalone',
+      '--from=jats',
+      '--to=epub',
+      `--csl=${options?.csl || DEFAULT_CSL}`,
+      '--filter=pandoc-citeproc',
+    ],
     dir
   )

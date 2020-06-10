@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { xmlSerializer } from '@manuscripts/manuscript-transform'
 import archiver from 'archiver'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
@@ -130,33 +129,37 @@ export const buildLiteratumBundle = Router().post(
       for (const image of images) {
         const { ext, name } = path.parse(image)
 
-        processElements(doc, `//*[@xlink:href="${name}"]`, (element) => {
-          const parentFigure = element.closest('fig')
+        await processElements(
+          doc,
+          `//*[@xlink:href="${name}"]`,
+          async (element) => {
+            const parentFigure = element.closest('fig')
 
-          const parentFigureID = parentFigure
-            ? parentFigure.getAttribute('id')
-            : null
+            const parentFigureID = parentFigure
+              ? parentFigure.getAttribute('id')
+              : null
 
-          const newName = parentFigureID ? `${parentFigureID}${ext}` : image
+            const newName = parentFigureID ? `${parentFigureID}${ext}` : image
 
-          const lowerCaseName = newName.toLowerCase()
+            const lowerCaseName = newName.toLowerCase()
 
-          const nodeName = element.nodeName.toLowerCase()
+            const nodeName = element.nodeName.toLowerCase()
 
-          element.setAttributeNS(
-            XLINK_NAMESPACE,
-            'href',
-            `${nodeName}/${lowerCaseName}`
-          )
+            element.setAttributeNS(
+              XLINK_NAMESPACE,
+              'href',
+              `${nodeName}/${lowerCaseName}`
+            )
 
-          archive.append(fs.createReadStream(`${dir}/images/${image}`), {
-            name: lowerCaseName,
-            prefix: `${prefix}/${nodeName}`,
-          })
-        })
+            archive.append(fs.createReadStream(`${dir}/images/${image}`), {
+              name: lowerCaseName,
+              prefix: `${prefix}/${nodeName}`,
+            })
+          }
+        )
       }
 
-      const jats = xmlSerializer.serializeToString(doc)
+      const jats = new XMLSerializer().serializeToString(doc)
 
       if (xmlType === 'wileyml') {
         // write WileyML XML file

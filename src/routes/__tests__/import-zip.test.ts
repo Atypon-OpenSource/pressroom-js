@@ -30,6 +30,7 @@ describe('import ZIP', () => {
     const response = await request(app)
       .post('/import/zip')
       .attach('file', __dirname + '/__fixtures__/markdown.zip')
+      .responseType('blob')
 
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/zip')
@@ -48,6 +49,7 @@ describe('import ZIP', () => {
     const response = await request(app)
       .post('/import/zip')
       .attach('file', __dirname + '/__fixtures__/latex.zip')
+      .responseType('blob')
 
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/zip')

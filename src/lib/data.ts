@@ -15,11 +15,11 @@
  */
 export const XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
 
-export const processElements = (
+export const processElements = async (
   doc: Document,
   selector: string,
-  callback: (element: Element) => void
-): void => {
+  callback: (element: Element) => Promise<void>
+): Promise<void> => {
   const nodes = doc.evaluate(
     selector,
     doc,
@@ -28,7 +28,7 @@ export const processElements = (
   )
 
   for (let i = 0; i < nodes.snapshotLength; i++) {
-    callback(nodes.snapshotItem(i) as Element)
+    await callback(nodes.snapshotItem(i) as Element)
   }
 }
 

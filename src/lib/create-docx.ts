@@ -13,16 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { pandoc } from './pandoc'
+import { DEFAULT_CSL, pandoc } from './pandoc'
 
 export const createDocx = (
   dir: string,
   inputPath: string,
-  outputPath: string
+  outputPath: string,
+  options?: {
+    csl?: string
+    css?: string
+  }
 ): Promise<void> =>
   pandoc(
     inputPath,
     outputPath,
-    ['--standalone', '--from=jats', '--to=docx', '--filter=pandoc-citeproc'],
+    [
+      '--standalone',
+      '--from=jats',
+      '--to=docx',
+      `--csl=${options?.csl || DEFAULT_CSL}`,
+      '--filter=pandoc-citeproc',
+    ],
     dir
   )

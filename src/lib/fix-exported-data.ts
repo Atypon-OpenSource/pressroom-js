@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { execFile } from 'child_process'
-import { promisify } from 'util'
+import fs from 'fs-extra'
+import path from 'path'
 
-export const DEFAULT_CSL = __dirname + '/pandoc/nature.csl'
+import { processElements, XLINK_NAMESPACE } from './data'
 
-export const pandoc = async (
-  inputPath: string,
-  outputPath: string,
-  args: string[],
-  cwd: string
-): Promise<void> => {
-  await promisify(execFile)(
-    'pandoc',
-    [...args, '--output', outputPath, inputPath],
-    { cwd }
-  )
-}
+export const fixExportedData = (doc: Document, dir: string): Promise<void> =>
+  processElements(doc, `//*[@xlink:href]`, async (element) => {
+    const href = element.getAttributeNS(XLINK_NAMESPACE, 'href')
+
+    if (href) {
+      // TODO: exclude non-relative paths?
+      const { name } = path.parse(href)
+
+      if (await fs.pathExists(dir + '/Data/' + name)) {
+        element.setAttributeNS(XLINK_NAMESPACE, 'href', 'Data/' + name)
+      }
+    }
+  })

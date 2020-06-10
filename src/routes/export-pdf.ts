@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Manuscript } from '@manuscripts/manuscripts-json-schema'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
@@ -20,6 +21,8 @@ import fs from 'fs-extra'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createPDF } from '../lib/create-pdf'
+import { findCSL } from '../lib/find-csl'
+import { fixExportedData } from '../lib/fix-exported-data'
 import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { createTempDir, removeTempDir } from '../lib/temp-dir'
@@ -80,13 +83,21 @@ export const exportPDF = Router().post(
 
       // create XML
       const xml = createJATSXML(article, modelMap)
-      await fs.writeFile(dir + '/manuscript.xml', xml)
 
-      // TODO: move images
-      // TODO: write CSL file from bundle
+      // fix data references
+      const doc = await new DOMParser().parseFromString(xml, 'application/xml')
+      await fixExportedData(doc, dir)
+      const jats = new XMLSerializer().serializeToString(doc)
+
+      await fs.writeFile(dir + '/manuscript.xml', jats)
+
+      const manuscript = modelMap.get(manuscriptID) as Manuscript
+
+      // use the CSL style defined in the manuscript bundle
+      const csl = await findCSL(dir, manuscript)
 
       // create PDF
-      await createPDF(dir, 'manuscript.xml', 'manuscript.pdf')
+      await createPDF(dir, 'manuscript.xml', 'manuscript.pdf', { csl })
 
       // send the file as an attachment
       res.download(dir + '/manuscript.pdf')

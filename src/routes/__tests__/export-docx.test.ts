@@ -48,7 +48,7 @@ describe('export DOCX', () => {
     if (hasCommands) {
       const zip = await new JSZip().loadAsync(response.body)
 
-      expect(Object.keys(zip.files).length).toBe(16)
+      expect(Object.keys(zip.files).length).toBe(17)
 
       const xml = await zip.file('word/document.xml').async('text')
       const doc = new DOMParser().parseFromString(xml, 'application/xml')
