@@ -18,15 +18,6 @@ import couchbase from 'couchbase'
 
 import { config } from './config'
 
-const cluster = new couchbase.Cluster(config.couchbase.connection, {
-  // @ts-ignore
-  username: config.couchbase.username,
-  password: config.couchbase.password,
-})
-
-// @ts-ignore
-const collection = cluster.bucket(config.couchbase.bucket).defaultCollection()
-
 export interface Row {
   id: string
   projects: ContainedModel & {
@@ -34,20 +25,45 @@ export interface Row {
   }
 }
 
-export const getContainedResources = (
+let cluster: couchbase.Cluster
+
+let collection: any // eslint-disable-line @typescript-eslint/no-explicit-any
+
+const initializeStore = async (): Promise<void> => {
+  if (!cluster) {
+    cluster = new couchbase.Cluster(config.couchbase.connection, {
+      // @ts-ignore
+      username: config.couchbase.username,
+      password: config.couchbase.password,
+    })
+  }
+
+  if (!collection) {
+    // @ts-ignore
+    collection = cluster.bucket(config.couchbase.bucket).defaultCollection()
+  }
+}
+
+export const getContainedResources = async (
   containerID: string
-): Promise<{ rows: Row[] }> =>
+): Promise<{ rows: Row[] }> => {
+  await initializeStore()
+
   // @ts-ignore
-  cluster.query(
+  return cluster.query(
     `SELECT *, META().id FROM \`${config.couchbase.bucket}\` WHERE projectID = $1 OR containerID = $1`,
     {
       parameters: [containerID],
     }
   )
+}
 
-export const getAttachment = (attachment: {
+export const getAttachment = async (attachment: {
   digest: string
-}): Promise<{ value: Buffer }> =>
-  collection.get(`_sync:att:${attachment.digest}`, {
+}): Promise<{ value: Buffer }> => {
+  await initializeStore()
+
+  return collection.get(`_sync:att:${attachment.digest}`, {
     xattr: true,
   })
+}

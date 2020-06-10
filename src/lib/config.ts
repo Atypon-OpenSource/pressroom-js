@@ -57,10 +57,10 @@ export const config: Config = {
     username: environmentVariable('PRESSROOM_ARC_USERNAME'),
   },
   couchbase: {
-    bucket: environmentVariable('PRESSROOM_COUCHBASE_BUCKET'),
-    connection: environmentVariable('PRESSROOM_COUCHBASE_CONNECTION'),
-    password: environmentVariable('PRESSROOM_COUCHBASE_PASS'),
-    username: environmentVariable('PRESSROOM_COUCHBASE_USER'),
+    bucket: 'TODO', // environmentVariable('PRESSROOM_COUCHBASE_BUCKET'),
+    connection: 'TODO', // environmentVariable('PRESSROOM_COUCHBASE_CONNECTION'),
+    password: 'TODO', // environmentVariable('PRESSROOM_COUCHBASE_PASS'),
+    username: 'TODO', // environmentVariable('PRESSROOM_COUCHBASE_USER'),
   },
   gaia: {
     url: environmentVariable('PRESSROOM_GAIA_URL'),
