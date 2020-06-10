@@ -23,6 +23,7 @@ import { Router } from 'express'
 import fs from 'fs-extra'
 import path from 'path'
 
+import { arcCredentials } from '../lib/arc-credentials'
 import { createJSON } from '../lib/create-json'
 import { processElements, XLINK_NAMESPACE } from '../lib/data'
 import { convertWordToJATS } from '../lib/extyles-arc'
@@ -45,6 +46,12 @@ import { wrapAsync } from '../lib/wrap-async'
  *       - application/zip
  *     security:
  *       - BearerAuth: []
+ *     parameters:
+ *      - in: header
+ *        name: pressroom-extylesarc-secret
+ *        schema:
+ *          type: string
+ *        required: false
  *     requestBody:
  *        description: multipart form data including Word file
  *        required: true
@@ -63,9 +70,13 @@ import { wrapAsync } from '../lib/wrap-async'
 export const importWordArc = Router().post(
   '/import/word-arc',
   jwtAuthentication('pressroom-js'),
+  arcCredentials,
   upload.single('file'),
   wrapAsync(async (req, res) => {
     logger.debug(`Received ${req.file.originalname}`)
+
+    // allow 60 minutes for conversion
+    req.setTimeout(60 * 60 * 1000)
 
     const dir = createTempDir()
 

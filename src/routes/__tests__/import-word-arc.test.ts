@@ -19,6 +19,7 @@ import request from 'supertest'
 import app from '../../app'
 
 jest.mock('../../lib/jwt-authentication')
+jest.mock('../../lib/arc-credentials')
 jest.mock('../../lib/extyles-arc')
 jest.mock('../../lib/pandoc')
 jest.setTimeout(10000)
