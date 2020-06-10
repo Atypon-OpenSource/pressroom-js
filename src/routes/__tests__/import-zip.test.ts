@@ -15,13 +15,18 @@
  */
 import request from 'supertest'
 
-import app from '../../app'
+import { hasCommands } from '../../lib/has-commands'
 
 jest.mock('../../lib/jwt-authentication')
-jest.mock('../../lib/pandoc')
 
 describe('import ZIP', () => {
   test('imports from a Markdown file in a ZIP file', async () => {
+    if (!hasCommands) {
+      jest.doMock('../../lib/pandoc')
+    }
+
+    const { app } = await import('../../app')
+
     const response = await request(app)
       .post('/import/zip')
       .attach('file', __dirname + '/__fixtures__/markdown.zip')
@@ -34,6 +39,12 @@ describe('import ZIP', () => {
   })
 
   test('imports from a LaTeX file in a ZIP file', async () => {
+    if (!hasCommands) {
+      jest.doMock('../../lib/pandoc')
+    }
+
+    const { app } = await import('../../app')
+
     const response = await request(app)
       .post('/import/zip')
       .attach('file', __dirname + '/__fixtures__/latex.zip')

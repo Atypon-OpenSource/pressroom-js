@@ -17,7 +17,6 @@ import JSZip from 'jszip'
 import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
-import app from '../../app'
 import { hasCommands } from '../../lib/has-commands'
 
 jest.mock('../../lib/jwt-authentication')
@@ -27,6 +26,8 @@ describe('export Literatum JATS', () => {
     if (!hasCommands) {
       jest.doMock('../../lib/pandoc')
     }
+
+    const { app } = await import('../../app')
 
     const response = await request(app)
       .post('/export/literatum-jats')

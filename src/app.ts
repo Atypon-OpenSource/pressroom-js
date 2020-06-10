@@ -38,7 +38,7 @@ import { importZip } from './routes/import-zip'
 
 defineGlobals()
 
-export default express()
+export const app = express()
   // log requests
   .use(morgan('combined', { stream: { write: logger.info.bind(logger) } }))
 

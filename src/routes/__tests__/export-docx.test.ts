@@ -26,7 +26,7 @@ describe('export DOCX', () => {
       jest.doMock('../../lib/pandoc')
     }
 
-    const { default: app } = await import('../../app')
+    const { app } = await import('../../app')
 
     const response = await request(app)
       .post('/export/docx')

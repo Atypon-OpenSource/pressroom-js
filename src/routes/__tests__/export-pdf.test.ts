@@ -15,13 +15,19 @@
  */
 import request from 'supertest'
 
-import app from '../../app'
+import { hasCommands } from '../../lib/has-commands'
 
 jest.mock('../../lib/jwt-authentication')
-jest.mock('../../lib/pandoc')
+jest.setTimeout(30000)
 
 describe('export PDF', () => {
   test('exports to a PDF file', async () => {
+    if (!hasCommands) {
+      jest.doMock('../../lib/pandoc')
+    }
+
+    const { app } = await import('../../app')
+
     const response = await request(app)
       .post('/export/pdf')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
@@ -29,6 +35,7 @@ describe('export PDF', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .responseType('blob')
 
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/pdf')

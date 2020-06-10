@@ -15,13 +15,18 @@
  */
 import request from 'supertest'
 
-import app from '../../app'
+import { hasCommands } from '../../lib/has-commands'
 
 jest.mock('../../lib/jwt-authentication')
-jest.mock('../../lib/pandoc')
 
 describe('import Word', () => {
   test('imports from a Word file', async () => {
+    if (!hasCommands) {
+      jest.doMock('../../lib/pandoc')
+    }
+
+    const { app } = await import('../../app')
+
     const response = await request(app)
       .post('/import/word')
       .attach('file', __dirname + '/__fixtures__/manuscript.docx')

@@ -15,16 +15,21 @@
  */
 import request from 'supertest'
 
-import app from '../../app'
+import { hasCommands } from '../../lib/has-commands'
 
 jest.mock('../../lib/jwt-authentication')
 jest.mock('../../lib/extyles-arc')
 jest.mock('../../lib/gaia')
-jest.mock('../../lib/pandoc')
 jest.setTimeout(30000) // allow time for PDF generation
 
 describe('build literatum bundle', () => {
   test('builds JATS Literatum bundle from DOCX', async () => {
+    if (!hasCommands) {
+      jest.doMock('../../lib/pandoc')
+    }
+
+    const { app } = await import('../../app')
+
     const response = await request(app)
       .post('/build/literatum-bundle')
       .attach('file', __dirname + '/__fixtures__/manuscript.docx')
@@ -41,6 +46,12 @@ describe('build literatum bundle', () => {
   })
 
   test('builds WileyML Literatum bundle from DOCX', async () => {
+    if (!hasCommands) {
+      jest.doMock('../../lib/pandoc')
+    }
+
+    const { app } = await import('../../app')
+
     const response = await request(app)
       .post('/build/literatum-bundle')
       .attach('file', __dirname + '/__fixtures__/manuscript.docx')
