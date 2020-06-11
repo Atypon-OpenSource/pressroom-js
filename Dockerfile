@@ -1,18 +1,4 @@
-FROM node:12-buster
-
-RUN apt-get update
-
-# https://www.princexml.com/download/
-RUN curl 'https://www.princexml.com/download/prince_13.5-1_debian10_amd64.deb' -o prince.deb \
-  && apt-get install -y ./prince.deb \
-  && rm prince.deb
-
-# https://github.com/jgm/pandoc/releases/latest
-RUN curl -L 'https://github.com/jgm/pandoc/releases/download/2.9.2.1/pandoc-2.9.2.1-1-amd64.deb' -o pandoc.deb \
-  && apt-get install -y ./pandoc.deb \
-  && rm pandoc.deb
-
-RUN yarn global add mathjax-pandoc-filter@^0.4.0
+FROM registry.gitlab.com/mpapp-public/pressroom-base/master:2d9b01b2c36e4a66babb8f5ada35bc07f07392c9
 
 WORKDIR /usr/src/app
 
