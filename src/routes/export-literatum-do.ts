@@ -29,7 +29,7 @@ import { processElements } from '../lib/data'
 import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { sendArchive } from '../lib/send-archive'
-import { createTempDir, removeTempDir } from '../lib/temp-dir'
+import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
 import { wrapAsync } from '../lib/wrap-async'
@@ -80,6 +80,7 @@ export const exportLiteratumDO = Router().post(
       deposit: Joi.boolean(),
     },
   }),
+  createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { deposit, doi, doType, manuscriptID } = req.body as {
       doType: string
@@ -91,76 +92,72 @@ export const exportLiteratumDO = Router().post(
     const [, id] = doi.split('/', 2)
 
     // unzip the input
-    const dir = createTempDir()
+    const dir = req.tempDir
 
-    try {
-      logger.debug(`Extracting ZIP archive to ${dir}`)
-      await unzip(req.file.path, dir)
+    logger.debug(`Extracting ZIP archive to ${dir}`)
+    await unzip(req.file.path, dir)
 
-      // read the data
-      const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-      const { article, modelMap } = createArticle(data, manuscriptID)
+    // read the data
+    const { data } = await fs.readJSON(dir + '/index.manuscript-json')
+    const { article, modelMap } = createArticle(data, manuscriptID)
 
-      // prepare the output archive
-      const archive = archiver('zip')
+    // prepare the output archive
+    const archive = archiver('zip')
 
-      // output manifest
-      const manifest = buildManifest({
-        groupDoi: '10.5555/default-do-group',
-        submissionType: 'full',
-      })
-      archive.append(manifest, { name: 'manifest.xml' })
+    // output manifest
+    const manifest = buildManifest({
+      groupDoi: '10.5555/default-do-group',
+      submissionType: 'full',
+    })
+    archive.append(manifest, { name: 'manifest.xml' })
 
-      // create HTML
-      const html = createHTML(article.content, modelMap)
-      const doc = new DOMParser().parseFromString(html, 'text/html')
+    // create HTML
+    const html = createHTML(article.content, modelMap)
+    const doc = new DOMParser().parseFromString(html, 'text/html')
 
-      const files = new Map<string, string>()
+    const files = new Map<string, string>()
 
-      await processElements(doc, `//img`, async (element) => {
-        const src = element.getAttribute('src')
+    await processElements(doc, `//img`, async (element) => {
+      const src = element.getAttribute('src')
 
-        if (src) {
-          const parts = path.parse(src)
+      if (src) {
+        const parts = path.parse(src)
 
-          archive.append(fs.createReadStream(`${dir}/Data/${parts.name}`), {
-            name: parts.base,
-            prefix: `${id}/Data/`,
-          })
+        archive.append(fs.createReadStream(`${dir}/Data/${parts.name}`), {
+          name: parts.base,
+          prefix: `${id}/Data/`,
+        })
 
-          files.set(parts.name, src)
-        }
-      })
-
-      const manuscript = modelMap.get(manuscriptID) as Manuscript
-
-      // output container XML
-      const container = buildContainer({
-        html,
-        files,
-        manuscript,
-        modelMap,
-        doType,
-      })
-      archive.append(container, {
-        name: `${id}.xml`,
-        prefix: `${id}/meta/`,
-      })
-
-      // output XML
-      const xml = createJATSXML(article, modelMap) // TODO: options
-      archive.append(xml, { name: 'manuscript.xml' })
-
-      await archive.finalize()
-
-      if (deposit) {
-        logger.debug(`Depositing to Literatum`)
-        // TODO: deposit
-      } else {
-        await sendArchive(res, archive)
+        files.set(parts.name, src)
       }
-    } finally {
-      await removeTempDir(dir)
+    })
+
+    const manuscript = modelMap.get(manuscriptID) as Manuscript
+
+    // output container XML
+    const container = buildContainer({
+      html,
+      files,
+      manuscript,
+      modelMap,
+      doType,
+    })
+    archive.append(container, {
+      name: `${id}.xml`,
+      prefix: `${id}/meta/`,
+    })
+
+    // output XML
+    const xml = createJATSXML(article, modelMap) // TODO: options
+    archive.append(xml, { name: 'manuscript.xml' })
+
+    await archive.finalize()
+
+    if (deposit) {
+      logger.debug(`Depositing to Literatum`)
+      // TODO: deposit
+    } else {
+      await sendArchive(res, archive)
     }
   })
 )

@@ -29,7 +29,7 @@ import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
-import { createTempDir, removeTempDir } from '../lib/temp-dir'
+import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
 import { wrapAsync } from '../lib/wrap-async'
@@ -80,6 +80,7 @@ export const buildLiteratumBundle = Router().post(
       deposit: Joi.boolean(),
     },
   }),
+  createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { doi, groupDoi, xmlType = 'jats', deposit } = req.body as {
       deposit: boolean
@@ -101,91 +102,87 @@ export const buildLiteratumBundle = Router().post(
     const zip = await convertWordToJATS(docx, extension, config.arc)
 
     // unzip the input
-    const dir = createTempDir()
+    const dir = req.tempDir
 
-    try {
-      logger.debug(`Extracting ZIP archive to ${dir}`)
-      await unzip(zip, dir)
+    logger.debug(`Extracting ZIP archive to ${dir}`)
+    await unzip(zip, dir)
 
-      const archive = archiver.create('zip')
+    const archive = archiver.create('zip')
 
-      const manifest = buildManifest({
-        groupDoi,
-        processingInstructions: {
-          priorityLevel: 'high',
-          // makeLiveCondition: 'no-errors',
-        },
-        submissionType: 'partial',
-      })
-      archive.append(manifest, { name: 'manifest.xml' })
+    const manifest = buildManifest({
+      groupDoi,
+      processingInstructions: {
+        priorityLevel: 'high',
+        // makeLiveCondition: 'no-errors',
+      },
+      submissionType: 'partial',
+    })
+    archive.append(manifest, { name: 'manifest.xml' })
 
-      const doc = await parseXMLFile(dir + '/manuscript.XML')
+    const doc = await parseXMLFile(dir + '/manuscript.XML')
 
-      const prefix = `${groupID}/${articleID}`
+    const prefix = `${groupID}/${articleID}`
 
-      // fix image references
-      const images = await fs.readdir(dir + '/images')
+    // fix image references
+    const images = await fs.readdir(dir + '/images')
 
-      for (const image of images) {
-        const { ext, name } = path.parse(image)
+    for (const image of images) {
+      const { ext, name } = path.parse(image)
 
-        await processElements(
-          doc,
-          `//*[@xlink:href="${name}"]`,
-          async (element) => {
-            const parentFigure = element.closest('fig')
+      await processElements(
+        doc,
+        `//*[@xlink:href="${name}"]`,
+        async (element) => {
+          const parentFigure = element.closest('fig')
 
-            const parentFigureID = parentFigure
-              ? parentFigure.getAttribute('id')
-              : null
+          const parentFigureID = parentFigure
+            ? parentFigure.getAttribute('id')
+            : null
 
-            const newName = parentFigureID ? `${parentFigureID}${ext}` : image
+          const newName = parentFigureID ? `${parentFigureID}${ext}` : image
 
-            const lowerCaseName = newName.toLowerCase()
+          const lowerCaseName = newName.toLowerCase()
 
-            const nodeName = element.nodeName.toLowerCase()
+          const nodeName = element.nodeName.toLowerCase()
 
-            element.setAttributeNS(
-              XLINK_NAMESPACE,
-              'href',
-              `${nodeName}/${lowerCaseName}`
-            )
+          element.setAttributeNS(
+            XLINK_NAMESPACE,
+            'href',
+            `${nodeName}/${lowerCaseName}`
+          )
 
-            archive.append(fs.createReadStream(`${dir}/images/${image}`), {
-              name: lowerCaseName,
-              prefix: `${prefix}/${nodeName}`,
-            })
-          }
-        )
-      }
+          archive.append(fs.createReadStream(`${dir}/images/${image}`), {
+            name: lowerCaseName,
+            prefix: `${prefix}/${nodeName}`,
+          })
+        }
+      )
+    }
 
-      const jats = new XMLSerializer().serializeToString(doc)
+    const jats = new XMLSerializer().serializeToString(doc)
 
-      if (xmlType === 'wileyml') {
-        // write WileyML XML file
-        const wileyml = await convertJATSToWileyML(jats)
-        archive.append(wileyml, { name: `${articleID}.xml`, prefix })
-      } else {
-        // write JATS XML file
-        archive.append(jats, { name: `${articleID}.xml`, prefix })
-      }
+    if (xmlType === 'wileyml') {
+      // write WileyML XML file
+      const wileyml = await convertJATSToWileyML(jats)
+      archive.append(wileyml, { name: `${articleID}.xml`, prefix })
+    } else {
+      // write JATS XML file
+      archive.append(jats, { name: `${articleID}.xml`, prefix })
+    }
 
-      // write PDF file
-      await createPDF(dir, 'manuscript.xml', 'manuscript.pdf')
-      archive.append(fs.createReadStream(dir + '/manuscript.pdf'), {
-        name: `${articleID}.pdf`,
-        prefix,
-      })
+    // write PDF file
+    await createPDF(dir, 'manuscript.xml', 'manuscript.pdf')
+    archive.append(fs.createReadStream(dir + '/manuscript.pdf'), {
+      name: `${articleID}.pdf`,
+      prefix,
+    })
 
-      await archive.finalize()
+    await archive.finalize()
 
-      if (deposit) {
-        // TODO: deposit
-      } else {
-        await sendArchive(res, archive)
-      }
-    } finally {
-      await removeTempDir(dir)
+    if (deposit) {
+      // TODO: deposit
+    } else {
+      await sendArchive(res, archive)
     }
   })
 )

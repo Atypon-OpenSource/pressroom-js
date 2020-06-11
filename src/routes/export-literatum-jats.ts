@@ -23,7 +23,7 @@ import { createJATSXML } from '../lib/create-jats-xml'
 import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { sendArchive } from '../lib/send-archive'
-import { createTempDir, removeTempDir } from '../lib/temp-dir'
+import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
 import { wrapAsync } from '../lib/wrap-async'
@@ -68,6 +68,7 @@ export const exportLiteratumJATS = Router().post(
       deposit: Joi.boolean(),
     },
   }),
+  createRequestDirectory,
   wrapAsync(async (req, res) => {
     // validate the input
     const {
@@ -83,35 +84,30 @@ export const exportLiteratumJATS = Router().post(
     }
 
     // unzip the input
-    const dir = createTempDir()
+    const dir = req.tempDir
 
-    try {
-      logger.debug(`Extracting ZIP archive to ${dir}`)
-      await unzip(req.file.path, dir)
+    logger.debug(`Extracting ZIP archive to ${dir}`)
+    await unzip(req.file.path, dir)
 
-      // read the data
-      const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-      const { article, modelMap } = createArticle(data, manuscriptID)
+    // read the data
+    const { data } = await fs.readJSON(dir + '/index.manuscript-json')
+    const { article, modelMap } = createArticle(data, manuscriptID)
 
-      // create the output ZIP archive
-      const archive = archiver.create('zip')
+    // create the output ZIP archive
+    const archive = archiver.create('zip')
 
-      // output XML
-      archive.append(
-        createJATSXML(article, modelMap, { doi, frontMatterOnly }),
-        { name: 'manuscript.xml' }
-      )
+    // output XML
+    archive.append(createJATSXML(article, modelMap, { doi, frontMatterOnly }), {
+      name: 'manuscript.xml',
+    })
 
-      await archive.finalize()
+    await archive.finalize()
 
-      if (deposit) {
-        logger.debug(`Depositing to Literatum`)
-        // TODO: deposit
-      } else {
-        await sendArchive(res, archive)
-      }
-    } finally {
-      await removeTempDir(dir)
+    if (deposit) {
+      logger.debug(`Depositing to Literatum`)
+      // TODO: deposit
+    } else {
+      await sendArchive(res, archive)
     }
   })
 )

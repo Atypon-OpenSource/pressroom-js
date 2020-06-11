@@ -26,7 +26,7 @@ import { convertJATSToWileyML } from '../lib/gaia'
 import { jwtAuthentication } from '../lib/jwt-authentication'
 import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
-import { createTempDir, removeTempDir } from '../lib/temp-dir'
+import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
 import { wrapAsync } from '../lib/wrap-async'
@@ -70,6 +70,7 @@ export const buildGatewayBundle = Router().post(
       deposit: Joi.boolean(),
     },
   }),
+  createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { doi, issn, deposit } = req.body as {
       doi: string
@@ -87,87 +88,83 @@ export const buildGatewayBundle = Router().post(
     const zip = await convertWordToJATS(docx, extension, req.user.arc)
 
     // unzip the input
-    const dir = createTempDir()
+    const dir = req.tempDir
 
-    try {
-      await unzip(zip, dir)
+    await unzip(zip, dir)
 
-      const archive = archiver.create('zip')
+    const archive = archiver.create('zip')
 
-      const issnFolder = issn.toUpperCase().replace(/[^0-9X]/, '')
+    const issnFolder = issn.toUpperCase().replace(/[^0-9X]/, '')
 
-      const [, articleID] = doi.toUpperCase().split('/', 2)
+    const [, articleID] = doi.toUpperCase().split('/', 2)
 
-      const prefix = `${issnFolder}/9999/9999/999A/${articleID}`
+    const prefix = `${issnFolder}/9999/9999/999A/${articleID}`
 
-      const doc = await parseXMLFile(dir + '/manuscript.XML')
+    const doc = await parseXMLFile(dir + '/manuscript.XML')
 
-      // fix image references
-      if (await fs.pathExists(dir + '/images')) {
-        const images = await fs.readdir(dir + '/images')
+    // fix image references
+    if (await fs.pathExists(dir + '/images')) {
+      const images = await fs.readdir(dir + '/images')
 
-        for (const image of images) {
-          const { ext, name } = path.parse(image)
+      for (const image of images) {
+        const { ext, name } = path.parse(image)
 
-          await processElements(
-            doc,
-            `//*[@xlink:href="${name}"]`,
-            async (element) => {
-              const parentFigure = element.closest('fig')
+        await processElements(
+          doc,
+          `//*[@xlink:href="${name}"]`,
+          async (element) => {
+            const parentFigure = element.closest('fig')
 
-              const parentFigureID = parentFigure
-                ? parentFigure.getAttribute('id')
-                : null
+            const parentFigureID = parentFigure
+              ? parentFigure.getAttribute('id')
+              : null
 
-              const newName = parentFigureID ? `${parentFigureID}${ext}` : image
+            const newName = parentFigureID ? `${parentFigureID}${ext}` : image
 
-              const lowerCaseName = newName.toLowerCase()
+            const lowerCaseName = newName.toLowerCase()
 
-              element.setAttributeNS(
-                XLINK_NAMESPACE,
-                'href',
-                `image_a/${lowerCaseName}`
-              )
+            element.setAttributeNS(
+              XLINK_NAMESPACE,
+              'href',
+              `image_a/${lowerCaseName}`
+            )
 
-              archive.append(fs.createReadStream(`${dir}/images/${image}`), {
-                name: lowerCaseName,
-                prefix: `${prefix}/image_a/`,
-              })
-            }
-          )
-        }
+            archive.append(fs.createReadStream(`${dir}/images/${image}`), {
+              name: lowerCaseName,
+              prefix: `${prefix}/image_a/`,
+            })
+          }
+        )
       }
+    }
 
-      const articleIdElement =
-        doc.querySelector(
-          'article-meta > article-id[pub-id-type="publisher-id"]'
-        ) || doc.querySelector('article-meta > article-id')
+    const articleIdElement =
+      doc.querySelector(
+        'article-meta > article-id[pub-id-type="publisher-id"]'
+      ) || doc.querySelector('article-meta > article-id')
 
-      if (articleIdElement) {
-        articleIdElement.nodeValue = articleID
-      }
+    if (articleIdElement) {
+      articleIdElement.nodeValue = articleID
+    }
 
-      // write XML file
-      const jats = new XMLSerializer().serializeToString(doc)
-      const wileyml = await convertJATSToWileyML(jats)
-      archive.append(wileyml, { name: `${articleID}.xml`, prefix })
+    // write XML file
+    const jats = new XMLSerializer().serializeToString(doc)
+    const wileyml = await convertJATSToWileyML(jats)
+    archive.append(wileyml, { name: `${articleID}.xml`, prefix })
 
-      // write PDF file
-      await createPDF(dir, 'manuscript.xml', 'manuscript.pdf')
-      archive.append(fs.createReadStream(dir + '/manuscript.pdf'), {
-        name: `${articleID}.pdf`,
-        prefix,
-      })
+    // write PDF file
+    await createPDF(dir, 'manuscript.xml', 'manuscript.pdf')
+    archive.append(fs.createReadStream(dir + '/manuscript.pdf'), {
+      name: `${articleID}.pdf`,
+      prefix,
+    })
 
-      await archive.finalize()
+    await archive.finalize()
 
-      if (deposit) {
-        // TODO: deposit
-      } else {
-        await sendArchive(res, archive)
-      }
-    } finally {
-      await removeTempDir(dir)
+    if (deposit) {
+      // TODO: deposit
+    } else {
+      await sendArchive(res, archive)
     }
   })
 )

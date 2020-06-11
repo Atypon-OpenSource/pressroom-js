@@ -31,7 +31,7 @@ import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
-import { createTempDir, removeTempDir } from '../lib/temp-dir'
+import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
 import { wrapAsync } from '../lib/wrap-async'
@@ -72,83 +72,77 @@ export const importWordArc = Router().post(
   jwtAuthentication('pressroom-js'),
   arcCredentials,
   upload.single('file'),
+  createRequestDirectory,
   wrapAsync(async (req, res) => {
     logger.debug(`Received ${req.file.originalname}`)
 
     // allow 60 minutes for conversion
     req.setTimeout(60 * 60 * 1000)
 
-    const dir = createTempDir()
+    const dir = req.tempDir
 
-    try {
-      const archive = archiver.create('zip')
+    const archive = archiver.create('zip')
 
-      logger.debug('Converting Word file to JATS XML with Arc')
+    logger.debug('Converting Word file to JATS XML with Arc')
 
-      const extension = path.extname(req.file.originalname)
-      if (!/^\.docx?$/.test(extension)) {
-        throw new Error('Only .docx and .doc file extensions are supported')
-      }
-      const docx = await fs.readFile(req.file.path)
-      // Send Word file to eXtyles Arc, receive JATS + images in ZIP
-      const zip = await convertWordToJATS(docx, extension, req.user.arc)
+    const extension = path.extname(req.file.originalname)
+    if (!/^\.docx?$/.test(extension)) {
+      throw new Error('Only .docx and .doc file extensions are supported')
+    }
+    const docx = await fs.readFile(req.file.path)
+    // Send Word file to eXtyles Arc, receive JATS + images in ZIP
+    const zip = await convertWordToJATS(docx, extension, req.user.arc)
 
-      // unzip the input
-      await unzip(zip, dir)
+    // unzip the input
+    await unzip(zip, dir)
 
-      // parse the JATS XML and fix data references
-      const doc = await parseXMLFile(dir + '/manuscript.XML')
+    // parse the JATS XML and fix data references
+    const doc = await parseXMLFile(dir + '/manuscript.XML')
 
-      const images = await fs.readdir(dir + '/images')
+    const images = await fs.readdir(dir + '/images')
 
-      for (const image of images) {
-        const { name } = path.parse(image)
+    for (const image of images) {
+      const { name } = path.parse(image)
 
-        await processElements(
-          doc,
-          `//*[@xlink:href="${name}"]`,
-          async (element) => {
-            element.setAttributeNS(XLINK_NAMESPACE, 'href', `images/${image}`)
-          }
-        )
-      }
+      await processElements(
+        doc,
+        `//*[@xlink:href="${name}"]`,
+        async (element) => {
+          element.setAttributeNS(XLINK_NAMESPACE, 'href', `images/${image}`)
+        }
+      )
+    }
 
-      // convert JATS XML to Manuscripts data
-      const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]
+    // convert JATS XML to Manuscripts data
+    const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]
 
-      // output JSON
-      const index = createJSON(manuscriptModels)
-      archive.append(index, {
-        name: 'index.manuscript-json',
-      })
+    // output JSON
+    const index = createJSON(manuscriptModels)
+    archive.append(index, {
+      name: 'index.manuscript-json',
+    })
 
-      for (const model of manuscriptModels) {
-        if (isFigure(model)) {
-          if (model.originalURL) {
-            if (await fs.pathExists(`${dir}/${model.originalURL}`)) {
-              const name = model._id.replace(':', '_')
+    for (const model of manuscriptModels) {
+      if (isFigure(model)) {
+        if (model.originalURL) {
+          if (await fs.pathExists(`${dir}/${model.originalURL}`)) {
+            const name = model._id.replace(':', '_')
 
-              logger.debug(`Adding ${model.originalURL} as Data/${name}`)
+            logger.debug(`Adding ${model.originalURL} as Data/${name}`)
 
-              archive.append(
-                fs.createReadStream(`${dir}/${model.originalURL}`),
-                {
-                  name,
-                  prefix: 'Data/',
-                }
-              )
-            } else {
-              logger.warn(`Missing file ${model.originalURL}`)
-            }
+            archive.append(fs.createReadStream(`${dir}/${model.originalURL}`), {
+              name,
+              prefix: 'Data/',
+            })
+          } else {
+            logger.warn(`Missing file ${model.originalURL}`)
           }
         }
       }
-
-      await archive.finalize()
-
-      await sendArchive(res, archive, 'manuscript.manuproj')
-    } finally {
-      await removeTempDir(dir)
     }
+
+    await archive.finalize()
+
+    await sendArchive(res, archive, 'manuscript.manuproj')
   })
 )

@@ -28,7 +28,7 @@ import { convertJATSToWileyML } from '../lib/gaia'
 import { logger } from '../lib/logger'
 import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
-import { createTempDir, removeTempDir } from '../lib/temp-dir'
+import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { wrapAsync } from '../lib/wrap-async'
 
@@ -90,6 +90,7 @@ export const buildSubmissionBundle = express.Router().post(
       allowUnknown: true,
     }
   ),
+  createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { depositoryCode, attachments, metadata } = req.body as {
       depositoryCode: string
@@ -104,135 +105,128 @@ export const buildSubmissionBundle = express.Router().post(
         doi: string
       }
     }
-    const dir = createTempDir()
+    const dir = req.tempDir
 
-    try {
-      const issn = metadata.digitalISSN.toUpperCase().replace(/[^0-9X]/, '')
-      const [, articleID] = metadata.doi.toUpperCase().split('/', 2)
-      const prefix = `${issn}/9999/9999/999A/${articleID}`
+    const issn = metadata.digitalISSN.toUpperCase().replace(/[^0-9X]/, '')
+    const [, articleID] = metadata.doi.toUpperCase().split('/', 2)
+    const prefix = `${issn}/9999/9999/999A/${articleID}`
 
-      // fetch the files
-      // TODO: receive these as a ZIP file instead?
-      for (const attachment of attachments) {
-        await fetchAttachment(attachment, dir)
-      }
+    // fetch the files
+    // TODO: receive these as a ZIP file instead?
+    for (const attachment of attachments) {
+      await fetchAttachment(attachment, dir)
+    }
 
-      const mainDocuments = attachments.filter(
-        (attachment) => attachment.designation === 'Main Document'
-      )
+    const mainDocuments = attachments.filter(
+      (attachment) => attachment.designation === 'Main Document'
+    )
 
-      // prepare the output ZIP
-      const archive = archiver.create('zip')
+    // prepare the output ZIP
+    const archive = archiver.create('zip')
 
-      switch (depositoryCode) {
-        case 'S1': {
-          const attachment = mainDocuments.find((attachment) =>
-            ['doc', 'docx'].includes(attachment.format)
-          )
+    switch (depositoryCode) {
+      case 'S1': {
+        const attachment = mainDocuments.find((attachment) =>
+          ['doc', 'docx'].includes(attachment.format)
+        )
 
-          if (!attachment) {
-            throw new Error('Expected doc or docx attachment')
-          }
-
-          const extension = path.extname(attachment.name)
-
-          if (!/^\.docx?$/.test(extension)) {
-            throw new Error('Only .docx and .doc file extensions are supported')
-          }
-
-          const buffer = await fs.readFile(`${dir}/${attachment.name}`)
-
-          logger.debug(`Converting Word file to JATS XML via Arc`)
-          const zip = await convertWordToJATS(buffer, extension, config.arc)
-
-          logger.debug(`Extracting ZIP archive to ${dir}`)
-          await unzip(zip, dir)
-
-          const doc = await parseXMLFile(dir + '/manuscript.XML')
-
-          // fix image references
-          if (await fs.pathExists(dir + '/images')) {
-            const images = await fs.readdir(dir + '/images')
-
-            for (const image of images) {
-              const { ext, name } = path.parse(image)
-
-              await processElements(
-                doc,
-                `//*[@xlink:href="${name}"]`,
-                async (element) => {
-                  const parentFigure = element.closest('fig')
-
-                  const parentFigureID = parentFigure
-                    ? parentFigure.getAttribute('id')
-                    : null
-
-                  const newName = parentFigureID
-                    ? `${parentFigureID}${ext}`
-                    : image
-
-                  const lowerCaseName = newName.toLowerCase()
-
-                  element.setAttributeNS(
-                    XLINK_NAMESPACE,
-                    'href',
-                    `image_a/${lowerCaseName}`
-                  )
-
-                  archive.append(
-                    fs.createReadStream(`${dir}/images/${image}`),
-                    {
-                      name: lowerCaseName,
-                      prefix: `${prefix}/image_a/`,
-                    }
-                  )
-                }
-              )
-            }
-          }
-
-          const articleIdElement =
-            doc.querySelector(
-              'article-meta > article-id[pub-id-type="publisher-id"]'
-            ) || doc.querySelector('article-meta > article-id')
-
-          if (articleIdElement) {
-            articleIdElement.nodeValue = articleID
-          }
-
-          logger.debug(`Converting JATS XML to WileyML`)
-          const jats = new XMLSerializer().serializeToString(doc)
-          const wileyml = await convertJATSToWileyML(jats)
-
-          archive.append(wileyml, {
-            name: `${articleID}.xml`,
-            prefix,
-          })
-
-          await archive.finalize()
-
-          await sendArchive(res, archive)
-
-          break
+        if (!attachment) {
+          throw new Error('Expected doc or docx attachment')
         }
 
-        // case 'Authorea': {
-        //   const attachment = mainDocuments.find((attachment) =>
-        //     ['xml'].includes(attachment.format)
-        //   )
-        //
-        //   if (!attachment) {
-        //     throw new Error('Expected xml attachment')
-        //   }
-        //
-        //   break
-        // }
+        const extension = path.extname(attachment.name)
 
-        default:
-          throw new Error(`Unsupported depositoryCode: ${depositoryCode}`)
+        if (!/^\.docx?$/.test(extension)) {
+          throw new Error('Only .docx and .doc file extensions are supported')
+        }
+
+        const buffer = await fs.readFile(`${dir}/${attachment.name}`)
+
+        logger.debug(`Converting Word file to JATS XML via Arc`)
+        const zip = await convertWordToJATS(buffer, extension, config.arc)
+
+        logger.debug(`Extracting ZIP archive to ${dir}`)
+        await unzip(zip, dir)
+
+        const doc = await parseXMLFile(dir + '/manuscript.XML')
+
+        // fix image references
+        if (await fs.pathExists(dir + '/images')) {
+          const images = await fs.readdir(dir + '/images')
+
+          for (const image of images) {
+            const { ext, name } = path.parse(image)
+
+            await processElements(
+              doc,
+              `//*[@xlink:href="${name}"]`,
+              async (element) => {
+                const parentFigure = element.closest('fig')
+
+                const parentFigureID = parentFigure
+                  ? parentFigure.getAttribute('id')
+                  : null
+
+                const newName = parentFigureID
+                  ? `${parentFigureID}${ext}`
+                  : image
+
+                const lowerCaseName = newName.toLowerCase()
+
+                element.setAttributeNS(
+                  XLINK_NAMESPACE,
+                  'href',
+                  `image_a/${lowerCaseName}`
+                )
+
+                archive.append(fs.createReadStream(`${dir}/images/${image}`), {
+                  name: lowerCaseName,
+                  prefix: `${prefix}/image_a/`,
+                })
+              }
+            )
+          }
+        }
+
+        const articleIdElement =
+          doc.querySelector(
+            'article-meta > article-id[pub-id-type="publisher-id"]'
+          ) || doc.querySelector('article-meta > article-id')
+
+        if (articleIdElement) {
+          articleIdElement.nodeValue = articleID
+        }
+
+        logger.debug(`Converting JATS XML to WileyML`)
+        const jats = new XMLSerializer().serializeToString(doc)
+        const wileyml = await convertJATSToWileyML(jats)
+
+        archive.append(wileyml, {
+          name: `${articleID}.xml`,
+          prefix,
+        })
+
+        await archive.finalize()
+
+        await sendArchive(res, archive)
+
+        break
       }
-    } finally {
-      await removeTempDir(dir)
+
+      // case 'Authorea': {
+      //   const attachment = mainDocuments.find((attachment) =>
+      //     ['xml'].includes(attachment.format)
+      //   )
+      //
+      //   if (!attachment) {
+      //     throw new Error('Expected xml attachment')
+      //   }
+      //
+      //   break
+      // }
+
+      default:
+        throw new Error(`Unsupported depositoryCode: ${depositoryCode}`)
     }
   })
 )

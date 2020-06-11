@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import express from 'express'
 import rimraf from 'rimraf'
 import { promisify } from 'util'
+
+import { logger } from './logger'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const tempy = require('tempy')
@@ -22,3 +25,14 @@ const tempy = require('tempy')
 export const createTempDir = tempy.directory
 
 export const removeTempDir = promisify(rimraf)
+
+export const createRequestDirectory = (
+  request: express.Request,
+  response: express.Response,
+  next: express.NextFunction
+): void => {
+  const dir = createTempDir()
+  request.tempDir = dir
+  response.on('close', () => removeTempDir(dir).catch((er) => logger.error(er)))
+  next()
+}

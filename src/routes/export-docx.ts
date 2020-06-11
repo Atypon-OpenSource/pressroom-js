@@ -25,7 +25,7 @@ import { findCSL } from '../lib/find-csl'
 import { fixExportedData } from '../lib/fix-exported-data'
 import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
-import { createTempDir, removeTempDir } from '../lib/temp-dir'
+import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
 import { wrapAsync } from '../lib/wrap-async'
@@ -67,41 +67,38 @@ export const exportDocx = Router().post(
       manuscriptID: Joi.string().required(),
     },
   }),
+  createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { manuscriptID } = req.body as { manuscriptID: string }
 
-    const dir = createTempDir()
+    const dir = req.tempDir
 
-    try {
-      logger.debug(`Extracting ZIP archive to ${dir}`)
-      await unzip(req.file.path, dir)
+    logger.debug(`Extracting ZIP archive to ${dir}`)
+    await unzip(req.file.path, dir)
 
-      // read the data
-      const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-      const { article, modelMap } = createArticle(data, manuscriptID)
+    // read the data
+    const { data } = await fs.readJSON(dir + '/index.manuscript-json')
+    const { article, modelMap } = createArticle(data, manuscriptID)
 
-      // create XML
-      const xml = createJATSXML(article, modelMap)
+    // create XML
+    const xml = createJATSXML(article, modelMap)
 
-      // fix data references
-      const doc = await new DOMParser().parseFromString(xml, 'application/xml')
-      await fixExportedData(doc, dir)
-      const jats = new XMLSerializer().serializeToString(doc)
+    // fix data references
+    const doc = await new DOMParser().parseFromString(xml, 'application/xml')
+    await fixExportedData(doc, dir)
+    const jats = new XMLSerializer().serializeToString(doc)
 
-      await fs.writeFile(dir + '/manuscript.xml', jats)
+    await fs.writeFile(dir + '/manuscript.xml', jats)
 
-      const manuscript = modelMap.get(manuscriptID) as Manuscript
+    const manuscript = modelMap.get(manuscriptID) as Manuscript
 
-      // use the CSL style defined in the manuscript bundle
-      const csl = await findCSL(dir, manuscript)
+    // use the CSL style defined in the manuscript bundle
+    const csl = await findCSL(dir, manuscript)
 
-      // create DOCX
-      await createDocx(dir, 'manuscript.xml', 'manuscript.docx', { csl })
+    // create DOCX
+    await createDocx(dir, 'manuscript.xml', 'manuscript.docx', { csl })
 
-      // send the file as an attachment
-      res.download(dir + '/manuscript.docx')
-    } finally {
-      await removeTempDir(dir)
-    }
+    // send the file as an attachment
+    res.download(dir + '/manuscript.docx')
   })
 )

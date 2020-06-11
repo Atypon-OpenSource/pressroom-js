@@ -25,5 +25,6 @@ declare module 'express-serve-static-core' {
       audience: string
       arc?: ExtylesArcAuthentication
     }
+    tempDir: string
   }
 }
