@@ -35,7 +35,8 @@ export const convertJATSToWileyML = async (xml: string): Promise<string> => {
     },
     {
       params: { scope: 'pericles' },
-    })
+    }
+  )
 
   return data
 }
