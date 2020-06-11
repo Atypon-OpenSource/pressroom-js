@@ -153,7 +153,7 @@ export const buildGatewayBundle = Router().post(
     archive.append(wileyml, { name: `${articleID}.xml`, prefix })
 
     // write PDF file
-    await createPDF(dir, 'manuscript.xml', 'manuscript.pdf')
+    await createPDF(dir, 'manuscript.XML', 'manuscript.pdf')
     archive.append(fs.createReadStream(dir + '/manuscript.pdf'), {
       name: `${articleID}.pdf`,
       prefix,
