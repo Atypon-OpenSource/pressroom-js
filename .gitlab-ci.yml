@@ -1,0 +1,19 @@
+stages:
+  - test
+  - build
+
+include:
+  # build and publish Docker image to container registry
+  - template: Jobs/Build.gitlab-ci.yml
+
+test:
+  stage: test
+  image: registry.gitlab.com/mpapp-public/pressroom-base/master
+  script:
+    - yarn install --frozen-lockfile --non-interactive
+    - yarn lint
+    - yarn test --ci --coverage --reporters=default --reporters=jest-junit
+  coverage: '/Statements\s*:\s*(\d+\.\d+)%/'
+  artifacts:
+    reports:
+      junit: junit.xml
