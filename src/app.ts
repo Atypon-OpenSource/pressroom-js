@@ -29,6 +29,7 @@ import { buildLiteratumBundle } from './routes/build-literatum-bundle'
 import { buildSubmissionBundle } from './routes/build-submission-bundle'
 import { exportDocx } from './routes/export-docx'
 import { exportEpub } from './routes/export-epub'
+import { exportIcml } from './routes/export-icml'
 import { exportLiteratumDO } from './routes/export-literatum-do'
 import { exportLiteratumJATS } from './routes/export-literatum-jats'
 import { exportPDF } from './routes/export-pdf'
@@ -54,6 +55,7 @@ export const app = express()
     exportPDF,
     exportDocx,
     exportEpub,
+    exportIcml,
     exportLiteratumDO,
     exportLiteratumJATS
   )

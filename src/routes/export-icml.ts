@@ -18,14 +18,12 @@ import archiver from 'archiver'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
-import path from 'path'
 
 import { createArticle } from '../lib/create-article'
-import { createHTML } from '../lib/create-html'
+import { createIcml } from '../lib/create-icml'
 import { createJATSXML } from '../lib/create-jats-xml'
-import { buildManifest } from '../lib/create-manifest'
-import { buildContainer } from '../lib/create-mets'
-import { processElements } from '../lib/data'
+import { findCSL } from '../lib/find-csl'
+import { fixExportedData } from '../lib/fix-exported-data'
 import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { sendArchive } from '../lib/send-archive'
@@ -37,9 +35,9 @@ import { wrapAsync } from '../lib/wrap-async'
 /**
  * @swagger
  *
- * /export/literatum-do:
+ * /export/icml:
  *   post:
- *     description: Convert manuscript data to Literatum DO bundle
+ *     description: Convert manuscript data to a ZIP file containing an ICML file
  *     produces:
  *       - application/zip
  *     security:
@@ -53,14 +51,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                file:
  *                  type: string
  *                  format: binary
- *                doi:
- *                  type: string
- *                doType:
- *                  type: string
  *                manuscriptID:
  *                  type: string
- *                deposit:
- *                  type: boolean
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -68,30 +60,19 @@ import { wrapAsync } from '../lib/wrap-async'
  *       200:
  *         description: Conversion success
  */
-export const exportLiteratumDO = Router().post(
-  '/export/literatum-do',
+export const exportIcml = Router().post(
+  '/export/icml',
   jwtAuthentication('pressroom-js'),
   upload.single('file'),
   celebrate({
     body: {
-      doType: Joi.string().required(),
-      doi: Joi.string().required(),
       manuscriptID: Joi.string().required(),
-      deposit: Joi.boolean(),
     },
   }),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
-    const { deposit, doi, doType, manuscriptID } = req.body as {
-      doType: string
-      doi: string
-      manuscriptID: string
-      deposit?: boolean
-    }
+    const { manuscriptID } = req.body as { manuscriptID: string }
 
-    const [, id] = doi.split('/', 2)
-
-    // unzip the input
     const dir = req.tempDir
 
     logger.debug(`Extracting ZIP archive to ${dir}`)
@@ -101,63 +82,35 @@ export const exportLiteratumDO = Router().post(
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
     const { article, modelMap } = createArticle(data, manuscriptID)
 
-    // prepare the output archive
-    const archive = archiver.create('zip')
+    // create JATS XML
+    const xml = createJATSXML(article, modelMap)
 
-    // output manifest
-    const manifest = buildManifest({
-      groupDoi: '10.5555/default-do-group',
-      submissionType: 'full',
-    })
-    archive.append(manifest, { name: 'manifest.xml' })
+    // fix data references
+    const doc = await new DOMParser().parseFromString(xml, 'application/xml')
+    await fixExportedData(doc, dir)
+    const jats = new XMLSerializer().serializeToString(doc)
 
-    // create HTML
-    const html = createHTML(article.content, modelMap)
-    const doc = new DOMParser().parseFromString(html, 'text/html')
-
-    const files = new Map<string, string>()
-
-    await processElements(doc, `//img`, async (element) => {
-      const src = element.getAttribute('src')
-
-      if (src) {
-        const parts = path.parse(src)
-
-        archive.append(fs.createReadStream(`${dir}/Data/${parts.name}`), {
-          name: parts.base,
-          prefix: `${id}/Data/`,
-        })
-
-        files.set(parts.name, src)
-      }
-    })
+    await fs.writeFile(dir + '/manuscript.xml', jats)
 
     const manuscript = modelMap.get(manuscriptID) as Manuscript
 
-    // output container XML
-    const container = buildContainer({
-      html,
-      files,
-      manuscript,
-      modelMap,
-      doType,
-    })
-    archive.append(container, {
-      name: `${id}.xml`,
-      prefix: `${id}/meta/`,
+    // use the CSL style defined in the manuscript bundle
+    const csl = await findCSL(dir, manuscript)
+
+    // prepare the output archive
+    const archive = archiver.create('zip')
+
+    // create ICML
+    await createIcml(dir, 'manuscript.xml', 'manuscript.icml', { csl })
+
+    archive.append(fs.createReadStream(dir + '/manuscript.icml'), {
+      name: 'manuscript.icml',
     })
 
-    // output XML
-    const xml = createJATSXML(article, modelMap) // TODO: options
-    archive.append(xml, { name: 'manuscript.xml' })
+    // TODO: add images
 
     await archive.finalize()
 
-    if (deposit) {
-      logger.debug(`Depositing to Literatum`)
-      // TODO: deposit
-    } else {
-      await sendArchive(res, archive)
-    }
+    await sendArchive(res, archive)
   })
 )
