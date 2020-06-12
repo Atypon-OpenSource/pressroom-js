@@ -23,8 +23,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const port = process.env.PORT ? Number(process.env.PORT) : 5000
-const hostname = process.env.HOSTNAME || '0.0.0.0'
 
-app.listen(port, hostname, () => {
-  logger.info(`Listening on ${hostname}:${port}`)
+app.listen(port, () => {
+  logger.info(`Listening on port ${port}`)
 })
