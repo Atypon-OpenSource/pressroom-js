@@ -11,8 +11,8 @@ A web service for manuscript conversion.
 ## Running in macOS
 
 1. `brew install pandoc pandoc-citeproc`
-1. `brew install texlive`
 1. `brew install latexml`
+1. `brew cask install basictex`
 1. `brew cask install --no-quarantine prince`
 1. `brew install python3 cairo pango gdk-pixbuf libffi && pip3 install WeasyPrint`
 1. `yarn global add mathjax-pandoc-filter`
