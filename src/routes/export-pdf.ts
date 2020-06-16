@@ -20,7 +20,7 @@ import fs from 'fs-extra'
 
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
-import { createPDF } from '../lib/create-pdf'
+import { createPDF, PDFEngine } from '../lib/create-pdf'
 import { findCSL } from '../lib/find-csl'
 import { fixExportedData } from '../lib/fix-exported-data'
 import { jwtAuthentication } from '../lib/jwt-authentication'
@@ -65,11 +65,15 @@ export const exportPDF = Router().post(
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
+      engine: Joi.string().allow('prince', 'weasyprint', 'xelatex'),
     },
   }),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
-    const { manuscriptID } = req.body as { manuscriptID: string }
+    const { manuscriptID, engine = 'xelatex' } = req.body as {
+      manuscriptID: string
+      engine: PDFEngine
+    }
 
     // unzip the input
     const dir = req.tempDir
@@ -97,7 +101,7 @@ export const exportPDF = Router().post(
     const csl = await findCSL(dir, manuscript)
 
     // create PDF
-    await createPDF(dir, 'manuscript.xml', 'manuscript.pdf', { csl })
+    await createPDF(dir, 'manuscript.xml', 'manuscript.pdf', engine, { csl })
 
     // send the file as an attachment
     res.download(dir + '/manuscript.pdf')

@@ -17,27 +17,37 @@ import { DEFAULT_CSL, pandoc } from './pandoc'
 
 const DEFAULT_CSS = __dirname + '/pandoc/example.css'
 
+export type PDFEngine = 'prince' | 'xelatex' | 'weasyprint'
+
 export const createPDF = async (
   dir: string,
   inputPath: string,
   outputPath: string,
+  engine: PDFEngine = 'prince',
   options?: {
     csl?: string
     css?: string
   }
-): Promise<void> =>
-  pandoc(
-    inputPath,
-    outputPath,
-    [
-      '--standalone',
-      '--from=jats',
-      '--to=pdf',
-      '--filter=pandoc-citeproc',
-      '--filter=mathjax-pandoc-filter',
-      `--csl=${options?.csl || DEFAULT_CSL}`,
-      '--pdf-engine=prince',
-      `--pdf-engine-opt=--style=${options?.css || DEFAULT_CSS}`,
-    ],
-    dir
-  )
+): Promise<void> => {
+  const args = [
+    '--standalone',
+    '--from=jats',
+    '--to=pdf',
+    '--filter=pandoc-citeproc',
+    '--filter=mathjax-pandoc-filter',
+    `--csl=${options?.csl || DEFAULT_CSL}`,
+    `--pdf-engine=${engine}`,
+  ]
+
+  switch (engine) {
+    case 'prince':
+      args.push(`--pdf-engine-opt=--style=${options?.css || DEFAULT_CSS}`)
+      break
+
+    case 'weasyprint':
+      args.push(`--pdf-engine-opt=--stylesheet=${options?.css || DEFAULT_CSS}`)
+      break
+  }
+
+  return pandoc(inputPath, outputPath, args, dir)
+}

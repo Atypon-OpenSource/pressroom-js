@@ -21,7 +21,7 @@ jest.mock('../../lib/jwt-authentication')
 jest.setTimeout(30000)
 
 describe('export PDF', () => {
-  test('exports to a PDF file', async () => {
+  test('exports to a PDF file with xelatex (default)', async () => {
     if (!hasCommands) {
       jest.doMock('../../lib/pandoc')
     }
@@ -35,6 +35,54 @@ describe('export PDF', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .responseType('blob')
+
+    expect(response.status).toBe(200)
+    expect(response.get('Content-Type')).toBe('application/pdf')
+    expect(response.get('Content-Disposition')).toBe(
+      'attachment; filename="manuscript.pdf"'
+    )
+  })
+
+  test('exports to a PDF file with Prince ', async () => {
+    if (!hasCommands) {
+      jest.doMock('../../lib/pandoc')
+    }
+
+    const { app } = await import('../../app')
+
+    const response = await request(app)
+      .post('/export/pdf')
+      .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
+      .field(
+        'manuscriptID',
+        'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
+      )
+      .field('engine', 'prince')
+      .responseType('blob')
+
+    expect(response.status).toBe(200)
+    expect(response.get('Content-Type')).toBe('application/pdf')
+    expect(response.get('Content-Disposition')).toBe(
+      'attachment; filename="manuscript.pdf"'
+    )
+  })
+
+  test('exports to a PDF file with WeasyPrint', async () => {
+    if (!hasCommands) {
+      jest.doMock('../../lib/pandoc')
+    }
+
+    const { app } = await import('../../app')
+
+    const response = await request(app)
+      .post('/export/pdf')
+      .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
+      .field(
+        'manuscriptID',
+        'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
+      )
+      .field('engine', 'weasyprint')
       .responseType('blob')
 
     expect(response.status).toBe(200)
