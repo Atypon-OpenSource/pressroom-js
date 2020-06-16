@@ -18,6 +18,7 @@ import request from 'supertest'
 import { hasCommands } from '../../lib/has-commands'
 
 jest.mock('../../lib/jwt-authentication')
+jest.setTimeout(30000)
 
 describe('import ZIP', () => {
   test('imports from a Markdown file in a ZIP file', async () => {
@@ -59,4 +60,5 @@ describe('import ZIP', () => {
   })
 
   // TODO: imports from a JATS XML file in a ZIP file
+  // TODO: imports from a HTML file in a ZIP file
 })

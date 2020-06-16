@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/mpapp-public/pressroom-base/master:a230f6891e6f04b8b6392cdadafcc6b68ead6af2 as builder
+FROM registry.gitlab.com/mpapp-public/pressroom-base/master:68c3616f770345b693a27c6ab564a72418f5a67f as builder
 
 WORKDIR /usr/src/app
 
@@ -16,7 +16,7 @@ RUN yarn build
 
 RUN npm prune --production
 
-FROM registry.gitlab.com/mpapp-public/pressroom-base/master:a230f6891e6f04b8b6392cdadafcc6b68ead6af2
+FROM registry.gitlab.com/mpapp-public/pressroom-base/master:68c3616f770345b693a27c6ab564a72418f5a67f
 
 WORKDIR /usr/src/app
 

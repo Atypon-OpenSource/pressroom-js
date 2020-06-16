@@ -23,6 +23,7 @@ import { Router } from 'express'
 import fs from 'fs-extra'
 
 import { convertFileToJATS } from '../lib/convert-file-to-jats'
+import { convertLatexToHTML } from '../lib/convert-latex-to-html'
 import { createJSON } from '../lib/create-json'
 import { findManuscriptFile } from '../lib/find-manuscript-file'
 import { jwtAuthentication } from '../lib/jwt-authentication'
@@ -78,6 +79,20 @@ export const importZip = Router().post(
 
     // find the main manuscript file
     const result = await findManuscriptFile(dir)
+
+    // pre-convert a LaTeX manuscript file to HTML5 via latexml
+    if (result.format === 'latex') {
+      logger.debug(`Converting ${result.format} file ${result.file} to HTML`)
+
+      await convertLatexToHTML({
+        dir,
+        inputPath: result.file,
+        outputPath: 'manuscript.html',
+      })
+
+      result.format = 'html'
+      result.file = 'manuscript.html'
+    }
 
     logger.debug(`Converting ${result.format} file ${result.file} to JATS XML`)
 

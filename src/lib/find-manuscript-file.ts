@@ -21,6 +21,7 @@ const manuscriptExtensionToPandocFormatMap = new Map<string, string>([
   ['.latex', 'latex'],
   ['.md', 'markdown'],
   ['.xml', 'jats'],
+  ['.html', 'html'],
 ])
 
 // find the main manuscript file (a file with .md, .tex, .xml etc extension)
