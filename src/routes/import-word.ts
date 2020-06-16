@@ -21,6 +21,7 @@ import {
 import archiver from 'archiver'
 import { Router } from 'express'
 import fs from 'fs-extra'
+import getStream from 'get-stream'
 
 import { convertFileToJATS } from '../lib/convert-file-to-jats'
 import { createJSON } from '../lib/create-json'
@@ -63,18 +64,24 @@ export const importWord = Router().post(
   upload.single('file'),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
-    logger.debug(`Received ${req.file.originalname}`)
+    // @ts-ignore
+    logger.debug(`Received ${req.file.originalName}`)
 
     const dir = req.tempDir
 
     const archive = archiver.create('zip')
+
+    await fs.writeFile(
+      dir + '/manuscript.docx',
+      await getStream.buffer(req.file.stream)
+    )
 
     // convert the Word file to JATS XML via pandoc
     logger.debug('Converting Word file to JATS XML via pandoc')
     await convertFileToJATS({
       dir,
       from: 'docx',
-      inputPath: req.file.path,
+      inputPath: 'manuscript.docx',
       outputPath: 'manuscript.xml',
     })
 

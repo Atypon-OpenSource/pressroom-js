@@ -26,11 +26,11 @@ export const createTempDir = tempy.directory
 
 export const removeTempDir = promisify(rimraf)
 
-export const createRequestDirectory = (
+export const createRequestDirectory: express.RequestHandler = (
   request: express.Request,
   response: express.Response,
   next: express.NextFunction
-): void => {
+) => {
   const dir = createTempDir()
   request.tempDir = dir
   response.on('close', () => removeTempDir(dir).catch((er) => logger.error(er)))

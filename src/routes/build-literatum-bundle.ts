@@ -92,14 +92,14 @@ export const buildLiteratumBundle = Router().post(
     const [, articleID] = doi.split('/', 2) // TODO: only article ID?
     const [, groupID] = groupDoi.split('/', 2)
 
-    const extension = path.extname(req.file.originalname)
+    // @ts-ignore
+    const extension = req.file.detectedFileExtension
     if (!/^\.docx?$/.test(extension)) {
       throw new Error('Only .docx and .doc file extensions are supported')
     }
-    const docx = await fs.readFile(req.file.path)
 
     // Send Word file to eXtyles Arc, receive JATS + images in ZIP
-    const zip = await convertWordToJATS(docx, extension, config.arc)
+    const zip = await convertWordToJATS(req.file.stream, extension, config.arc)
 
     // unzip the input
     const dir = req.tempDir

@@ -134,16 +134,11 @@ export const buildSubmissionBundle = express.Router().post(
           throw new Error('Expected doc or docx attachment')
         }
 
-        const extension = path.extname(attachment.name)
-
-        if (!/^\.docx?$/.test(extension)) {
-          throw new Error('Only .docx and .doc file extensions are supported')
-        }
-
-        const buffer = await fs.readFile(`${dir}/${attachment.name}`)
+        const file = fs.createReadStream(`${dir}/${attachment.name}`)
+        const extension = '.' + attachment.format
 
         logger.debug(`Converting Word file to JATS XML via Arc`)
-        const zip = await convertWordToJATS(buffer, extension, config.arc)
+        const zip = await convertWordToJATS(file, extension, config.arc)
 
         logger.debug(`Extracting ZIP archive to ${dir}`)
         await unzip(zip, dir)

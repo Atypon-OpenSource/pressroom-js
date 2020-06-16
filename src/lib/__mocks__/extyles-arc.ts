@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import fs from 'fs-extra'
+import stream from 'stream'
 
-export const convertWordToJATS = async (): Promise<Buffer> =>
-  fs.readFile(__dirname + '/__fixtures__/arc-output.zip')
+export const convertWordToJATS = async (): Promise<stream.Readable> =>
+  fs.createReadStream(__dirname + '/__fixtures__/arc-output.zip')

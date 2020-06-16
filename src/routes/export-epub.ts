@@ -74,7 +74,7 @@ export const exportEpub = Router().post(
     const dir = req.tempDir
 
     logger.debug(`Extracting ZIP archive to ${dir}`)
-    await unzip(req.file.path, dir)
+    await unzip(req.file.stream, dir)
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')

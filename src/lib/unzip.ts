@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 import decompress from 'decompress'
+import getStream from 'get-stream'
+import stream from 'stream'
 
-export const unzip = (
-  zip: Buffer | string,
+export const unzip = async (
+  zip: stream.Readable,
   dir: string
-): Promise<decompress.File[]> =>
-  decompress(zip, dir, {
+): Promise<decompress.File[]> => {
+  const buffer = await getStream.buffer(zip)
+
+  return decompress(buffer, dir, {
     map: (file) => {
       if (file.type === 'file' && file.path.endsWith('/')) {
         file.type = 'directory'
@@ -27,3 +31,4 @@ export const unzip = (
       return file
     },
   })
+}

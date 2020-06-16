@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const multer = require('multer')
+import multer from 'multer'
 
-export const upload = multer({ dest: '/tmp/uploads' })
+export const upload = multer()

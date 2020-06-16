@@ -15,6 +15,7 @@
  */
 import axios from 'axios'
 import FormData from 'form-data'
+import stream from 'stream'
 
 import { logger } from './logger'
 
@@ -29,10 +30,10 @@ export interface ExtylesArcAuthentication extends Record<string, string> {
 }
 
 export const convertWordToJATS = async (
-  buffer: Buffer,
+  file: stream.Readable,
   extension: string,
   authentication: ExtylesArcAuthentication
-): Promise<Buffer> => {
+): Promise<stream.Readable> => {
   // TODO: cache the token and login again when it expires?
   const {
     data: { message, status, token },
@@ -50,11 +51,11 @@ export const convertWordToJATS = async (
   form.append('input_file_name', `manuscript${extension}`)
   form.append('input_file_type', 'FULLTEXT_WITH_IMAGES')
   form.append('editorial_style', 'APA')
-  form.append('file', buffer, 'manuscript.docx')
+  form.append('file', file, 'manuscript.docx')
 
   const {
     data: { job_id },
-  } = await client.post<{ job_id: string }>('/create_job', form.getBuffer(), {
+  } = await client.post<{ job_id: string }>('/create_job', form, {
     headers: { token, ...form.getHeaders() },
   })
 
@@ -84,10 +85,10 @@ export const convertWordToJATS = async (
 
   logger.debug(`Downloading ${job_id}…`)
 
-  const { data: output } = await client.get<Buffer>('/get_results', {
+  const { data: output } = await client.get<stream.Readable>('/get_results', {
     params: { job_id },
     headers: { token },
-    responseType: 'arraybuffer',
+    responseType: 'stream',
   })
 
   return output

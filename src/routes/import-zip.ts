@@ -68,12 +68,13 @@ export const importZip = Router().post(
   upload.single('file'),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
-    logger.debug(`Received ${req.file.originalname}`)
+    // @ts-ignore
+    logger.debug(`Received ${req.file.originalName}`)
 
     const dir = req.tempDir
 
     // unzip the input
-    await unzip(req.file.path, dir)
+    await unzip(req.file.stream, dir)
 
     // find the main manuscript file
     const result = await findManuscriptFile(dir)
