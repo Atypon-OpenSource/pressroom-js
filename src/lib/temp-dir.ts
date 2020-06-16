@@ -33,6 +33,8 @@ export const createRequestDirectory: express.RequestHandler = (
 ) => {
   const dir = createTempDir()
   request.tempDir = dir
-  response.on('close', () => removeTempDir(dir).catch((er) => logger.error(er)))
+  response.on('close', () => {
+    removeTempDir(dir).catch((error) => logger.error(error))
+  })
   next()
 }
