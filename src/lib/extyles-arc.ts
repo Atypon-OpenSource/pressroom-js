@@ -19,10 +19,6 @@ import stream from 'stream'
 
 import { logger } from './logger'
 
-const client = axios.create({
-  baseURL: 'https://www.extylesarc.com/api',
-})
-
 export interface ExtylesArcAuthentication extends Record<string, string> {
   username: string
   password: string
@@ -34,6 +30,10 @@ export const convertWordToJATS = async (
   extension: string,
   authentication: ExtylesArcAuthentication
 ): Promise<stream.Readable> => {
+  const client = axios.create({
+    baseURL: 'https://www.extylesarc.com/api',
+  })
+
   // TODO: cache the token and login again when it expires?
   const {
     data: { message, status, token },
@@ -59,7 +59,7 @@ export const convertWordToJATS = async (
     headers: { token, ...form.getHeaders() },
   })
 
-  const interval = 10000 // poll every 10 seconds
+  const interval = process.env.NODE_ENV === 'test' ? 100 : 10000 // poll every 10 seconds
   let attempts = 600000 / interval // timeout after 10 mins
 
   do {
