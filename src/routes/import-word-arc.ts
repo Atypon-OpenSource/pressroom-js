@@ -104,8 +104,9 @@ export const importWordArc = Router().post(
 
     // parse the JATS XML and fix data references
     const doc = await parseXMLFile(dir + '/manuscript.XML')
-
-    const images = await fs.readdir(dir + '/images')
+    const imageDirPath: string = dir + '/images'
+    const imageDirExist: boolean = await fs.pathExists(imageDirPath)
+    const images = imageDirExist ? await fs.readdir(imageDirPath) : []
 
     for (const image of images) {
       const { name } = path.parse(image)
