@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 import { execFile } from 'child_process'
-import tempy from 'tempy'
 import { promisify } from 'util'
 
 // https://dlmf.nist.gov/LaTeXML/docs.html
 
-export const convertLatexToHTML = async ({
+const STYLESHEET = __dirname + '/latexml/LaTeXML-jats.xsl'
+
+export const convertLatexToJATS = async ({
   dir,
   inputPath,
   outputPath,
@@ -28,17 +29,23 @@ export const convertLatexToHTML = async ({
   inputPath: string
   outputPath: string
 }): Promise<void> => {
-  const xmlFile = tempy.file({ extension: 'xml' })
+  const xmlFile = dir + '/latexml.xml'
 
   // convert LaTeX to XML
   await promisify(execFile)('latexml', ['--destination', xmlFile, inputPath], {
     cwd: dir,
   })
 
-  // convert XML to HTML5
+  // convert XML to JATS
   await promisify(execFile)(
     'latexmlpost',
-    ['--format=html5', xmlFile, '--destination', outputPath],
+    [
+      '--format=jats',
+      `--stylesheet=${STYLESHEET}`,
+      xmlFile,
+      '--destination',
+      outputPath,
+    ],
     {
       cwd: dir,
     }
