@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`export bibliography exports CSL JSON as BibTeX: export-bibtex 1`] = `
+"   @book{Piipari_Eaton_Pepe_2019, title={Introducing Manuscripts.io: open source editing environment for structured, computationally reproducible research documents}, url={https://www.ncbi.nlm.nih.gov/books/NBK540955/}, publisher={National Center for Biotechnology Information (US)}, author={Piipari, Matias and Eaton, Alf and Pepe, Alberto}, year={2019} }
+"
+`;
+
+exports[`export bibliography exports CSL JSON as EndNote: export-endnote 1`] = `
+"﻿%0 Book
+%T Introducing Manuscripts.io: open source editing environment for structured, computationally reproducible research documents
+%A Piipari, Matias
+%A Eaton, Alf
+%A Pepe, Alberto
+%D 2019
+%I National Center for Biotechnology Information (US)
+%F Piipari_Eaton_Pepe_2019
+%U https://www.ncbi.nlm.nih.gov/books/NBK540955/
+
+"
+`;
+
+exports[`export bibliography exports CSL JSON as RIS: export-ris 1`] = `
+"﻿TY  - BOOK
+AU  - Piipari, Matias
+AU  - Eaton, Alf
+AU  - Pepe, Alberto
+PY  - 2019
+DA  - 2019//
+TI  - Introducing Manuscripts.io: open source editing environment for structured, computationally reproducible research documents
+PB  - National Center for Biotechnology Information (US)
+UR  - https://www.ncbi.nlm.nih.gov/books/NBK540955/
+ID  - Piipari_Eaton_Pepe_2019
+ER  - 
+"
+`;

@@ -12,6 +12,7 @@ A web service for manuscript conversion.
 
 1. `brew install pandoc pandoc-citeproc`
 1. `brew install latexml`
+1. `brew install bibutils`
 1. `brew cask install basictex`
 1. `brew cask install --no-quarantine prince`
 1. `brew install python3 cairo pango gdk-pixbuf libffi && pip3 install WeasyPrint`

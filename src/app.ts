@@ -27,6 +27,7 @@ import { buildGatewayBundle } from './routes/build-gateway-bundle'
 import { buildLiteratumBundle } from './routes/build-literatum-bundle'
 // import { buildPickerBundle } from './routes/build-picker-bundle'
 import { buildSubmissionBundle } from './routes/build-submission-bundle'
+import { exportBibliography } from './routes/export-bibliography'
 import { exportDocx } from './routes/export-docx'
 import { exportEpub } from './routes/export-epub'
 import { exportIcml } from './routes/export-icml'
@@ -56,6 +57,7 @@ export const app = express()
     exportDocx,
     exportEpub,
     exportIcml,
+    exportBibliography,
     exportLiteratumDO,
     exportLiteratumJATS
   )
