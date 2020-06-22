@@ -136,6 +136,6 @@ export const importZip = Router().post(
 
     await archive.finalize()
 
-    await sendArchive(res, archive, 'manuscript.manuproj')
+    sendArchive(res, archive, 'manuscript.manuproj')
   })
 )

@@ -83,6 +83,6 @@ export const buildPickerBundle = Router().get(
 
     await archive.finalize()
 
-    await sendArchive(res, archive)
+    sendArchive(res, archive)
   })
 )

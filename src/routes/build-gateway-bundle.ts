@@ -167,7 +167,7 @@ export const buildGatewayBundle = Router().post(
     if (deposit) {
       // TODO: deposit
     } else {
-      await sendArchive(res, archive)
+      sendArchive(res, archive)
     }
   })
 )

@@ -107,7 +107,7 @@ export const exportLiteratumJATS = Router().post(
       logger.debug(`Depositing to Literatum`)
       // TODO: deposit
     } else {
-      await sendArchive(res, archive)
+      sendArchive(res, archive)
     }
   })
 )

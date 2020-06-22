@@ -150,6 +150,6 @@ export const importWordArc = Router().post(
 
     await archive.finalize()
 
-    await sendArchive(res, archive, 'manuscript.manuproj')
+    sendArchive(res, archive, 'manuscript.manuproj')
   })
 )

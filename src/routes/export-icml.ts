@@ -111,6 +111,6 @@ export const exportIcml = Router().post(
 
     await archive.finalize()
 
-    await sendArchive(res, archive)
+    sendArchive(res, archive)
   })
 )
