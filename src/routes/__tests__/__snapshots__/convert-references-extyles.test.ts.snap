@@ -1,0 +1,833 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convert references via AnyStyle converts references from text to CSL-JSON: parsed-references 1`] = `
+Array [
+  Object {
+    "DOI": "10.5897/JDAE12.124",
+    "URL": "https://doi.org/10.5897/JDAE12.124",
+    "author": Array [
+      Object {
+        "family": "Bonabana-Wabbi",
+        "given": "J.",
+      },
+      Object {
+        "family": "Ayo",
+        "given": "S.",
+      },
+      Object {
+        "family": "Mugonola",
+        "given": "B.",
+      },
+      Object {
+        "family": "Tayler",
+        "given": "D.B.",
+      },
+      Object {
+        "family": "Kirinya",
+        "given": "J.",
+      },
+      Object {
+        "family": "Tenywa",
+        "given": "M.",
+      },
+    ],
+    "container-title": "J Dev Agric Econ",
+    "issue": "6",
+    "issued": "2013",
+    "title": "The performance of potato markets in South Western Uganda",
+    "type": "article-journal",
+    "volume": "5",
+  },
+  Object {
+    "author": Array [
+      Object {
+        "given": "C.T.A.",
+      },
+    ],
+    "issued": "2014",
+    "publisher-place": "Wageningen, CTA",
+    "title": "Seed systems, science and policy in East and Central Africa",
+    "type": null,
+  },
+  Object {
+    "author": Array [
+      Object {
+        "family": "Demo",
+        "given": "P.",
+      },
+      Object {
+        "family": "Lemaga",
+        "given": "B.",
+      },
+      Object {
+        "family": "Kakuhenzire",
+        "given": "R.",
+      },
+      Object {
+        "family": "Schulz",
+        "given": "S.",
+      },
+      Object {
+        "family": "Borus",
+        "given": "D.",
+      },
+      Object {
+        "family": "Barker",
+        "given": "I.",
+      },
+      Object {
+        "family": "Woldegiorgis",
+        "given": "G.",
+      },
+      Object {
+        "family": "Parker",
+        "given": "M.L.",
+      },
+      Object {
+        "family": "Schulte-Geldermann",
+        "given": "E.",
+      },
+    ],
+    "container-title": "Potato and sweetpotato in Africa. Transforming the value chains for food and nutrition security. CABI International. Oxfordshire (UK",
+    "editor": Array [
+      Object {
+        "family": "Low",
+        "given": "J.",
+      },
+      Object {
+        "family": "Nyongesa",
+        "given": "M.",
+      },
+      Object {
+        "family": "Quinn",
+        "given": "S.",
+      },
+      Object {
+        "family": "Parker",
+        "given": "M.",
+      },
+    ],
+    "isbn": "978-1-78064-420-2",
+    "issued": "2015",
+    "page": "155–167",
+    "title": "Strategies to improve seed potato quality and supply in sub-Saharan Africa: experience from interventions in five countries",
+    "type": "chapter",
+  },
+  Object {
+    "URL": "http://www.fao.org/faostat/en/#data/QC.",
+    "author": Array [
+      Object {
+        "given": "F.A.O.",
+      },
+    ],
+    "container-title": "Potato yield data",
+    "issued": "2019",
+    "note": "Accessed 13-02-2019",
+    "title": "FAOStat",
+    "type": "article-journal",
+  },
+  Object {
+    "author": Array [
+      Object {
+        "family": "Fernandez",
+        "given": "G.C.J.",
+      },
+    ],
+    "container-title": "Hort Science",
+    "issued": "1992",
+    "page": "297–300",
+    "title": "Residual analysis and data transformations: important tools in statistical analysis",
+    "type": "article-journal",
+    "volume": "27",
+  },
+  Object {
+    "DOI": "10.1007/s12230-009-9092-0",
+    "URL": "https://doi.org/10.1007/s12230-009-9092-0",
+    "author": Array [
+      Object {
+        "family": "Gildemacher",
+        "given": "P.R.",
+      },
+      Object {
+        "family": "Demo",
+        "given": "P.",
+      },
+      Object {
+        "family": "Barker",
+        "given": "I.",
+      },
+      Object {
+        "family": "Kaguongo",
+        "given": "W.",
+      },
+      Object {
+        "family": "Woldegiorgis",
+        "given": "G.",
+      },
+      Object {
+        "family": "Wagoire",
+        "given": "W.W.",
+      },
+      Object {
+        "family": "Wakahiu",
+        "given": "M.",
+      },
+      Object {
+        "family": "Leeuwis",
+        "given": "C.",
+      },
+      Object {
+        "family": "Struik",
+        "given": "P.C.",
+      },
+    ],
+    "container-title": "Am Potato J",
+    "issued": "2009",
+    "page": "373–382",
+    "title": "A description of seed potato systems in Kenya, Uganda and Ethiopia",
+    "type": "article-journal",
+    "volume": "86",
+  },
+  Object {
+    "DOI": "10.1007/s11540-011-9190-5",
+    "URL": "https://doi.org/10.1007/s11540-011-9190-5",
+    "author": Array [
+      Object {
+        "family": "Gildemacher",
+        "given": "P.R.",
+      },
+      Object {
+        "family": "Schulte-Geldermann",
+        "given": "E.",
+      },
+      Object {
+        "family": "Borus",
+        "given": "D.",
+      },
+      Object {
+        "family": "Demo",
+        "given": "P.",
+      },
+      Object {
+        "family": "Kinyae",
+        "given": "P.",
+      },
+      Object {
+        "family": "Mundia",
+        "given": "P.",
+      },
+      Object {
+        "family": "Struik",
+        "given": "P.C.",
+      },
+    ],
+    "container-title": "Potato Res",
+    "issued": "2011",
+    "page": "253–266",
+    "title": "Seed potato quality improvement through positive selection by smallholder farmers in Kenya",
+    "type": "article-journal",
+    "volume": "54",
+  },
+  Object {
+    "author": Array [
+      Object {
+        "family": "Haverkort",
+        "given": "A.J.",
+      },
+      Object {
+        "family": "Struik",
+        "given": "P.C.",
+      },
+    ],
+    "container-title": "Field Crops Res",
+    "issued": "2015",
+    "page": "76–85",
+    "title": "Yield levels of potato crops: recent achievements and future prospects",
+    "type": "article-journal",
+    "volume": "182",
+  },
+  Object {
+    "author": Array [
+      Object {
+        "family": "Center",
+        "given": "International Potato",
+      },
+    ],
+    "issued": "2011",
+    "publisher": "CIP",
+    "publisher-place": "Nairobi",
+    "title": "Roadmap for investment in the seed potato value chain in Eastern Africa",
+    "type": "book",
+  },
+  Object {
+    "author": Array [
+      Object {
+        "family": "Kakuhenzire",
+        "given": "R.",
+      },
+      Object {
+        "family": "Musoke",
+        "given": "C.",
+      },
+      Object {
+        "family": "Olanya",
+        "given": "M.",
+      },
+      Object {
+        "family": "Kashzija",
+        "given": "I.",
+      },
+      Object {
+        "family": "Smith",
+        "given": "J.",
+      },
+      Object {
+        "family": "Wagoire",
+        "given": "W.",
+      },
+      Object {
+        "family": "Kinyua",
+        "given": "Z.",
+      },
+      Object {
+        "family": "Namanda",
+        "given": "S.",
+      },
+    ],
+    "container-title": "African Crop Science Conference Proceedings",
+    "issued": "2005",
+    "page": "1355–1361",
+    "title": "Validation, adaptation and uptake of potato small seed plot technology among rural, resource-limited households in Uganda",
+    "type": "article-journal",
+    "volume": "7",
+  },
+  Object {
+    "author": Array [
+      Object {
+        "family": "Kakuhenzire",
+        "given": "R.",
+      },
+      Object {
+        "family": "Tindimubona",
+        "given": "S.",
+      },
+      Object {
+        "family": "Kashaija",
+        "given": "I.N.",
+      },
+      Object {
+        "family": "Lemaga",
+        "given": "B.",
+      },
+    ],
+    "container-title": "Potato and sweetpotato in Africa. Transforming the value chains for food and nutrition security. CABI International, Oxfordshire (UK",
+    "editor": Array [
+      Object {
+        "family": "Low",
+        "given": "J.",
+      },
+      Object {
+        "family": "Nyongesa",
+        "given": "M.",
+      },
+      Object {
+        "family": "Quinn",
+        "given": "S.",
+      },
+      Object {
+        "family": "Parker",
+        "given": "M.",
+      },
+    ],
+    "isbn": "978-1-78064-420-2",
+    "issued": "2015",
+    "page": "199–206",
+    "title": "A possible pathway for developing formal seed potato production in sub-saharan Africa: a case of Uganda National Seed Potato Producers Association (UNSPPA",
+    "type": "chapter",
+  },
+  Object {
+    "URL": "isbn:978-1-78064-420-2",
+    "author": Array [
+      Object {
+        "family": "Kinyua",
+        "given": "Z.M.",
+      },
+      Object {
+        "family": "Schulte-Geldermann",
+        "given": "E.",
+      },
+      Object {
+        "family": "Namugga",
+        "given": "P.",
+      },
+      Object {
+        "family": "Ochieng-Obura",
+        "given": "B.",
+      },
+      Object {
+        "family": "Tindimubona",
+        "given": "S.",
+      },
+      Object {
+        "family": "Bararyenya",
+        "given": "A.",
+      },
+      Object {
+        "family": "Kashaija",
+        "given": "I.N.",
+      },
+      Object {
+        "family": "Rwomushana",
+        "given": "I.",
+      },
+      Object {
+        "family": "Opio",
+        "given": "F.",
+      },
+    ],
+    "container-title": "Potato and sweetpotato in Africa: transforming the value chains for food and nutriton security. CABI International, Oxfordshire (UK",
+    "editor": Array [
+      Object {
+        "family": "Low",
+        "given": "J.",
+      },
+      Object {
+        "family": "Nyongesa",
+        "given": "M.",
+      },
+      Object {
+        "family": "Quinn",
+        "given": "S.",
+      },
+      Object {
+        "family": "Parcer",
+        "given": "M.",
+      },
+    ],
+    "issued": "2015",
+    "page": "218–225",
+    "title": "Adaption and improvement of the seed-plot technique in smallholder potato production",
+    "type": "chapter",
+  },
+  Object {
+    "DOI": "10.5539/jas.v10n3p71",
+    "URL": "https://doi.org/10.5539/jas.v10n3p71",
+    "author": Array [
+      Object {
+        "family": "Okeyo",
+        "given": "G.O.",
+      },
+      Object {
+        "family": "Sharma",
+        "given": "K.",
+      },
+      Object {
+        "family": "Atieno",
+        "given": "E.",
+      },
+      Object {
+        "family": "Narla",
+        "given": "R.D.",
+      },
+      Object {
+        "family": "Miano",
+        "given": "D.W.",
+      },
+      Object {
+        "family": "Schulte-Geldermann",
+        "given": "E.",
+      },
+    ],
+    "container-title": "J Agri Sci",
+    "issue": "3",
+    "issued": "2018",
+    "title": "Effectiveness of positive selection in managing seed-borne potato viruses",
+    "type": "article-journal",
+    "volume": "10",
+  },
+  Object {
+    "DOI": "10.1007/978-94-007-4104-1",
+    "URL": "https://doi.org/10.1007/978-94-007-4104-1",
+    "author": Array [
+      Object {
+        "family": "Olanya",
+        "given": "M.",
+      },
+      Object {
+        "family": "Nyankanga",
+        "given": "R.O.",
+      },
+      Object {
+        "family": "Ojiambo",
+        "given": "P.S.",
+      },
+      Object {
+        "family": "Lemaga",
+        "given": "B.",
+      },
+      Object {
+        "family": "Kakuhenzire",
+        "given": "R.",
+      },
+      Object {
+        "family": "Fontem",
+        "given": "D.",
+      },
+    ],
+    "editor": Array [
+      Object {
+        "family": "Si",
+        "given": "H.",
+      },
+      Object {
+        "family": "Zhang",
+        "given": "N.",
+      },
+      Object {
+        "family": "Wang",
+        "given": "D.",
+      },
+    ],
+    "issued": "2012",
+    "page": "373–387",
+    "publisher": "Springer science+business media",
+    "publisher-place": "Dordrecht Heidelberg New York London",
+    "title": "Optimization of late blight and bacterial wilt managment in potato production systems in the highland tropics of Africa",
+    "type": "book",
+  },
+  Object {
+    "DOI": "10.3389/fsufs.2019.00068",
+    "URL": "https://doi.org/10.3389/fsufs.2019.00068",
+    "author": Array [
+      Object {
+        "family": "Priegnitz",
+        "given": "U.",
+      },
+      Object {
+        "family": "Lommen",
+        "given": "W.J.M.",
+      },
+      Object {
+        "family": "Onakuse",
+        "given": "S.",
+      },
+      Object {
+        "family": "Struik",
+        "given": "P.C.",
+      },
+    ],
+    "container-title": "Frontiers in Sustainable Food Systems",
+    "issue": "68",
+    "issued": "2019",
+    "title": "A farm typology for adoption of innovations in potato production in southwestern Uganda",
+    "type": "article-journal",
+    "volume": "3",
+  },
+  Object {
+    "DOI": "10.1007/s11540-018-9394-z",
+    "URL": "https://doi.org/10.1007/s11540-018-9394-z",
+    "author": Array [
+      Object {
+        "family": "Priegnitz",
+        "given": "U.",
+      },
+      Object {
+        "family": "Lommen",
+        "given": "W.J.M.",
+      },
+      Object {
+        "family": "Vlugt",
+        "given": "R.A.A.",
+        "particle": "van der",
+      },
+      Object {
+        "family": "Struik",
+        "given": "P.C.",
+      },
+    ],
+    "container-title": "Potato Res",
+    "issued": "2019",
+    "page": "1–30",
+    "title": "Impact of positive selection on incidence of different viruses during multiple generations of potato seed tubers in Uganda",
+    "type": "article-journal",
+    "volume": "62",
+  },
+  Object {
+    "author": Array [
+      Object {
+        "family": "Salazar",
+        "given": "L.F.",
+      },
+    ],
+    "container-title": "International Potato Center",
+    "issue": "bn:92-9060-184-1",
+    "issued": "1996",
+    "title": "Potato viruses and their control",
+    "type": "article-journal",
+    "volume": null,
+  },
+  Object {
+    "DOI": "10.1007/s12230-012-9264-1",
+    "URL": "https://doi.org/10.1007/s12230-012-9264-1",
+    "author": Array [
+      Object {
+        "family": "Schulte-Geldermann",
+        "given": "E.",
+      },
+      Object {
+        "family": "Gildemacher",
+        "given": "P.R.",
+      },
+      Object {
+        "family": "Struik",
+        "given": "P.C.",
+      },
+    ],
+    "container-title": "Am Potato J",
+    "issued": "2012",
+    "page": "429–437",
+    "title": "Improving seed health and seed performance by positive selection in three Kenyan potato varieties",
+    "type": "article-journal",
+    "volume": "89",
+  },
+  Object {
+    "author": Array [
+      Object {
+        "family": "Schulte-Geldermann",
+        "given": "E.",
+      },
+      Object {
+        "family": "Wachira",
+        "given": "G.",
+      },
+      Object {
+        "family": "Ochieng",
+        "given": "B.",
+      },
+      Object {
+        "family": "Barker",
+        "given": "I.",
+      },
+    ],
+    "container-title": "Proceedings. National Workshop on Seed Potato Tuber Production and Dissemination",
+    "editor": Array [
+      Object {
+        "family": "Woldegiorgis",
+        "given": "G.",
+      },
+      Object {
+        "family": "Schulz",
+        "given": "S.",
+      },
+      Object {
+        "family": "Berihun",
+        "given": "B.",
+      },
+    ],
+    "isbn": "978",
+    "issued": "2013",
+    "note": "Bahir Dar (Ethiopia). 12–14 Mar 2012. (Ethiopia). Ethiopian Institute of Agricultural Research (EIAR); Amhara Regional Agricultural Research Institute (ARARI); International Potato Center",
+    "page": "81–90",
+    "title": "Effect of field multiplication generation on seed potato quality in Kenya",
+    "type": "paper-conference",
+  },
+  Object {
+    "author": Array [
+      Object {
+        "family": "Siddique",
+        "given": "M.A.",
+      },
+      Object {
+        "family": "Rahman",
+        "given": "L.",
+      },
+      Object {
+        "family": "Ebne-Hossain",
+        "given": "M.F.",
+      },
+      Object {
+        "family": "Hossain",
+        "given": "M.F.",
+      },
+    ],
+    "container-title": "Bangladesh Hort",
+    "issue": "1",
+    "issued": "2017",
+    "title": "Indigenous potato varieties: impact of positive selection on yield and quality of seed potatoes",
+    "type": "article-journal",
+    "volume": "3",
+  },
+  Object {
+    "author": Array [
+      Object {
+        "family": "Struik",
+        "given": "P.C.",
+      },
+      Object {
+        "family": "Wiersema",
+        "given": "S.G.",
+      },
+    ],
+    "issued": "1999",
+    "publisher": "Wageningen Academic Publishers",
+    "publisher-place": "Wageningen",
+    "title": "Seed potato technology",
+    "type": "book",
+  },
+  Object {
+    "DOI": "10.1111/ppa.12439",
+    "URL": "https://doi.org/10.1111/ppa.12439",
+    "author": Array [
+      Object {
+        "family": "Thomas-Sharma",
+        "given": "S.",
+      },
+      Object {
+        "family": "Abdurahman",
+        "given": "A.",
+      },
+      Object {
+        "family": "Alli",
+        "given": "J.",
+      },
+      Object {
+        "family": "Andrade-Piedrad",
+        "given": "J.L.",
+      },
+      Object {
+        "family": "Bao",
+        "given": "S.",
+      },
+      Object {
+        "family": "Charkowski",
+        "given": "A.O.",
+      },
+      Object {
+        "family": "Crook",
+        "given": "D.",
+      },
+      Object {
+        "family": "Kadian",
+        "given": "M.",
+      },
+      Object {
+        "family": "Kromann",
+        "given": "P.",
+      },
+      Object {
+        "family": "Struik",
+        "given": "P.C.",
+      },
+      Object {
+        "family": "Torrance",
+        "given": "L.",
+      },
+      Object {
+        "family": "Garrett",
+        "given": "K.A.",
+      },
+      Object {
+        "family": "Forbes",
+        "given": "G.",
+      },
+    ],
+    "container-title": "Plant Pathol",
+    "issued": "2016",
+    "page": "3–16",
+    "title": "Seed degeneration in potato: the need for an integrated seed health strategy to mitigate the problem in developing countries",
+    "type": "article-journal",
+    "volume": "65",
+  },
+  Object {
+    "DOI": "10.17660/ActaHortic.1987.213.16",
+    "URL": "https://doi.org/10.17660/ActaHortic.1987.213.16",
+    "author": Array [
+      Object {
+        "family": "Turkensteen",
+        "given": "L.J.",
+      },
+    ],
+    "container-title": "Acta Hortic",
+    "issued": "1987",
+    "page": "151–160",
+    "title": "Survey of diseases and pests in Africa: fungal and bacterial diseases",
+    "type": "article-journal",
+    "volume": "213",
+  },
+  Object {
+    "author": Array [
+      Object {
+        "family": "Zaag DE",
+        "particle": "van der",
+      },
+    ],
+    "container-title": "Viruses of potatoes and seed potato production",
+    "editor": Array [
+      Object {
+        "family": "JA",
+        "given": "De Bokx",
+      },
+      Object {
+        "family": "P",
+        "given": "Oosterveld",
+      },
+      Object {
+        "family": "F",
+        "given": "Quak",
+      },
+      Object {
+        "family": "Want JPH",
+        "particle": "van der",
+      },
+    ],
+    "issued": "1987",
+    "page": "176–203",
+    "publisher": "Pudoc",
+    "publisher-place": "Wageningen",
+    "title": "Growing seed potatoes",
+    "type": "chapter",
+  },
+  Object {
+    "author": Array [
+      Object {
+        "family": "International",
+        "given": "V.S.N.",
+      },
+    ],
+    "edition": "18th edn",
+    "issued": "2016",
+    "publisher": "VSN International",
+    "publisher-place": "Hemel Hempstead",
+    "title": "GenStat for Windows",
+    "type": "book",
+  },
+  Object {
+    "DOI": "10.1016/j.agsy.2017.03.009",
+    "URL": "https://doi.org/10.1016/j.agsy.2017.03.009",
+    "author": Array [
+      Object {
+        "family": "Whitney",
+        "given": "C.W.",
+      },
+      Object {
+        "family": "Tabuti",
+        "given": "J.R.S.",
+      },
+      Object {
+        "family": "Hensel",
+        "given": "O.",
+      },
+      Object {
+        "family": "Yeh",
+        "given": "C.H.",
+      },
+    ],
+    "container-title": "Agr Syst",
+    "issued": "2017",
+    "page": "133–144",
+    "title": "Homegardens and the future of food and nutrition security in southwest Uganda",
+    "type": "article-journal",
+    "volume": "154",
+  },
+]
+`;
