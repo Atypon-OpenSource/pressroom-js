@@ -20,8 +20,11 @@ import { v4 as uuid } from 'uuid'
 
 import { convertBibtex } from './bibutils'
 
-const csl = fs.readFileSync(__dirname + '/csl/bibtex.csl', 'utf-8')
-const locale = fs.readFileSync(__dirname + '/csl/locales-en-US.xml', 'utf-8')
+const csl = fs.readFileSync(__dirname + '/../assets/csl/bibtex.csl', 'utf-8')
+const locale = fs.readFileSync(
+  __dirname + '/../assets/csl/locales-en-US.xml',
+  'utf-8'
+)
 
 const generateBibTeX = (records: CSL.Item[]): Buffer => {
   const items: Record<string, CSL.Item> = {}

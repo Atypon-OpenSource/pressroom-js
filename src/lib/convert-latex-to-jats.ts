@@ -18,7 +18,7 @@ import { promisify } from 'util'
 
 // https://dlmf.nist.gov/LaTeXML/docs.html
 
-const STYLESHEET = __dirname + '/latexml/LaTeXML-jats.xsl'
+const STYLESHEET = __dirname + '/../assets/latexml/LaTeXML-jats.xsl'
 
 export const convertLatexToJATS = async ({
   dir,

@@ -15,7 +15,7 @@
  */
 import { DEFAULT_CSL, pandoc } from './pandoc'
 
-const DEFAULT_CSS = __dirname + '/pandoc/example.css'
+const DEFAULT_CSS = __dirname + '/../assets/pandoc/example.css'
 
 export type PDFEngine = 'prince' | 'xelatex' | 'weasyprint'
 

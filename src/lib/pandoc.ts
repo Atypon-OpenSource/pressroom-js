@@ -16,7 +16,7 @@
 import { execFile } from 'child_process'
 import { promisify } from 'util'
 
-export const DEFAULT_CSL = __dirname + '/pandoc/nature.csl'
+export const DEFAULT_CSL = __dirname + '/../assets/pandoc/nature.csl'
 
 export const pandoc = async (
   inputPath: string,
