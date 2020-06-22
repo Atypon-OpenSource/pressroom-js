@@ -8,14 +8,13 @@
   "scripts": {
     "build": "tsc --build tsconfig.build.json",
     "build:watch": "yarn build --watch",
-    "dev": "concurrently 'yarn:build:watch' 'yarn:start:dev'",
+    "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.test.ts' --exec ts-node --files --transpile-only --require dotenv/config src/server.ts",
     "lint": "eslint src --ext .js,.ts",
     "postbuild": "copyfiles --error --up 1 \"src/assets/**/*\" dist",
     "prebuild": "rimraf dist",
     "prettier": "prettier --write 'src/**/*.{js,ts}'",
     "preversion": "npm-run-all --parallel typecheck lint",
     "start": "NODE_ENV=production node dist/server.js",
-    "start:dev": "nodemon --watch dist --delay 2 --require dotenv/config dist/server.js",
     "test": "jest --runInBand --detectOpenHandles",
     "typecheck": "tsc --noEmit",
     "version": "yarn build"
@@ -86,7 +85,6 @@
     "axios-mock-adapter": "^1.18.1",
     "babel-jest": "^26.0.1",
     "command-exists": "^1.2.9",
-    "concurrently": "^5.2.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.2.0",
     "eslint-config-prettier": "^6.11.0",
@@ -107,6 +105,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
     "supertest": "^4.0.2",
+    "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },
   "engines": {
