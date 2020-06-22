@@ -28,6 +28,7 @@ import { buildLiteratumBundle } from './routes/build-literatum-bundle'
 // import { buildPickerBundle } from './routes/build-picker-bundle'
 import { buildSubmissionBundle } from './routes/build-submission-bundle'
 import { convertReferencesAnyStyle } from './routes/convert-references-anystyle'
+import { convertReferencesEdifix } from './routes/convert-references-edifix'
 import { exportBibliography } from './routes/export-bibliography'
 import { exportDocx } from './routes/export-docx'
 import { exportEpub } from './routes/export-epub'
@@ -73,7 +74,7 @@ export const app = express()
   )
 
   // converters
-  .use('/', convertReferencesAnyStyle)
+  .use('/', convertReferencesAnyStyle, convertReferencesEdifix)
 
   // OpenAPI description for people
   .use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
