@@ -18,21 +18,19 @@ import { RequestHandler } from 'express'
 
 export const edifixCredentials: RequestHandler = (req, res, next) => {
   const header = req.headers['pressroom-edifix-secret']
+
   if (header) {
     const data = Array.isArray(header) ? header[0] : header
-    const decodedSecret = Buffer.from(data, 'base64').toString()
-    const [username, password] = decodedSecret.split(':')
 
-    if (!username || !password) {
-      throw new Error('Invalid Pressroom-Edifix-Secret')
-    }
+    const [username, password] = Buffer.from(data, 'base64')
+      .toString()
+      .split(':')
+
     req.user = {
       ...req.user,
       edifix: { username, password },
     }
-  } else {
-    // celebrate will make sure this will not happen
-    throw new Error('Pressroom-Edifix-Secret is required')
   }
+
   next()
 }

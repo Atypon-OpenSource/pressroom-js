@@ -15,53 +15,42 @@
  */
 
 import axios from 'axios'
-
-export type EdiFixOptions = {
-  editorialStyle?: string
-  processBookReferences?: boolean
-  removeBadLineBreaks?: boolean
-  pubMedLinking?: boolean
-  crossrefLinking?: boolean
-  customStyleSheet?: string
-  timeOut?: number
-}
+import getStream from 'get-stream'
+import stream from 'stream'
 
 export interface EdifixCredentials extends Record<string, string> {
   username: string
   password: string
 }
 
-const edifixClient = axios.create({
+// https://edifix.com/api_doc
+const client = axios.create({
   baseURL: 'https://edifix.com/api',
 })
 
 export const convertBibliographyToJATS = async (
-  credentials: EdifixCredentials,
-  references: string[],
-  options?: EdiFixOptions
-): Promise<string> => {
-  options = {
-    editorialStyle: 'NULL',
-    processBookReferences: true,
-    removeBadLineBreaks: true,
-    pubMedLinking: true,
-    crossrefLinking: true,
-    timeOut: 180,
-    ...options,
-  }
-  const { username, password } = credentials
-  const { data } = await edifixClient.post<string>('/v1/jobs.xml', {
-    username,
-    password,
-    mtxt_input_refs: references.join('\n'),
-    edit_style: options.editorialStyle,
-    pubmed: options.pubMedLinking ? '1' : '0',
-    crossref: options.crossrefLinking ? '1' : '0',
-    b_book_processing: options.processBookReferences,
-    b_remove_bad_line_breaks: options.removeBadLineBreaks,
-    mtxt_stylesheet_contents: options.customStyleSheet,
-    timeout_time: options.timeOut,
-  })
+  references: stream.Readable,
+  editorialStyle: string,
+  credentials: EdifixCredentials
+): Promise<stream.Readable> => {
+  const { data } = await client.post<stream.Readable>(
+    '/v1/jobs.xml',
+    {
+      ...credentials,
+      edit_style: editorialStyle,
+      mtxt_input_refs: await getStream(references),
+      b_book_processing: 'true',
+      b_remove_bad_line_breaks: 'true',
+      pubmed: '1',
+      crossref: '1',
+    },
+    {
+      headers: {
+        Accept: 'application/xml',
+      },
+      responseType: 'stream',
+    }
+  )
 
   return data
 }

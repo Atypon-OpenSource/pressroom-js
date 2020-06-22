@@ -19,7 +19,7 @@ process.env.XML_CATALOG_FILES = './node_modules/@jats4r/dtds/schema/catalog.xml'
 module.exports = {
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
   setupFiles: ['dotenv/config'],
-  testEnvironment: 'jest-environment-jsdom-sixteen',
+  testEnvironment: 'node',
   testPathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/node_modules/'],
   verbose: true,
 }

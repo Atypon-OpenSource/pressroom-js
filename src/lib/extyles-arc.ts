@@ -19,7 +19,7 @@ import stream from 'stream'
 
 import { logger } from './logger'
 
-export interface ExtylesArcAuthentication extends Record<string, string> {
+export interface ExtylesArcCredentials extends Record<string, string> {
   username: string
   password: string
   api_key: string
@@ -28,7 +28,7 @@ export interface ExtylesArcAuthentication extends Record<string, string> {
 export const convertWordToJATS = async (
   file: stream.Readable,
   extension: string,
-  authentication: ExtylesArcAuthentication
+  authentication: ExtylesArcCredentials
 ): Promise<stream.Readable> => {
   const client = axios.create({
     baseURL: 'https://www.extylesarc.com/api',

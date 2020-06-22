@@ -15,7 +15,6 @@
  */
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
-import getStream from 'get-stream'
 
 import { convertBibliographyToJATS } from '../lib/edifix'
 import { edifixCredentials } from '../lib/edifix-credentials'
@@ -76,22 +75,14 @@ export const convertReferencesEdifix = Router().post(
       editorialStyle: string
     }
 
-    const references = JSON.parse(
-      await getStream(req.file.stream, { encoding: 'utf-8' })
-    )
-    if (!Array.isArray(references)) {
-      throw new Error('Invalid file format')
-    }
-
     const result = await convertBibliographyToJATS(
-      req.user.edifix,
-      references,
-      { editorialStyle }
+      req.file.stream,
+      editorialStyle,
+      req.user.edifix
     )
 
-    if (!result) {
-      throw new Error('There was an error processing the request')
-    }
-    res.send(result)
+    res.type('application/xml')
+
+    result.pipe(res)
   })
 )

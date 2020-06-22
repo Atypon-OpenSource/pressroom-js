@@ -17,14 +17,14 @@
 import Express from 'express'
 
 declare module 'express-serve-static-core' {
-  import { ExtylesArcAuthentication } from '../lib/extyles-arc'
+  import { ExtylesArcCredentials } from '../lib/extyles-arc'
   import { EdifixCredentials } from '../lib/edifix'
 
   interface Request {
     user: {
       containerID: string
       audience: string
-      arc?: ExtylesArcAuthentication
+      arc?: ExtylesArcCredentials
       edifix?: EdifixCredentials
     }
     tempDir: string

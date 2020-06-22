@@ -14,32 +14,38 @@
  * limitations under the License.
  */
 
+import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
-import { hasCommands } from '../../lib/has-commands'
-
 jest.mock('../../lib/jwt-authentication')
-jest.mock('../../lib/extyles-arc')
+jest.mock('../../lib/edifix')
 jest.setTimeout(10000)
 
-describe('import Word via Arc', () => {
-  test('imports from a Word file via Arc', async () => {
-    if (!hasCommands) {
-      jest.doMock('../../lib/pandoc')
-    }
-
+describe('convert references via Edifix', () => {
+  test('converts references from text to JATS XML', async () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/import/word-arc')
-      .attach('file', __dirname + '/__fixtures__/manuscript.docx')
-      .set('pressroom-arc-secret', Buffer.from('test:test').toString('base64'))
+      .post('/convert/references-edifix')
+      .attach('file', __dirname + '/__fixtures__/references.txt')
+      .field('editorialStyle', 'AMA')
+      .set(
+        'pressroom-edifix-secret',
+        Buffer.from('test:test:test').toString('base64')
+      )
       .responseType('blob')
 
     expect(response.status).toBe(200)
-    expect(response.get('Content-Type')).toBe('application/zip')
-    expect(response.get('Content-Disposition')).toBe(
-      'attachment; filename="manuscript.manuproj"'
-    )
+    expect(response.get('Content-Type')).toBe('application/xml')
+
+    const xml = response.body.toString().trim()
+
+    const doc = parseXml(xml, {
+      dtdload: true,
+      dtdvalid: true,
+      nonet: true,
+    })
+
+    expect(doc.errors.length).toBe(0)
   })
 })

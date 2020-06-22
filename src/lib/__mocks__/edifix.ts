@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import fs from 'fs-extra'
+import stream from 'stream'
 
-import { RequestHandler } from 'express'
-
-import { config } from '../config'
-
-export const arcCredentials: RequestHandler = (req, res, next) => {
-  req.user.arc = config.arc
-  next()
-}
+export const convertBibliographyToJATS = async (): Promise<stream.Readable> =>
+  fs.createReadStream(__dirname + '/__fixtures__/edifix-output.xml')
