@@ -15,18 +15,12 @@
  */
 import request from 'supertest'
 
-import { hasCommands } from '../../lib/has-commands'
-
 jest.mock('../../lib/jwt-authentication')
 jest.mock('../../lib/store')
 
 // eslint-disable-next-line jest/no-disabled-tests
 describe.skip('build picker bundle', () => {
   test('builds picker bundle', async () => {
-    if (!hasCommands) {
-      jest.doMock('../../lib/pandoc')
-    }
-
     const { app } = await import('../../app')
 
     const response = await request(app).get(

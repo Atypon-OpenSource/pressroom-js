@@ -16,16 +16,10 @@
 import JSZip from 'jszip'
 import request from 'supertest'
 
-import { hasCommands } from '../../lib/has-commands'
-
 jest.mock('../../lib/jwt-authentication')
 
 describe('export ICML', () => {
   test('exports to a ZIP file containing an ICML file', async () => {
-    if (!hasCommands) {
-      jest.doMock('../../lib/pandoc')
-    }
-
     const { app } = await import('../../app')
 
     const response = await request(app)
@@ -43,21 +37,19 @@ describe('export ICML', () => {
       'attachment; filename="manuscript.zip"'
     )
 
-    if (hasCommands) {
-      const zip = await new JSZip().loadAsync(response.body)
+    const zip = await new JSZip().loadAsync(response.body)
 
-      expect(Object.keys(zip.files).length).toBe(1)
+    expect(Object.keys(zip.files).length).toBe(1)
 
-      const xml = await zip.file('manuscript.icml').async('text')
-      const doc = new DOMParser().parseFromString(xml, 'application/xml')
+    const xml = await zip.file('manuscript.icml').async('text')
+    const doc = new DOMParser().parseFromString(xml, 'application/xml')
 
-      const text = doc.evaluate(
-        'string(//Content)',
-        doc,
-        doc.createNSResolver(doc),
-        XPathResult.STRING_TYPE
-      )
-      expect(text.stringValue).toBe('A paragraph')
-    }
+    const text = doc.evaluate(
+      'string(//Content)',
+      doc,
+      doc.createNSResolver(doc),
+      XPathResult.STRING_TYPE
+    )
+    expect(text.stringValue).toBe('A paragraph')
   })
 })

@@ -16,16 +16,10 @@
 import JSZip from 'jszip'
 import request from 'supertest'
 
-import { hasCommands } from '../../lib/has-commands'
-
 jest.mock('../../lib/jwt-authentication')
 
 describe('export DOCX', () => {
   test('exports to a DOCX file', async () => {
-    if (!hasCommands) {
-      jest.doMock('../../lib/pandoc')
-    }
-
     const { app } = await import('../../app')
 
     const response = await request(app)
@@ -45,21 +39,19 @@ describe('export DOCX', () => {
       'attachment; filename="manuscript.docx"'
     )
 
-    if (hasCommands) {
-      const zip = await new JSZip().loadAsync(response.body)
+    const zip = await new JSZip().loadAsync(response.body)
 
-      expect(Object.keys(zip.files).length).toBe(17)
+    expect(Object.keys(zip.files).length).toBe(17)
 
-      const xml = await zip.file('word/document.xml').async('text')
-      const doc = new DOMParser().parseFromString(xml, 'application/xml')
+    const xml = await zip.file('word/document.xml').async('text')
+    const doc = new DOMParser().parseFromString(xml, 'application/xml')
 
-      const text = doc.evaluate(
-        'string(//w:p)',
-        doc,
-        doc.createNSResolver(doc),
-        XPathResult.STRING_TYPE
-      )
-      expect(text.stringValue).toBe('A Test Manuscript')
-    }
+    const text = doc.evaluate(
+      'string(//w:p)',
+      doc,
+      doc.createNSResolver(doc),
+      XPathResult.STRING_TYPE
+    )
+    expect(text.stringValue).toBe('A Test Manuscript')
   })
 })

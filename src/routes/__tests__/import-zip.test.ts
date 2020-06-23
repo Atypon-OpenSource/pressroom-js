@@ -15,17 +15,11 @@
  */
 import request from 'supertest'
 
-import { hasCommands } from '../../lib/has-commands'
-
 jest.mock('../../lib/jwt-authentication')
 jest.setTimeout(30000)
 
 describe('import ZIP', () => {
   test('imports from a Markdown file in a ZIP file', async () => {
-    if (!hasCommands) {
-      jest.doMock('../../lib/pandoc')
-    }
-
     const { app } = await import('../../app')
 
     const response = await request(app)
@@ -41,10 +35,6 @@ describe('import ZIP', () => {
   })
 
   test('imports from a LaTeX file in a ZIP file', async () => {
-    if (!hasCommands) {
-      jest.doMock('../../lib/pandoc')
-    }
-
     const { app } = await import('../../app')
 
     const response = await request(app)

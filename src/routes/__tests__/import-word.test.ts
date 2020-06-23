@@ -15,16 +15,10 @@
  */
 import request from 'supertest'
 
-import { hasCommands } from '../../lib/has-commands'
-
 jest.mock('../../lib/jwt-authentication')
 
 describe('import Word', () => {
   test('imports from a Word file', async () => {
-    if (!hasCommands) {
-      jest.doMock('../../lib/pandoc')
-    }
-
     const { app } = await import('../../app')
 
     const response = await request(app)

@@ -15,17 +15,11 @@
  */
 import request from 'supertest'
 
-import { hasCommands } from '../../lib/has-commands'
-
 jest.mock('../../lib/jwt-authentication')
 jest.setTimeout(30000)
 
 describe('export PDF', () => {
   test('exports to a PDF file with xelatex (default)', async () => {
-    if (!hasCommands) {
-      jest.doMock('../../lib/pandoc')
-    }
-
     const { app } = await import('../../app')
 
     const response = await request(app)
@@ -45,10 +39,6 @@ describe('export PDF', () => {
   })
 
   test('exports to a PDF file with Prince ', async () => {
-    if (!hasCommands) {
-      jest.doMock('../../lib/pandoc')
-    }
-
     const { app } = await import('../../app')
 
     const response = await request(app)
@@ -69,10 +59,6 @@ describe('export PDF', () => {
   })
 
   test('exports to a PDF file with WeasyPrint', async () => {
-    if (!hasCommands) {
-      jest.doMock('../../lib/pandoc')
-    }
-
     const { app } = await import('../../app')
 
     const response = await request(app)

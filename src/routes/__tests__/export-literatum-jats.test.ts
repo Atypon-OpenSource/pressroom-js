@@ -17,16 +17,10 @@ import JSZip from 'jszip'
 import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
-import { hasCommands } from '../../lib/has-commands'
-
 jest.mock('../../lib/jwt-authentication')
 
 describe('export Literatum JATS', () => {
   test('exports to Literatum JATS', async () => {
-    if (!hasCommands) {
-      jest.doMock('../../lib/pandoc')
-    }
-
     const { app } = await import('../../app')
 
     const response = await request(app)
@@ -47,18 +41,16 @@ describe('export Literatum JATS', () => {
       'attachment; filename="manuscript.zip"'
     )
 
-    if (hasCommands) {
-      const zip = await new JSZip().loadAsync(response.body)
+    const zip = await new JSZip().loadAsync(response.body)
 
-      const xml = await zip.file('manuscript.xml').async('text')
+    const xml = await zip.file('manuscript.xml').async('text')
 
-      const doc = parseXml(xml, {
-        dtdload: true,
-        dtdvalid: true,
-        nonet: true,
-      })
+    const doc = parseXml(xml, {
+      dtdload: true,
+      dtdvalid: true,
+      nonet: true,
+    })
 
-      expect(doc.errors.length).toBe(0)
-    }
+    expect(doc.errors.length).toBe(0)
   })
 })
