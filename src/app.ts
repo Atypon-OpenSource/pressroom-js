@@ -23,8 +23,6 @@ import swaggerUi from 'swagger-ui-express'
 import { defineGlobals } from './lib/define-globals'
 import { logger } from './lib/logger'
 import { swaggerSpec } from './lib/swagger-spec'
-import { buildGatewayBundle } from './routes/build-gateway-bundle'
-import { buildLiteratumBundle } from './routes/build-literatum-bundle'
 // import { buildPickerBundle } from './routes/build-picker-bundle'
 import { buildSubmissionBundle } from './routes/build-submission-bundle'
 import { convertReferencesAnyStyle } from './routes/convert-references-anystyle'
@@ -33,8 +31,9 @@ import { exportBibliography } from './routes/export-bibliography'
 import { exportDocx } from './routes/export-docx'
 import { exportEpub } from './routes/export-epub'
 import { exportIcml } from './routes/export-icml'
+import { exportLiteratumBundle } from './routes/export-literatum-bundle'
 import { exportLiteratumDO } from './routes/export-literatum-do'
-import { exportLiteratumJATS } from './routes/export-literatum-jats'
+import { exportLiteratumEEO } from './routes/export-literatum-eeo'
 import { exportPDF } from './routes/export-pdf'
 import { importPDF } from './routes/import-pdf'
 import { importWord } from './routes/import-word'
@@ -61,16 +60,15 @@ export const app = express()
     exportEpub,
     exportIcml,
     exportBibliography,
+    exportLiteratumBundle,
     exportLiteratumDO,
-    exportLiteratumJATS
+    exportLiteratumEEO
   )
 
   // builders
   .use(
     '/',
-    buildSubmissionBundle,
-    buildGatewayBundle,
-    buildLiteratumBundle
+    buildSubmissionBundle
     // buildPickerBundle
   )
 

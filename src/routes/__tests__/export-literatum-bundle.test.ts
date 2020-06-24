@@ -13,27 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import JSZip from 'jszip'
+import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
 jest.mock('../../lib/jwt-authentication')
-jest.mock('../../lib/extyles-arc')
-jest.mock('../../lib/gaia')
-jest.setTimeout(30000) // allow time for PDF generation
 
-describe('build gateway bundle', () => {
-  test('builds gateway bundle from DOCX', async () => {
+describe('export Literatum Bundle', () => {
+  test('exports to Literatum Bundle', async () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/build/gateway-bundle')
-      .attach('file', __dirname + '/__fixtures__/manuscript.docx')
-      .field('doi', '10.0000/test')
-      .field('issn', '1234-5678')
+      .post('/export/literatum-bundle')
+      .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
+      .field(
+        'manuscriptID',
+        'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
+      )
+      .field('deposit', false)
+      .field('doi', '10.1234/567')
+      .field('groupDOI', '10.0000/test')
+      .field('seriesCode', '10.0000/test')
+      .field('frontMatterOnly', false)
+      .responseType('blob')
 
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/zip')
     expect(response.get('Content-Disposition')).toBe(
       'attachment; filename="manuscript.zip"'
     )
+
+    const zip = await new JSZip().loadAsync(response.body)
+
+    const xml = await zip.file('test/567/567.xml').async('text')
+
+    const doc = parseXml(xml, {
+      dtdload: true,
+      dtdvalid: true,
+      nonet: true,
+    })
+
+    expect(doc.errors.length).toBe(0)
   })
 })

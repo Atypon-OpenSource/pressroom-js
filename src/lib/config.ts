@@ -47,6 +47,26 @@ interface Config {
     issuer: string
     root: string
   }
+  literatum: {
+    eeo: {
+      callback: string
+      password: string
+      url: string
+      username: string
+    }
+    ftps: {
+      host: string
+      password: string
+      prefix: string
+      username: string
+    }
+    sftp: {
+      host: string
+      prefix: string
+      pem: string
+      username: string
+    }
+  }
 }
 
 export const config: Config = {
@@ -68,5 +88,25 @@ export const config: Config = {
   jwt: {
     issuer: environmentVariable('PRESSROOM_JWT_ISSUER'),
     root: environmentVariable('PRESSROOM_JWT_ROOT'),
+  },
+  literatum: {
+    eeo: {
+      callback: environmentVariable('PRESSROOM_LITERATUM_EEO_CALLBACK'),
+      password: environmentVariable('PRESSROOM_LITERATUM_EEO_CLIENT_SECRET'),
+      url: environmentVariable('PRESSROOM_LITERATUM_EEO_URL'),
+      username: environmentVariable('PRESSROOM_LITERATUM_EEO_CLIENT_ID'),
+    },
+    ftps: {
+      host: environmentVariable('PRESSROOM_LITERATUM_FTPS_HOST'),
+      password: environmentVariable('PRESSROOM_LITERATUM_FTPS_PASSWORD'),
+      prefix: environmentVariable('PRESSROOM_LITERATUM_FTPS_PREFIX'),
+      username: environmentVariable('PRESSROOM_LITERATUM_FTPS_USERNAME'),
+    },
+    sftp: {
+      host: environmentVariable('PRESSROOM_LITERATUM_SFTP_HOST'),
+      prefix: environmentVariable('PRESSROOM_LITERATUM_SFTP_PREFIX'),
+      pem: environmentVariable('PRESSROOM_LITERATUM_SFTP_PEM'),
+      username: environmentVariable('PRESSROOM_LITERATUM_SFTP_USERNAME'),
+    },
   },
 }

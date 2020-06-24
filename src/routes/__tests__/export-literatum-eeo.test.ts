@@ -18,13 +18,14 @@ import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
 jest.mock('../../lib/jwt-authentication')
+jest.setTimeout(10000)
 
-describe('export Literatum JATS', () => {
-  test('exports to Literatum JATS', async () => {
+describe('export Literatum EEO', () => {
+  test('exports to Literatum EEO', async () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/export/literatum-jats')
+      .post('/export/literatum-eeo')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
       .field(
         'manuscriptID',
@@ -33,6 +34,8 @@ describe('export Literatum JATS', () => {
       .field('deposit', false)
       .field('doi', '10.1234/567')
       .field('frontMatterOnly', false)
+      .field('journalName', 'Test Journal')
+      .field('notificationURL', 'https://example.com/test/567')
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -52,5 +55,8 @@ describe('export Literatum JATS', () => {
     })
 
     expect(doc.errors.length).toBe(0)
+
+    const pdf = await zip.file('manuscript.pdf').async('text')
+    expect(pdf).not.toBeNull()
   })
 })

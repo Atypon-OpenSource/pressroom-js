@@ -20,6 +20,8 @@ import fs from 'fs-extra'
 
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
+import { createPDF } from '../lib/create-pdf'
+import { depositEEO } from '../lib/deposit-eeo'
 import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { sendArchive } from '../lib/send-archive'
@@ -31,9 +33,9 @@ import { wrapAsync } from '../lib/wrap-async'
 /**
  * @swagger
  *
- * /export/literatum-jats:
+ * /export/literatum-eeo:
  *   post:
- *     description: Convert manuscript data to Literatum JATS bundle
+ *     description: Convert manuscript data to Literatum EEO deposit
  *     produces:
  *       - application/zip
  *     security:
@@ -49,6 +51,14 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  format: binary
  *                manuscriptID:
  *                  type: string
+ *                doi:
+ *                  type: string
+ *                journalName:
+ *                  type: string
+ *                notificationURL:
+ *                  type: string
+ *                deposit:
+ *                  type: boolean
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -56,31 +66,37 @@ import { wrapAsync } from '../lib/wrap-async'
  *       200:
  *         description: Conversion success
  */
-export const exportLiteratumJATS = Router().post(
-  '/export/literatum-jats',
+export const exportLiteratumEEO = Router().post(
+  '/export/literatum-eeo',
   jwtAuthentication('pressroom-js'),
   upload.single('file'),
   celebrate({
     body: {
-      manuscriptID: Joi.string().required(),
+      deposit: Joi.boolean(),
       doi: Joi.string().required(),
       frontMatterOnly: Joi.boolean(),
-      deposit: Joi.boolean(),
+      journalName: Joi.string().required(),
+      manuscriptID: Joi.string().required(),
+      notificationURL: Joi.string().required(),
     },
   }),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
     // validate the input
     const {
-      manuscriptID,
+      deposit = true,
       doi,
-      frontMatterOnly = false,
-      deposit = false,
+      frontMatterOnly = true,
+      journalName,
+      manuscriptID,
+      notificationURL,
     } = req.body as {
-      manuscriptID: string
+      deposit: boolean
       doi: string
       frontMatterOnly: boolean
-      deposit: boolean
+      journalName: string
+      manuscriptID: string
+      notificationURL: string
     }
 
     // unzip the input
@@ -93,21 +109,34 @@ export const exportLiteratumJATS = Router().post(
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
     const { article, modelMap } = createArticle(data, manuscriptID)
 
-    // create the output ZIP archive
-    const archive = archiver.create('zip')
+    // create XML
+    const jats = createJATSXML(article, modelMap, { doi, frontMatterOnly })
+    await fs.writeFile(dir + '/manuscript.xml', jats)
+    const xmlStream = fs.createReadStream(dir + '/manuscript.xml')
 
-    // output XML
-    archive.append(createJATSXML(article, modelMap, { doi, frontMatterOnly }), {
-      name: 'manuscript.xml',
-    })
-
-    await archive.finalize()
+    // create PDF
+    await createPDF(dir, 'manuscript.xml', 'manuscript.pdf')
+    const pdfStream = fs.createReadStream(dir + '/manuscript.pdf')
 
     if (deposit) {
-      logger.debug(`Depositing to Literatum`)
-      // TODO: deposit
+      logger.debug(`Depositing to Literatum EEO`)
+
+      await depositEEO({
+        journalName,
+        manuscriptID,
+        notificationURL,
+        pdf: pdfStream,
+        xml: xmlStream,
+      })
     } else {
-      sendArchive(res, archive)
+      const archive = archiver
+        .create('zip')
+        .append(xmlStream, { name: 'manuscript.xml' })
+        .append(pdfStream, { name: 'manuscript.pdf' })
+
+      await archive.finalize()
+
+      sendArchive(res, archive) // for debugging
     }
   })
 )

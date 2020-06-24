@@ -16,16 +16,18 @@
 import { Manuscript } from '@manuscripts/manuscripts-json-schema'
 import archiver from 'archiver'
 import { celebrate, Joi } from 'celebrate'
+import { format } from 'date-fns'
 import { Router } from 'express'
 import fs from 'fs-extra'
 import path from 'path'
 
+import { config } from '../lib/config'
 import { createArticle } from '../lib/create-article'
 import { createHTML } from '../lib/create-html'
-import { createJATSXML } from '../lib/create-jats-xml'
 import { buildManifest } from '../lib/create-manifest'
 import { buildContainer } from '../lib/create-mets'
 import { processElements } from '../lib/data'
+import { depositSFTP } from '../lib/deposit-sftp'
 import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { sendArchive } from '../lib/send-archive'
@@ -74,19 +76,19 @@ export const exportLiteratumDO = Router().post(
   upload.single('file'),
   celebrate({
     body: {
+      deposit: Joi.boolean(),
       doType: Joi.string().required(),
       doi: Joi.string().required(),
       manuscriptID: Joi.string().required(),
-      deposit: Joi.boolean(),
     },
   }),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { deposit, doi, doType, manuscriptID } = req.body as {
+      deposit?: boolean
       doType: string
       doi: string
       manuscriptID: string
-      deposit?: boolean
     }
 
     const [, id] = doi.split('/', 2)
@@ -103,13 +105,6 @@ export const exportLiteratumDO = Router().post(
 
     // prepare the output archive
     const archive = archiver.create('zip')
-
-    // output manifest
-    const manifest = buildManifest({
-      groupDoi: '10.5555/default-do-group',
-      submissionType: 'full',
-    })
-    archive.append(manifest, { name: 'manifest.xml' })
 
     // create HTML
     const html = createHTML(article.content, modelMap)
@@ -134,30 +129,41 @@ export const exportLiteratumDO = Router().post(
 
     const manuscript = modelMap.get(manuscriptID) as Manuscript
 
-    // output container XML
-    const container = buildContainer({
+    // output METS XML (containing MODS metadata, content HTML and file map) in meta folder
+    const mets = buildContainer({
       html,
       files,
       manuscript,
       modelMap,
       doType,
     })
-    archive.append(container, {
+    archive.append(mets, {
       name: `${id}.xml`,
       prefix: `${id}/meta/`,
     })
 
-    // output XML
-    const xml = createJATSXML(article, modelMap) // TODO: options
-    archive.append(xml, { name: 'manuscript.xml' })
+    // output manifest
+    const manifest = buildManifest({
+      groupDoi: '10.5555/default-do-group',
+      submissionType: 'full',
+    })
+    archive.append(manifest, { name: 'manifest.xml' })
 
     await archive.finalize()
 
     if (deposit) {
       logger.debug(`Depositing to Literatum`)
-      // TODO: deposit
+
+      const { host, prefix, username, pem } = config.literatum.sftp
+
+      const date = format(new Date(), 'yyyyMMddHHmmss')
+      const remoteFilePath = `${prefix}/digital-objects_${id}_${date}.zip`
+
+      const privateKey = Buffer.from(pem, 'base64')
+
+      await depositSFTP(archive, remoteFilePath, { host, username, privateKey })
     } else {
-      sendArchive(res, archive)
+      sendArchive(res, archive) // for debugging
     }
   })
 )
