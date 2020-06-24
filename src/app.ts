@@ -36,6 +36,7 @@ import { exportIcml } from './routes/export-icml'
 import { exportLiteratumDO } from './routes/export-literatum-do'
 import { exportLiteratumJATS } from './routes/export-literatum-jats'
 import { exportPDF } from './routes/export-pdf'
+import { importPDF } from './routes/import-pdf'
 import { importWord } from './routes/import-word'
 import { importWordArc } from './routes/import-word-arc'
 import { importZip } from './routes/import-zip'
@@ -50,7 +51,7 @@ export const app = express()
   .use(cors())
 
   // importers
-  .use('/', importWord, importWordArc, importZip)
+  .use('/', importWord, importWordArc, importZip, importPDF)
 
   // exporters
   .use(
