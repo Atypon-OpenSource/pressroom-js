@@ -23,7 +23,7 @@ describe('export Literatum DO', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/export/literatum-do')
+      .post('/api/v2/export/literatum-do')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
       .field(
         'manuscriptID',

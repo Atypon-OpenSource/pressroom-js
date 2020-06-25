@@ -23,7 +23,7 @@ describe('export DOCX', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/export/docx')
+      .post('/api/v2/export/docx')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
       .field(
         'manuscriptID',

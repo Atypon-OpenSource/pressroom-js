@@ -22,7 +22,7 @@ describe('export EPUB', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/export/epub')
+      .post('/api/v2/export/epub')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
       .field(
         'manuscriptID',

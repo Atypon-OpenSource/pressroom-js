@@ -23,7 +23,7 @@ describe('export PDF', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/export/pdf')
+      .post('/api/v2/export/pdf')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
       .field(
         'manuscriptID',
@@ -42,7 +42,7 @@ describe('export PDF', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/export/pdf')
+      .post('/api/v2/export/pdf')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
       .field(
         'manuscriptID',
@@ -62,7 +62,7 @@ describe('export PDF', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/export/pdf')
+      .post('/api/v2/export/pdf')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
       .field(
         'manuscriptID',

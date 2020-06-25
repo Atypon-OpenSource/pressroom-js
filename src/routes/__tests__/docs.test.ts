@@ -19,14 +19,14 @@ import { app } from '../../app'
 
 describe('docs', () => {
   test('adds trailing slash', async () => {
-    const response = await request(app).get('/docs')
+    const response = await request(app).get('/api/v2/docs')
 
     expect(response.status).toBe(301)
-    expect(response.get('Location')).toBe('/docs/')
+    expect(response.get('Location')).toBe('/api/v2/docs/')
   })
 
   test('generates docs as HTML', async () => {
-    const response = await request(app).get('/docs/')
+    const response = await request(app).get('/api/v2/docs/')
 
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('text/html; charset=utf-8')
@@ -35,7 +35,7 @@ describe('docs', () => {
   })
 
   test('generates docs as JSON', async () => {
-    const response = await request(app).get('/docs.json')
+    const response = await request(app).get('/api/v2/docs.json')
 
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/json; charset=utf-8')

@@ -26,7 +26,7 @@ describe('build submission bundle', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/submission')
+      .post('/api/v2/submission')
       .send({
         depositoryCode: 'S1',
         attachments: [

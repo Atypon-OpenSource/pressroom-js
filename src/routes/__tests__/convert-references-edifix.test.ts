@@ -26,7 +26,7 @@ describe('convert references via Edifix', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/convert/references-edifix')
+      .post('/api/v2/convert/references-edifix')
       .attach('file', __dirname + '/__fixtures__/references.txt')
       .field('editorialStyle', 'AMA')
       .set(

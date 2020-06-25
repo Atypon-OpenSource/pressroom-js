@@ -23,7 +23,7 @@ describe('import ZIP', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/import/zip')
+      .post('/api/v2/import/zip')
       .attach('file', __dirname + '/__fixtures__/markdown.zip')
       .responseType('blob')
 
@@ -38,7 +38,7 @@ describe('import ZIP', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/import/zip')
+      .post('/api/v2/import/zip')
       .attach('file', __dirname + '/__fixtures__/latex.zip')
       .responseType('blob')
 

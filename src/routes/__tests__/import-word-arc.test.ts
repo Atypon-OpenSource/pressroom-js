@@ -25,7 +25,7 @@ describe('import Word via Arc', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/import/word-arc')
+      .post('/api/v2/import/word-arc')
       .attach('file', __dirname + '/__fixtures__/manuscript.docx')
       .set('pressroom-arc-secret', Buffer.from('test:test').toString('base64'))
       .responseType('blob')

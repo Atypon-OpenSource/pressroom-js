@@ -22,7 +22,7 @@ describe('import Word', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/import/word')
+      .post('/api/v2/import/word')
       .attach('file', __dirname + '/__fixtures__/manuscript.docx')
       .responseType('blob')
 

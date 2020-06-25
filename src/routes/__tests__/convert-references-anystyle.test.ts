@@ -23,7 +23,7 @@ describe('convert references via AnyStyle', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/convert/references-anystyle')
+      .post('/api/v2/convert/references-anystyle')
       .attach('file', __dirname + '/__fixtures__/references.txt')
       .responseType('blob')
 

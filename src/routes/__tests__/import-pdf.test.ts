@@ -26,7 +26,7 @@ describe('import PDF', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/import/pdf')
+      .post('/api/v2/import/pdf')
       .attach('file', __dirname + '/__fixtures__/manuscript.pdf')
       .responseType('blob')
 

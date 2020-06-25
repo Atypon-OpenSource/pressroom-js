@@ -25,7 +25,7 @@ describe('export Literatum EEO', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/export/literatum-eeo')
+      .post('/api/v2/export/literatum-eeo')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
       .field(
         'manuscriptID',

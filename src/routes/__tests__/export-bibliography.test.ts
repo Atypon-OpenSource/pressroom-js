@@ -22,7 +22,7 @@ describe('export bibliography', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/export/bibliography')
+      .post('/api/v2/export/bibliography')
       .attach('file', __dirname + '/__fixtures__/csl.json')
       .field('format', 'bibtex')
       .responseType('blob')
@@ -36,7 +36,7 @@ describe('export bibliography', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/export/bibliography')
+      .post('/api/v2/export/bibliography')
       .attach('file', __dirname + '/__fixtures__/csl.json')
       .field('format', 'ris')
       .responseType('blob')
@@ -50,7 +50,7 @@ describe('export bibliography', () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/export/bibliography')
+      .post('/api/v2/export/bibliography')
       .attach('file', __dirname + '/__fixtures__/csl.json')
       .field('format', 'end')
       .responseType('blob')

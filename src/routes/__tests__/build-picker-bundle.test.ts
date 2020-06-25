@@ -24,7 +24,7 @@ describe.skip('build picker bundle', () => {
     const { app } = await import('../../app')
 
     const response = await request(app).get(
-      '/build/picker-bundle/MPProject:test/MPManuscript:test'
+      '/api/v2/build/picker-bundle/MPProject:test/MPManuscript:test'
     )
 
     expect(response.status).toBe(200)
