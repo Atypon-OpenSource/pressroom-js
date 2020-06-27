@@ -49,7 +49,6 @@ interface Config {
   }
   literatum: {
     eeo: {
-      callback: string
       password: string
       url: string
       username: string
@@ -91,7 +90,6 @@ export const config: Config = {
   },
   literatum: {
     eeo: {
-      callback: environmentVariable('PRESSROOM_LITERATUM_EEO_CALLBACK'),
       password: environmentVariable('PRESSROOM_LITERATUM_EEO_CLIENT_SECRET'),
       url: environmentVariable('PRESSROOM_LITERATUM_EEO_URL'),
       username: environmentVariable('PRESSROOM_LITERATUM_EEO_CLIENT_ID'),
