@@ -22,6 +22,11 @@ export const swaggerSpec = swaggerJSDoc({
       title: 'Pressroom',
       version: '2.0.0',
     },
+    servers: [
+      {
+        url: '/api/v2',
+      },
+    ],
     components: {
       securitySchemes: {
         BearerAuth: {
