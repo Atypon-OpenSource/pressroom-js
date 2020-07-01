@@ -18,7 +18,6 @@ import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
 jest.mock('../../lib/jwt-authentication')
-jest.setTimeout(10000)
 
 describe('export Literatum EEO', () => {
   test('exports to Literatum EEO', async () => {

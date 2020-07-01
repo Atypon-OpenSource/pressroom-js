@@ -21,5 +21,6 @@ module.exports = {
   setupFiles: ['dotenv/config'],
   testEnvironment: 'node',
   testPathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/node_modules/'],
+  testTimeout: 10000,
   verbose: true,
 }

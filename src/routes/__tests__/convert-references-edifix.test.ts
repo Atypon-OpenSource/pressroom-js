@@ -19,7 +19,6 @@ import request from 'supertest'
 
 jest.mock('../../lib/jwt-authentication')
 jest.mock('../../lib/edifix')
-jest.setTimeout(10000)
 
 describe('convert references via Edifix', () => {
   test('converts references from text to JATS XML', async () => {

@@ -24,6 +24,7 @@ import { exportBibliography } from './export-bibliography'
 import { exportDocx } from './export-docx'
 import { exportEpub } from './export-epub'
 import { exportIcml } from './export-icml'
+import { exportJats } from './export-jats'
 import { exportLiteratumBundle } from './export-literatum-bundle'
 import { exportLiteratumDO } from './export-literatum-do'
 import { exportLiteratumEEO } from './export-literatum-eeo'
@@ -44,6 +45,7 @@ export const routes = Router()
     exportDocx,
     exportEpub,
     exportIcml,
+    exportJats,
     exportBibliography,
     exportLiteratumBundle,
     exportLiteratumDO,

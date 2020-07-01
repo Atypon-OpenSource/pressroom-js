@@ -18,7 +18,6 @@ import request from 'supertest'
 
 jest.mock('../../lib/jwt-authentication')
 jest.mock('../../lib/extyles-arc')
-jest.setTimeout(10000)
 
 describe('import Word via Arc', () => {
   test('imports from a Word file via Arc', async () => {

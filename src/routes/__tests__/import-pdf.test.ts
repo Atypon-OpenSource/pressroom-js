@@ -19,7 +19,6 @@ import request from 'supertest'
 
 jest.mock('../../lib/jwt-authentication')
 jest.mock('../../lib/grobid')
-jest.setTimeout(10000)
 
 describe('import PDF', () => {
   test('imports from a PDF file via GROBID', async () => {
