@@ -20,6 +20,7 @@ import createError from 'http-errors'
 import morgan from 'morgan'
 
 import { defineGlobals } from './lib/define-globals'
+import { errorResponder } from './lib/error-responder'
 import { logger } from './lib/logger'
 import { routes } from './routes'
 // import { buildPickerBundle } from './routes/build-picker-bundle'
@@ -62,17 +63,5 @@ export const app = express()
   // celebrate error handler
   .use(errors())
 
-  // JSON error response
-  .use(
-    (
-      error: Error,
-      req: express.Request,
-      res: express.Response,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      next: express.NextFunction
-    ) => {
-      res.status(500).json({
-        error: error.message,
-      })
-    }
-  )
+  // error response
+  .use(errorResponder)
