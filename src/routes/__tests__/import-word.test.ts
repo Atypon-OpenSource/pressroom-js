@@ -32,4 +32,19 @@ describe('import Word', () => {
       'attachment; filename="manuscript.manuproj"'
     )
   })
+  test('imports from a Word file with metadata enrichment', async () => {
+    const { app } = await import('../../app')
+
+    const response = await request(app)
+      .post('/api/v2/import/word')
+      .attach('file', __dirname + '/__fixtures__/manuscript.docx')
+      .field('enrichMetadata', true)
+      .responseType('blob')
+
+    expect(response.status).toBe(200)
+    expect(response.get('Content-Type')).toBe('application/zip')
+    expect(response.get('Content-Disposition')).toBe(
+      'attachment; filename="manuscript.manuproj"'
+    )
+  })
 })

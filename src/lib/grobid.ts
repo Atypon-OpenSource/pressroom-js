@@ -40,3 +40,22 @@ export const convertPDFToTEI = async (
 
   return response.data
 }
+
+export const extractMetaData = async (
+  file: stream.Readable
+): Promise<stream.Readable> => {
+  const form = new FormData()
+  form.append('consolidateHeader', '1')
+  form.append('input', file, 'manuscript.pdf')
+  // catch any response errors?
+  const response = await client.post<stream.Readable>(
+    '/processHeaderDocument',
+    form,
+    {
+      headers: form.getHeaders(),
+      responseType: 'stream',
+    }
+  )
+
+  return response.data
+}
