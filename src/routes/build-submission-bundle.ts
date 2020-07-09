@@ -17,6 +17,7 @@ import archiver from 'archiver'
 import { celebrate, Joi } from 'celebrate'
 import express from 'express'
 import fs from 'fs-extra'
+import createHttpError from 'http-errors'
 import path from 'path'
 
 import { apiKeyAuthentication } from '../lib/api-key-authentication'
@@ -131,7 +132,7 @@ export const buildSubmissionBundle = express.Router().post(
         )
 
         if (!attachment) {
-          throw new Error('Expected doc or docx attachment')
+          throw createHttpError(400, 'Expected doc or docx attachment')
         }
 
         const file = fs.createReadStream(`${dir}/${attachment.name}`)

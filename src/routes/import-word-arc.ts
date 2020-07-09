@@ -21,6 +21,7 @@ import {
 import archiver from 'archiver'
 import { Router } from 'express'
 import fs from 'fs-extra'
+import createHttpError from 'http-errors'
 import path from 'path'
 
 import { arcCredentials } from '../lib/arc-credentials'
@@ -89,7 +90,7 @@ export const importWordArc = Router().post(
     // @ts-ignore
     const extension = req.file.detectedFileExtension
     if (!/^\.docx?$/.test(extension)) {
-      throw new Error('Only .docx and .doc files are supported')
+      throw createHttpError(400, 'Only .docx and .doc files are supported')
     }
 
     // Send Word file to eXtyles Arc, receive JATS + images in ZIP

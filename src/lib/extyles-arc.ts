@@ -15,6 +15,7 @@
  */
 import axios from 'axios'
 import FormData from 'form-data'
+import createHttpError from 'http-errors'
 import stream from 'stream'
 
 import { logger } from './logger'
@@ -44,7 +45,7 @@ export const convertWordToJATS = async (
   }>('/login', authentication)
 
   if (status !== 'ok' || !token) {
-    throw new Error(`Error signing in: ${message}`)
+    throw createHttpError(401, `Error signing in: ${message}`)
   }
 
   const form = new FormData()
