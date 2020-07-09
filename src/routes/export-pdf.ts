@@ -65,7 +65,7 @@ export const exportPDF = Router().post(
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
-      engine: Joi.string().allow('prince', 'weasyprint', 'xelatex'),
+      engine: Joi.string().allow('prince', 'weasyprint', 'xelatex', 'tectonic'),
     },
   }),
   createRequestDirectory,

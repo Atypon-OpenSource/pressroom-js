@@ -77,4 +77,24 @@ describe('export PDF', () => {
       'attachment; filename="manuscript.pdf"'
     )
   })
+
+  test('exports to a PDF file with Tectonic', async () => {
+    const { app } = await import('../../app')
+
+    const response = await request(app)
+      .post('/api/v2/export/pdf')
+      .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
+      .field(
+        'manuscriptID',
+        'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
+      )
+      .field('engine', 'tectonic')
+      .responseType('blob')
+
+    expect(response.status).toBe(200)
+    expect(response.get('Content-Type')).toBe('application/pdf')
+    expect(response.get('Content-Disposition')).toBe(
+      'attachment; filename="manuscript.pdf"'
+    )
+  })
 })

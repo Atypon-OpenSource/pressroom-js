@@ -17,7 +17,7 @@ import { DEFAULT_CSL, pandoc } from './pandoc'
 
 const DEFAULT_CSS = __dirname + '/../assets/pandoc/example.css'
 
-export type PDFEngine = 'prince' | 'xelatex' | 'weasyprint'
+export type PDFEngine = 'prince' | 'xelatex' | 'weasyprint' | 'tectonic'
 
 export const createPDF = async (
   dir: string,
@@ -34,7 +34,7 @@ export const createPDF = async (
     '--from=jats',
     '--to=pdf',
     '--filter=pandoc-citeproc',
-    '--filter=mathjax-pandoc-filter',
+    // '--filter=mathjax-pandoc-filter',
     `--csl=${options?.csl || DEFAULT_CSL}`,
     `--pdf-engine=${engine}`,
   ]
@@ -45,6 +45,7 @@ export const createPDF = async (
       break
 
     case 'weasyprint':
+      args.push(`--metadata=mathjax.noInlineSVG:true`)
       args.push(`--pdf-engine-opt=--stylesheet=${options?.css || DEFAULT_CSS}`)
       break
   }

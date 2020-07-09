@@ -45,7 +45,7 @@ describe('export Literatum EEO', () => {
 
     const zip = await new JSZip().loadAsync(response.body)
 
-    const xml = await zip.file('manuscript.xml').async('text')
+    const xml = await zip.files['manuscript.xml'].async('text')
 
     const doc = parseXml(xml, {
       dtdload: true,
@@ -55,7 +55,7 @@ describe('export Literatum EEO', () => {
 
     expect(doc.errors.length).toBe(0)
 
-    const pdf = await zip.file('manuscript.pdf').async('text')
+    const pdf = await zip.files['manuscript.pdf'].async('text')
     expect(pdf).not.toBeNull()
   })
 })

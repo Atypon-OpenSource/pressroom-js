@@ -45,7 +45,7 @@ describe('export Literatum Bundle', () => {
 
     const zip = await new JSZip().loadAsync(response.body)
 
-    const xml = await zip.file('test/567/567.xml').async('text')
+    const xml = await zip.files['test/567/567.xml'].async('text')
 
     const doc = parseXml(xml, {
       dtdload: true,

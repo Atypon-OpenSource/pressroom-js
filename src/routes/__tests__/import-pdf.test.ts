@@ -36,7 +36,7 @@ describe('import PDF', () => {
     )
 
     const zip = await new JSZip().loadAsync(response.body)
-    const json = await zip.file('index.manuscript-json').async('text')
+    const json = await zip.files['index.manuscript-json'].async('text')
     const { data } = JSON.parse(json)
 
     const deidentifiedModels = JSON.parse(

@@ -42,7 +42,7 @@ describe('export JATS', () => {
 
     expect(Object.keys(zip.files).length).toBe(1)
 
-    const xml = await zip.file('manuscript.xml').async('text')
+    const xml = await zip.files['manuscript.xml'].async('text')
 
     const doc = parseXml(xml, {
       dtdload: true,
@@ -84,7 +84,7 @@ describe('export JATS', () => {
 
     expect(Object.keys(zip.files).length).toBe(1)
 
-    const xml = await zip.file('manuscript.xml').async('text')
+    const xml = await zip.files['manuscript.xml'].async('text')
 
     const doc = parseXml(xml, {
       dtdload: true,
