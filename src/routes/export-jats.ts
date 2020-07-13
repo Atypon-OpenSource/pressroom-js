@@ -21,9 +21,10 @@ import fs from 'fs-extra'
 
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
-import { fixExportedData } from '../lib/fix-exported-data'
+import { createIdGenerator } from '../lib/id-generator'
 import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
+import { createArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
@@ -86,22 +87,17 @@ export const exportJats = Router().post(
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
     const { article, modelMap } = createArticle(data, manuscriptID)
 
-    // create JATS XML
-    const xml = createJATSXML(article, modelMap, { version })
-
-    // fix data references
-    const doc = await new DOMParser().parseFromString(xml, 'application/xml')
-    await fixExportedData(doc, dir)
-    const jats = new XMLSerializer().serializeToString(doc)
-
     // prepare the output archive
     const archive = archiver.create('zip')
 
-    archive.append(jats, {
-      name: 'manuscript.xml',
+    // create JATS XML
+    const jats = await createJATSXML(article, modelMap, {
+      version,
+      idGenerator: createIdGenerator(),
+      mediaPathGenerator: createArchivePathGenerator(dir, archive),
     })
 
-    // TODO: add images
+    archive.append(jats, { name: 'manuscript.xml' })
 
     await archive.finalize()
 

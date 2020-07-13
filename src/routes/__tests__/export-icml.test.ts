@@ -39,7 +39,7 @@ describe('export ICML', () => {
 
     const zip = await new JSZip().loadAsync(response.body)
 
-    expect(Object.keys(zip.files).length).toBe(1)
+    expect(Object.keys(zip.files).length).toBe(2)
 
     const xml = await zip.files['manuscript.icml'].async('text')
     const doc = new DOMParser().parseFromString(xml, 'application/xml')

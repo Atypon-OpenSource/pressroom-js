@@ -13,21 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import fs from 'fs-extra'
-import path from 'path'
+import { createCounter, IDGenerator } from '@manuscripts/manuscript-transform'
 
-import { processElements, XLINK_NAMESPACE } from './data'
+export const createIdGenerator = (): IDGenerator => {
+  const counter = createCounter()
 
-export const fixExportedData = (doc: Document, dir: string): Promise<void> =>
-  processElements(doc, `//*[@xlink:href]`, async (element) => {
-    const href = element.getAttributeNS(XLINK_NAMESPACE, 'href')
+  return async (element) => {
+    const index = counter.increment(element.nodeName)
 
-    if (href) {
-      // TODO: exclude non-relative paths?
-      const { name } = path.parse(href)
-
-      if (await fs.pathExists(dir + '/Data/' + name)) {
-        element.setAttributeNS(XLINK_NAMESPACE, 'href', 'Data/' + name)
-      }
-    }
-  })
+    return `${element.nodeName}-${index}`
+  }
+}

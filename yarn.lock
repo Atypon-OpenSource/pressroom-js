@@ -1133,15 +1133,16 @@
     eslint-config-prettier "^6.11.0"
     typescript "^3.9.5"
 
-"@manuscripts/manuscript-transform@^0.31.1":
-  version "0.31.1"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.31.1.tgz#de389fa1f80867ac723479ef2eacb3c48a3b9e47"
-  integrity sha512-mxe8AFLtXp6Ip+NOdj4NATRuzQTYB4v/DhMGGlaQbRA0p3CK29hdaV8ZFhyfL0e6obGguTlErKpTmW9mSlH1Kw==
+"@manuscripts/manuscript-transform@^0.34.0":
+  version "0.34.0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.34.0.tgz#79fa4e0e10c01cda973165fe1a2d8590d0744fec"
+  integrity sha512-fJfNMD8+th4Ls/IjCNVQFGTcWsraw7CCKvCOV/sUOnloqndNbw3iBcs84J5wkAI7eXuzhi74KkfCzg8Nwt83pA==
   dependencies:
-    "@manuscripts/manuscripts-json-schema" "^1.29.2"
+    "@manuscripts/manuscripts-json-schema" "^1.30.0"
     debug "^4.1.1"
-    prosemirror-model "^1.7.2"
-    uuid "^3.3.2"
+    mime-types "^2.1.27"
+    prosemirror-model "^1.11.0"
+    uuid "^8.2.0"
     w3c-xmlserializer "^2.0.0"
 
 "@manuscripts/manuscripts-json-schema-utils@0.0.3":
@@ -1149,10 +1150,10 @@
   resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema-utils/-/manuscripts-json-schema-utils-0.0.3.tgz#a74c8752a5606c98f7722657efe6526d2aeac945"
   integrity sha512-5raPRw5Wc/n6SvvraIXs/HN2V7jydivGm0mpQbubmvpgkc0fBkA3nJMkS7+n22aLBq/QGPcjntssTSZxylLGcQ==
 
-"@manuscripts/manuscripts-json-schema@^1.29.2", "@manuscripts/manuscripts-json-schema@^1.30.0":
-  version "1.30.0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.30.0.tgz#1339f19c396ba232423a981d5eac8157f3577af3"
-  integrity sha512-Xo07N40qAW+pyMXT3cuvA749L5eFIO7HU7CB7KcU1dHCxZQAExoysyPkeBEVqMtZYIvixU/sIOhuym+KGSvfzA==
+"@manuscripts/manuscripts-json-schema@^1.30.0", "@manuscripts/manuscripts-json-schema@^1.30.2":
+  version "1.30.2"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.30.2.tgz#72acb85168e3977b856c08f24f4e48be9070ae4e"
+  integrity sha512-VkgSzatstHHGwL9etnziWQZtTTWvqKMjwHkaCI4UfCoQfbjr7D0LeHZxPXLJ5S5NHjJLpVp54o1tgbmkecysRg==
   dependencies:
     ajv "^6.10.0"
     deepmerge "^3.2.0"
@@ -1599,17 +1600,6 @@
     semver "^7.3.2"
     tsutils "^3.17.1"
 
-"@typescript-eslint/experimental-utils@3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/experimental-utils/-/experimental-utils-3.5.0.tgz#d09f9ffb890d1b15a7ffa9975fae92eee05597c4"
-  integrity sha512-zGNOrVi5Wz0jcjUnFZ6QUD0MCox5hBuVwemGCew2qJzUX5xPoyR+0EzS5qD5qQXL/vnQ8Eu+nv03tpeFRwLrDg==
-  dependencies:
-    "@types/json-schema" "^7.0.3"
-    "@typescript-eslint/types" "3.5.0"
-    "@typescript-eslint/typescript-estree" "3.5.0"
-    eslint-scope "^5.0.0"
-    eslint-utils "^2.0.0"
-
 "@typescript-eslint/experimental-utils@3.6.0":
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/experimental-utils/-/experimental-utils-3.6.0.tgz#0138152d66e3e53a6340f606793fb257bf2d76a1"
@@ -1642,11 +1632,6 @@
     "@typescript-eslint/typescript-estree" "3.6.0"
     eslint-visitor-keys "^1.1.0"
 
-"@typescript-eslint/types@3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-3.5.0.tgz#4e3d2a2272268d8ec3e3e4a37152a64956682639"
-  integrity sha512-Dreqb5idi66VVs1QkbAwVeDmdJG+sDtofJtKwKCZXIaBsINuCN7Jv5eDIHrS0hFMMiOvPH9UuOs4splW0iZe4Q==
-
 "@typescript-eslint/types@3.6.0":
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-3.6.0.tgz#4bd6eee55d2f9d35a4b36c4804be1880bf68f7bc"
@@ -1659,20 +1644,6 @@
   dependencies:
     debug "^4.1.1"
     eslint-visitor-keys "^1.1.0"
-    glob "^7.1.6"
-    is-glob "^4.0.1"
-    lodash "^4.17.15"
-    semver "^7.3.2"
-    tsutils "^3.17.1"
-
-"@typescript-eslint/typescript-estree@3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/typescript-estree/-/typescript-estree-3.5.0.tgz#dfc895db21a381b84f24c2a719f5bf9c600dcfdc"
-  integrity sha512-Na71ezI6QP5WVR4EHxwcBJgYiD+Sre9BZO5iJK2QhrmRPo/42+b0no/HZIrdD1sjghzlYv7t+7Jis05M1uMxQg==
-  dependencies:
-    "@typescript-eslint/types" "3.5.0"
-    "@typescript-eslint/visitor-keys" "3.5.0"
-    debug "^4.1.1"
     glob "^7.1.6"
     is-glob "^4.0.1"
     lodash "^4.17.15"
@@ -1692,13 +1663,6 @@
     lodash "^4.17.15"
     semver "^7.3.2"
     tsutils "^3.17.1"
-
-"@typescript-eslint/visitor-keys@3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/visitor-keys/-/visitor-keys-3.5.0.tgz#73c1ea2582f814735e4afdc1cf6f5e3af78db60a"
-  integrity sha512-7cTp9rcX2sz9Z+zua9MCOX4cqp5rYyFD5o8LlbSpXrMTXoRdngTtotRZEkm8+FNMHPWYFhitFK+qt/brK8BVJQ==
-  dependencies:
-    eslint-visitor-keys "^1.1.0"
 
 "@typescript-eslint/visitor-keys@3.6.0":
   version "3.6.0"
@@ -2802,6 +2766,11 @@ crypto-random-string@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
+
+csl-json@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/csl-json/-/csl-json-0.1.0.tgz#5c625e03171c9232dc3839876c38bf5eef3b4187"
+  integrity sha512-KMvcQ07H0kMpzl2aO1mgyp+F+LVk+z+QMpN01noMUv0Uu4mqg4KyJjeM2u2716qU9ZgPq1Kr30DXqhT4RuEg1w==
 
 cssom@^0.4.4:
   version "0.4.4"
@@ -6715,10 +6684,10 @@ prop-types@^15.7.2:
     object-assign "^4.1.1"
     react-is "^16.8.1"
 
-prosemirror-model@^1.7.2:
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.10.0.tgz#bb1101732bccacf336e23a36a8b045b865025fa2"
-  integrity sha512-xTMbbO2q4abs5lJdeRvk/SrftNfZlMdvChKziTiK+OKtP8LkQI8uw39u4S5zqyflrmW3Or6+qnyFPf1p4v2u1g==
+prosemirror-model@^1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.11.0.tgz#dc36cdb3ad6442b9f6325c7d89170c624f9dc520"
+  integrity sha512-GqoAz/mIYjdv8gVYJ8mWFKpHoTxn/lXq4tXJ6bTVxs+rem2LzMYXrNVXfucGtfsgqsJlRIgng/ByG9j7Q8XDrg==
   dependencies:
     orderedmap "^1.1.0"
 

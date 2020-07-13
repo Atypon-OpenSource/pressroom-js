@@ -40,7 +40,7 @@ describe('export JATS', () => {
 
     const zip = await new JSZip().loadAsync(response.body)
 
-    expect(Object.keys(zip.files).length).toBe(1)
+    expect(Object.keys(zip.files).length).toBe(2)
 
     const xml = await zip.files['manuscript.xml'].async('text')
 
@@ -82,7 +82,7 @@ describe('export JATS', () => {
 
     const zip = await new JSZip().loadAsync(response.body)
 
-    expect(Object.keys(zip.files).length).toBe(1)
+    expect(Object.keys(zip.files).length).toBe(2)
 
     const xml = await zip.files['manuscript.xml'].async('text')
 

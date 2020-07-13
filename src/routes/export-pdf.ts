@@ -17,12 +17,13 @@ import { Manuscript } from '@manuscripts/manuscripts-json-schema'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
+import path from 'path'
 
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createPDF, PDFEngine } from '../lib/create-pdf'
+import { XLINK_NAMESPACE } from '../lib/data'
 import { findCSL } from '../lib/find-csl'
-import { fixExportedData } from '../lib/fix-exported-data'
 import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -86,12 +87,15 @@ export const exportPDF = Router().post(
     const { article, modelMap } = createArticle(data, manuscriptID)
 
     // create XML
-    const xml = createJATSXML(article, modelMap)
+    const jats = await createJATSXML(article, modelMap, {
+      mediaPathGenerator: async (element) => {
+        const href = element.getAttributeNS(XLINK_NAMESPACE, 'href')
 
-    // fix data references
-    const doc = await new DOMParser().parseFromString(xml, 'application/xml')
-    await fixExportedData(doc, dir)
-    const jats = new XMLSerializer().serializeToString(doc)
+        const { name } = path.parse(href as string)
+
+        return `Data/${name}`
+      },
+    })
 
     await fs.writeFile(dir + '/manuscript.xml', jats)
 

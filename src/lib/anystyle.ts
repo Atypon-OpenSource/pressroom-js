@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CSL } from '@manuscripts/manuscript-transform'
 import { execFile } from 'child_process'
+// eslint-disable-next-line import/no-unresolved
+import { Data } from 'csl-json'
 import { promisify } from 'util'
 
-export const parseReferences = async (
-  inputPath: string
-): Promise<CSL.Item[]> => {
+export const parseReferences = async (inputPath: string): Promise<Data[]> => {
   const { stdout } = await promisify(execFile)('anystyle', [
     '--stdout',
     '--format=csl',

@@ -110,7 +110,10 @@ export const exportLiteratumEEO = Router().post(
     const { article, modelMap } = createArticle(data, manuscriptID)
 
     // create XML
-    const jats = createJATSXML(article, modelMap, { doi, frontMatterOnly })
+    const jats = await createJATSXML(article, modelMap, {
+      doi,
+      frontMatterOnly,
+    })
     await fs.writeFile(dir + '/manuscript.xml', jats)
     const xmlStream = fs.createReadStream(dir + '/manuscript.xml')
 

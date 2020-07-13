@@ -24,4 +24,5 @@ export const createJATSXML = (
   article: ActualManuscriptNode,
   modelMap: Map<string, ContainedModel>,
   options: JATSExporterOptions = {}
-): string => new JATSExporter().serializeToJATS(article, modelMap, options)
+): Promise<string> =>
+  new JATSExporter().serializeToJATS(article, modelMap, options)

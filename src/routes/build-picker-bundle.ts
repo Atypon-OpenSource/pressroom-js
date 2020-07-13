@@ -76,7 +76,9 @@ export const buildPickerBundle = Router().get(
     })
 
     // output XML
-    archive.append(createJATSXML(article, modelMap), { name: 'manuscript.xml' })
+    archive.append(await createJATSXML(article, modelMap), {
+      name: 'manuscript.xml',
+    })
 
     // output HTML
     archive.append(createHTML(article, modelMap), { name: 'manuscript.html' })
