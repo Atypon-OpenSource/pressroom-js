@@ -17,6 +17,6 @@ A web service for manuscript conversion.
 1. `brew cask install basictex`
 1. `brew cask install --no-quarantine prince`
 1. `brew install python3 cairo pango gdk-pixbuf libffi && pip3 install WeasyPrint`
-1. `yarn global add mathjax-pandoc-filter`
+1. `yarn global add @manuscripts/mathjax-filter`
 1. `gem install anystyle-cli`
 1. `yarn dev`

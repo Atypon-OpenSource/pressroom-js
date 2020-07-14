@@ -34,18 +34,21 @@ export const createPDF = async (
     '--from=jats',
     '--to=pdf',
     '--filter=pandoc-citeproc',
-    // '--filter=mathjax-pandoc-filter',
     `--csl=${options?.csl || DEFAULT_CSL}`,
     `--pdf-engine=${engine}`,
   ]
 
   switch (engine) {
     case 'prince':
+      args.push('--filter=mathjax-filter')
+      args.push(`--metadata-file=${__dirname + '/../assets/pandoc/prince.yml'}`)
       args.push(`--pdf-engine-opt=--style=${options?.css || DEFAULT_CSS}`)
       break
 
     case 'weasyprint':
-      args.push(`--metadata=mathjax.noInlineSVG:true`)
+      args.push('--filter=mathjax-filter')
+      args.push(`--metadata-file=${__dirname + '/../assets/pandoc/prince.yml'}`)
+      // args.push(`--metadata=mathjax.noInlineSVG:true`)
       args.push(`--pdf-engine-opt=--stylesheet=${options?.css || DEFAULT_CSS}`)
       break
   }
