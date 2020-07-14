@@ -26,7 +26,7 @@
     "axios": "^0.19.2",
     "basic-ftp": "^4.6.2",
     "celebrate": "^12.1.1",
-    "citeproc": "^2.4.5",
+    "citeproc": "^2.4.7",
     "copyfiles": "^2.3.0",
     "cors": "^2.8.5",
     "couchbase": "^3.0.4",

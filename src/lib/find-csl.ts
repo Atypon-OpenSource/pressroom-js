@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Manuscript } from '@manuscripts/manuscripts-json-schema'
-import { pathExists } from 'fs-extra'
+import { Bundle, Manuscript, Model } from '@manuscripts/manuscripts-json-schema'
+import { basename } from 'path'
 
 export const findCSL = async (
-  dir: string,
-  manuscript: Manuscript
+  manuscript: Manuscript,
+  modelMap: Map<string, Model>
 ): Promise<string | undefined> => {
   if (manuscript.bundle) {
-    const filename = manuscript.bundle.replace(':', '_')
-    const path = dir + '/Data/' + filename
+    const bundle = modelMap.get(manuscript.bundle) as Bundle | undefined
+    const identifier = bundle?.csl?.cslIdentifier
 
-    if (await pathExists(path)) {
-      return path
+    if (identifier) {
+      const id = basename(identifier)
+
+      // TODO: check that the file exists in $HOME/.csl?
+      return `${id}.csl`
     }
   }
 }

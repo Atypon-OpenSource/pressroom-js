@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/mpapp-public/pressroom-base/master:e0a30d031a3dd2e3d7649d175a3888bd8db5f65b as builder
+FROM registry.gitlab.com/mpapp-public/pressroom-base/master:261af46247ffb18895f23d10df8b7dc92d5a0aae as builder
 WORKDIR /usr/src/app
 
 COPY package.json yarn.lock ./
@@ -11,7 +11,7 @@ RUN yarn build
 
 RUN npm prune --production
 
-FROM registry.gitlab.com/mpapp-public/pressroom-base/master:e0a30d031a3dd2e3d7649d175a3888bd8db5f65b
+FROM registry.gitlab.com/mpapp-public/pressroom-base/master:261af46247ffb18895f23d10df8b7dc92d5a0aae
 WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app/dist ./dist

@@ -8,7 +8,7 @@ include:
 
 test:
   stage: test
-  image: registry.gitlab.com/mpapp-public/pressroom-base/master:e0a30d031a3dd2e3d7649d175a3888bd8db5f65b
+  image: registry.gitlab.com/mpapp-public/pressroom-base/master:261af46247ffb18895f23d10df8b7dc92d5a0aae
   script:
     - yarn install --frozen-lockfile --non-interactive
     - yarn lint

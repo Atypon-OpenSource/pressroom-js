@@ -97,7 +97,7 @@ export const exportEpub = Router().post(
     const manuscript = modelMap.get(manuscriptID) as Manuscript
 
     // use the CSL style defined in the manuscript bundle
-    const csl = await findCSL(dir, manuscript)
+    const csl = await findCSL(manuscript, modelMap)
 
     // create EPUB
     await createEpub(dir, 'manuscript.xml', 'manuscript.epub', { csl })

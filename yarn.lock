@@ -2422,10 +2422,10 @@ ci-info@^2.0.0:
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz#67a9e964be31a51e15e5010d58e6f12834002f46"
   integrity sha512-5tK7EtrZ0N+OLFMthtqOj4fI2Jeb88C4CAZPu25LDVUgXJ0A3Js4PMGqrn0JU1W0Mh1/Z8wZzYPxqUrXeBboCQ==
 
-citeproc@^2.4.5:
-  version "2.4.6"
-  resolved "https://registry.yarnpkg.com/citeproc/-/citeproc-2.4.6.tgz#e867013cb57744307f16c45c52f7c86a007789fe"
-  integrity sha512-c6Oard5OhTJ0UJTLzYbKKK0/iY5FHsLw26uTCFg4V+UL54wJpDNCpA+jEE6Dkq42xfkHxM0WwPkgJvMyuv2O3g==
+citeproc@^2.4.7:
+  version "2.4.7"
+  resolved "https://registry.yarnpkg.com/citeproc/-/citeproc-2.4.7.tgz#d947aa0e34ca2d1a61bf3c7db54032a52ba96779"
+  integrity sha512-GZ7msmll7hV1rlFdW7mJjj8Lv6EF52hKnslctj/LyPgDEzzQaQctVQsYOBJv3LYQqMDv96l7DcB5XGhEGGOMOQ==
 
 class-utils@^0.3.5:
   version "0.3.6"

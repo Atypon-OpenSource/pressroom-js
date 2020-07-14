@@ -95,7 +95,7 @@ export const exportIcml = Router().post(
     const manuscript = modelMap.get(manuscriptID) as Manuscript
 
     // use the CSL style defined in the manuscript bundle
-    const csl = await findCSL(dir, manuscript)
+    const csl = await findCSL(manuscript, modelMap)
 
     // create ICML
     await createIcml(dir, 'manuscript.xml', 'manuscript.icml', { csl })

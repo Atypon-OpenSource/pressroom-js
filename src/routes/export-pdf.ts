@@ -102,7 +102,7 @@ export const exportPDF = Router().post(
     const manuscript = modelMap.get(manuscriptID) as Manuscript
 
     // use the CSL style defined in the manuscript bundle
-    const csl = await findCSL(dir, manuscript)
+    const csl = await findCSL(manuscript, modelMap)
 
     // create PDF
     await createPDF(dir, 'manuscript.xml', 'manuscript.pdf', engine, { csl })
