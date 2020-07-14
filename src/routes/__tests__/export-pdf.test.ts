@@ -78,7 +78,7 @@ describe('export PDF', () => {
     )
   })
 
-  test('exports to a PDF file with Tectonic', async () => {
+  test.skip('exports to a PDF file with Tectonic', async () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
