@@ -114,7 +114,10 @@ export const exportLiteratumBundle = Router().post(
     const { article, modelMap } = createArticle(data, manuscriptID)
 
     // create JATS XML
-    const xml = await createJATSXML(article, modelMap, { doi, frontMatterOnly })
+    const xml = await createJATSXML(article.content, modelMap, {
+      doi,
+      frontMatterOnly,
+    })
     const doc = new DOMParser().parseFromString(xml, 'application/xml')
 
     // create the output ZIP

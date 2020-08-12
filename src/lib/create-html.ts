@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 import {
-  ActualManuscriptNode,
   ContainedModel,
+  HTMLExporterOptions,
   HTMLTransformer,
+  ManuscriptFragment,
 } from '@manuscripts/manuscript-transform'
 
 export const createHTML = (
-  article: ActualManuscriptNode,
-  modelMap: Map<string, ContainedModel>
-): string => new HTMLTransformer().serializeToHTML(article, modelMap)
+  fragment: ManuscriptFragment,
+  modelMap: Map<string, ContainedModel>,
+  options?: HTMLExporterOptions
+): Promise<string> =>
+  new HTMLTransformer().serializeToHTML(fragment, modelMap, options)

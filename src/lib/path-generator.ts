@@ -22,7 +22,8 @@ import { XLINK_NAMESPACE } from './data'
 
 export const createArchivePathGenerator = (
   dir: string,
-  archive: Archiver
+  archive: Archiver,
+  prefix = 'Data/'
 ): MediaPathGenerator => {
   const mediaPaths = new Map<string, string>()
 
@@ -48,7 +49,48 @@ export const createArchivePathGenerator = (
     }
 
     // Rename file to match id if available
-    const newPath = parentID ? `Data/${parentID}${ext}` : oldPath
+    const newPath = parentID ? `${prefix}${parentID}${ext}` : oldPath
+
+    archive.append(fs.createReadStream(`${dir}/${oldPath}`), {
+      name: newPath,
+    })
+
+    mediaPaths.set(name, newPath)
+
+    return newPath
+  }
+}
+
+export const createHTMLArchivePathGenerator = (
+  dir: string,
+  archive: Archiver,
+  prefix = 'Data/'
+): MediaPathGenerator => {
+  const mediaPaths = new Map<string, string>()
+
+  return async (element, parentID) => {
+    const src = element.getAttribute('src')
+
+    if (!src) {
+      throw new Error('Media element has no src value')
+    }
+
+    const { ext, name } = path.parse(src)
+
+    const oldPath = `Data/${name}`
+
+    // already handled
+    if (mediaPaths.has(oldPath)) {
+      return mediaPaths.get(oldPath) as string
+    }
+
+    // make sure the file exists at the old path
+    if (!(await fs.pathExists(`${dir}/${oldPath}`))) {
+      throw new Error(`No data file found at ${oldPath} for ${parentID}`)
+    }
+
+    // Rename file to match id if available
+    const newPath = parentID ? `${prefix}${name}${ext}` : oldPath
 
     archive.append(fs.createReadStream(`${dir}/${oldPath}`), {
       name: newPath,

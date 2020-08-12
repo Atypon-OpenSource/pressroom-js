@@ -1133,12 +1133,12 @@
     eslint-config-prettier "^6.11.0"
     typescript "^3.9.5"
 
-"@manuscripts/manuscript-transform@^0.34.0":
-  version "0.34.0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.34.0.tgz#79fa4e0e10c01cda973165fe1a2d8590d0744fec"
-  integrity sha512-fJfNMD8+th4Ls/IjCNVQFGTcWsraw7CCKvCOV/sUOnloqndNbw3iBcs84J5wkAI7eXuzhi74KkfCzg8Nwt83pA==
+"@manuscripts/manuscript-transform@^0.36.0":
+  version "0.36.0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.36.0.tgz#5fe1a6e50188cfe45b00a2ce6a1c9da5f5aea25e"
+  integrity sha512-zuC91MnqcEwk+MK5rRnLLFixqruXmKCLc1VeFPGpHfAMfYFynXfUxGicysaR+0kUU0C8KUPFfRZb+MvmK1QJUg==
   dependencies:
-    "@manuscripts/manuscripts-json-schema" "^1.30.0"
+    "@manuscripts/manuscripts-json-schema" "^1.32.0"
     debug "^4.1.1"
     mime-types "^2.1.27"
     prosemirror-model "^1.11.0"
@@ -1150,10 +1150,10 @@
   resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema-utils/-/manuscripts-json-schema-utils-0.0.3.tgz#a74c8752a5606c98f7722657efe6526d2aeac945"
   integrity sha512-5raPRw5Wc/n6SvvraIXs/HN2V7jydivGm0mpQbubmvpgkc0fBkA3nJMkS7+n22aLBq/QGPcjntssTSZxylLGcQ==
 
-"@manuscripts/manuscripts-json-schema@^1.30.0", "@manuscripts/manuscripts-json-schema@^1.30.2":
-  version "1.30.2"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.30.2.tgz#72acb85168e3977b856c08f24f4e48be9070ae4e"
-  integrity sha512-VkgSzatstHHGwL9etnziWQZtTTWvqKMjwHkaCI4UfCoQfbjr7D0LeHZxPXLJ5S5NHjJLpVp54o1tgbmkecysRg==
+"@manuscripts/manuscripts-json-schema@^1.32.0":
+  version "1.32.0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.32.0.tgz#e47dca8d9ee215fb8cfdfec25b785a03203a9fdf"
+  integrity sha512-1Ad1prk3VWLaYPHJwCcSaGw5c9ojtG91CQ307w0R50GC8t/grfDq7b3NuHLxETXpoE8NeWGvUyFlV5yWEcL6lQ==
   dependencies:
     ajv "^6.10.0"
     deepmerge "^3.2.0"

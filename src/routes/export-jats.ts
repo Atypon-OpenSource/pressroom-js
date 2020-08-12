@@ -91,7 +91,7 @@ export const exportJats = Router().post(
     const archive = archiver.create('zip')
 
     // create JATS XML
-    const jats = await createJATSXML(article, modelMap, {
+    const jats = await createJATSXML(article.content, modelMap, {
       version,
       idGenerator: createIdGenerator(),
       mediaPathGenerator: createArchivePathGenerator(dir, archive),

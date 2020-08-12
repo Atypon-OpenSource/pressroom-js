@@ -23,6 +23,7 @@ import { convertReferencesEdifix } from './convert-references-edifix'
 import { exportBibliography } from './export-bibliography'
 import { exportDocx } from './export-docx'
 import { exportEpub } from './export-epub'
+import { exportHtml } from './export-html'
 import { exportIcml } from './export-icml'
 import { exportJats } from './export-jats'
 import { exportLiteratumBundle } from './export-literatum-bundle'
@@ -44,6 +45,7 @@ export const routes = Router()
     exportPDF,
     exportDocx,
     exportEpub,
+    exportHtml,
     exportIcml,
     exportJats,
     exportBibliography,

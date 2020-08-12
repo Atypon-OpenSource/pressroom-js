@@ -13,21 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Manuscript } from '@manuscripts/manuscripts-json-schema'
 import archiver from 'archiver'
 import { celebrate, Joi } from 'celebrate'
-import { format } from 'date-fns'
 import { Router } from 'express'
 import fs from 'fs-extra'
-import path from 'path'
 
-import { config } from '../lib/config'
 import { createArticle } from '../lib/create-article'
 import { createHTML } from '../lib/create-html'
-import { buildManifest } from '../lib/create-manifest'
-import { buildContainer } from '../lib/create-mets'
-import { processElements } from '../lib/data'
-import { depositSFTP } from '../lib/deposit-sftp'
 import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { createHTMLArchivePathGenerator } from '../lib/path-generator'
@@ -40,9 +32,9 @@ import { wrapAsync } from '../lib/wrap-async'
 /**
  * @swagger
  *
- * /export/literatum-do:
+ * /export/html:
  *   post:
- *     description: Convert manuscript data to Literatum DO bundle
+ *     description: Convert manuscript data to a ZIP file containing an HTML file
  *     produces:
  *       - application/zip
  *     security:
@@ -56,14 +48,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                file:
  *                  type: string
  *                  format: binary
- *                doi:
- *                  type: string
- *                doType:
- *                  type: string
  *                manuscriptID:
  *                  type: string
- *                deposit:
- *                  type: boolean
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -71,30 +57,21 @@ import { wrapAsync } from '../lib/wrap-async'
  *       200:
  *         description: Conversion success
  */
-export const exportLiteratumDO = Router().post(
-  '/export/literatum-do',
+export const exportHtml = Router().post(
+  '/export/html',
   jwtAuthentication('pressroom-js'),
   upload.single('file'),
   celebrate({
     body: {
-      deposit: Joi.boolean(),
-      doType: Joi.string().required(),
-      doi: Joi.string().required(),
       manuscriptID: Joi.string().required(),
     },
   }),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
-    const { deposit, doi, doType, manuscriptID } = req.body as {
-      deposit?: boolean
-      doType: string
-      doi: string
+    const { manuscriptID } = req.body as {
       manuscriptID: string
     }
 
-    const [, id] = doi.split('/', 2)
-
-    // unzip the input
     const dir = req.tempDir
 
     logger.debug(`Extracting ZIP archive to ${dir}`)
@@ -111,62 +88,11 @@ export const exportLiteratumDO = Router().post(
     const html = await createHTML(article.content, modelMap, {
       mediaPathGenerator: createHTMLArchivePathGenerator(dir, archive),
     })
-    const doc = new DOMParser().parseFromString(html, 'text/html')
 
-    const files = new Map<string, string>()
-
-    await processElements(doc, `//img`, async (element) => {
-      const src = element.getAttribute('src')
-
-      if (src) {
-        const parts = path.parse(src)
-
-        archive.append(fs.createReadStream(`${dir}/Data/${parts.name}`), {
-          name: parts.base,
-          prefix: `${id}/Data/`,
-        })
-
-        files.set(parts.name, src)
-      }
-    })
-
-    const manuscript = modelMap.get(manuscriptID) as Manuscript
-
-    // output METS XML (containing MODS metadata, content HTML and file map) in meta folder
-    const mets = buildContainer({
-      html,
-      files,
-      manuscript,
-      modelMap,
-      doType,
-    })
-    archive.append(mets, {
-      name: `${id}.xml`,
-      prefix: `${id}/meta/`,
-    })
-
-    // output manifest
-    const manifest = buildManifest({
-      groupDoi: '10.5555/default-do-group',
-      submissionType: 'full',
-    })
-    archive.append(manifest, { name: 'manifest.xml' })
+    archive.append(html, { name: 'manuscript.html' })
 
     await archive.finalize()
 
-    if (deposit) {
-      logger.debug(`Depositing to Literatum`)
-
-      const { host, prefix, username, pem } = config.literatum.sftp
-
-      const date = format(new Date(), 'yyyyMMddHHmmss')
-      const remoteFilePath = `${prefix}/digital-objects_${id}_${date}.zip`
-
-      const privateKey = Buffer.from(pem, 'base64')
-
-      await depositSFTP(archive, remoteFilePath, { host, username, privateKey })
-    } else {
-      sendArchive(res, archive) // for debugging
-    }
+    sendArchive(res, archive)
   })
 )

@@ -23,6 +23,7 @@ import { createJATSXML } from '../lib/create-jats-xml'
 import { createJSON } from '../lib/create-json'
 import { fetchProjectData } from '../lib/fetch-project-data'
 import { jwtAuthentication } from '../lib/jwt-authentication'
+import { createHTMLArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
 import { wrapAsync } from '../lib/wrap-async'
 
@@ -58,6 +59,8 @@ export const buildPickerBundle = Router().get(
   wrapAsync(async (req, res) => {
     const { projectID, manuscriptID } = req.params
 
+    const dir = req.tempDir
+
     // prepare the output ZIP
     const archive = archiver.create('zip')
 
@@ -76,12 +79,19 @@ export const buildPickerBundle = Router().get(
     })
 
     // output XML
-    archive.append(await createJATSXML(article, modelMap), {
+    archive.append(await createJATSXML(article.content, modelMap), {
       name: 'manuscript.xml',
     })
 
     // output HTML
-    archive.append(createHTML(article, modelMap), { name: 'manuscript.html' })
+    archive.append(
+      await createHTML(article.content, modelMap, {
+        mediaPathGenerator: createHTMLArchivePathGenerator(dir, archive),
+      }),
+      {
+        name: 'manuscript.html',
+      }
+    )
 
     await archive.finalize()
 

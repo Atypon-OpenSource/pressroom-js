@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 import {
-  ActualManuscriptNode,
   ContainedModel,
   JATSExporter,
   JATSExporterOptions,
+  ManuscriptFragment,
 } from '@manuscripts/manuscript-transform'
 
 export const createJATSXML = (
-  article: ActualManuscriptNode,
+  fragment: ManuscriptFragment,
   modelMap: Map<string, ContainedModel>,
   options: JATSExporterOptions = {}
 ): Promise<string> =>
-  new JATSExporter().serializeToJATS(article, modelMap, options)
+  new JATSExporter().serializeToJATS(fragment, modelMap, options)

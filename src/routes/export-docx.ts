@@ -82,7 +82,7 @@ export const exportDocx = Router().post(
     const { article, modelMap } = createArticle(data, manuscriptID)
 
     // create XML
-    const jats = await createJATSXML(article, modelMap, {
+    const jats = await createJATSXML(article.content, modelMap, {
       mediaPathGenerator: async (element) => {
         const href = element.getAttributeNS(XLINK_NAMESPACE, 'href')
 
