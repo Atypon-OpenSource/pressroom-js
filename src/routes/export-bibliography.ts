@@ -29,8 +29,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /export/bibliography:
  *   post:
  *     description: Convert CSL JSON to other bibliography formats
- *     produces:
- *       - text/plain
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -50,6 +48,10 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           text/plain:
+ *            schema:
+ *              type: string
  */
 export const exportBibliography = Router().post(
   '/export/bibliography',

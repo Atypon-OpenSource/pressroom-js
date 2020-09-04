@@ -39,8 +39,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /submission:
  *   post:
  *     description: Fetch and convert submission to WileyML Gateway bundle
- *     produces:
- *       - application/zip
  *     security:
  *       - ApiKeyAuth: []
  *     requestBody:
@@ -62,6 +60,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/zip:
+ *            schema:
+ *              type: string
+ *              format: binary
  */
 export const buildSubmissionBundle = express.Router().post(
   '/submission', // TODO

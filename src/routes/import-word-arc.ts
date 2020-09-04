@@ -43,8 +43,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /import/word-arc:
  *   post:
  *     description: Convert Word file to Manuscripts data via Arc
- *     produces:
- *       - application/zip
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -67,6 +65,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/zip:
+ *             schema:
+ *               type: string
+ *               format: binary
  */
 export const importWordArc = Router().post(
   '/import/word-arc',

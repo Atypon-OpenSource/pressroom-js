@@ -31,7 +31,7 @@ export const swaggerSpec = swaggerJSDoc({
       securitySchemes: {
         BearerAuth: {
           type: 'http',
-          scheme: 'Bearer',
+          scheme: 'bearer',
           bearerFormat: 'JWT',
         },
         ApiKeyAuth: {

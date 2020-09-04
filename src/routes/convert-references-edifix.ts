@@ -28,8 +28,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /convert/references-edifix:
  *   post:
  *     description: Copyedits, corrects, and links a list of references
- *     produces:
- *       - application/xml
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -56,6 +54,10 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/xml:
+ *            schema:
+ *              type: object
  */
 export const convertReferencesEdifix = Router().post(
   '/convert/references-edifix',

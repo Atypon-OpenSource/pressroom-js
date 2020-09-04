@@ -29,8 +29,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /convert/references-anystyle:
  *   post:
  *     description: Convert plain text references to CSL-JSON
- *     produces:
- *       - application/json
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -48,6 +46,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/json:
+ *            schema:
+ *              type: object
+ *
  */
 export const convertReferencesAnyStyle = Router().post(
   '/convert/references-anystyle',

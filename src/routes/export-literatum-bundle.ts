@@ -42,8 +42,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /export/literatum-bundle:
  *   post:
  *     description: Convert manuscript data to JATS/WileyML bundle for deposit in Literatum
- *     produces:
- *       - application/zip
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -63,6 +61,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/zip:
+ *             schema:
+ *               type: string
+ *               format: binary
  */
 export const exportLiteratumBundle = Router().post(
   '/export/literatum-bundle',

@@ -37,8 +37,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /export/jats:
  *   post:
  *     description: Convert manuscript data to a ZIP file containing a JATS XML file
- *     produces:
- *       - application/zip
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -60,6 +58,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/zip:
+ *             schema:
+ *               type: string
+ *               format: binary
  */
 export const exportJats = Router().post(
   '/export/jats',

@@ -33,24 +33,29 @@ import { wrapAsync } from '../lib/wrap-async'
  * /build/picker-bundle/{projectID}/{manuscriptID}:
  *   post:
  *     description: Fetch manuscript data and export XML + HTML for file buildPickerBundle
- *     produces:
- *       - application/zip
  *     parameters:
  *       - name: projectID
  *         description: Project ID
  *         in: path
  *         required: true
- *         type: string
+ *         schema:
+ *          type: string
  *       - name: manuscriptID
  *         description: Manuscript ID
  *         in: path
  *         required: true
- *         type: string
+ *         schema:
+ *          type: string
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/zip:
+ *            schema:
+ *              type: string
+ *              format: binary
  */
 export const buildPickerBundle = Router().get(
   '/build/picker-bundle/:projectID/:manuscriptID',

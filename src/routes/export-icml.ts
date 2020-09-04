@@ -38,8 +38,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /export/icml:
  *   post:
  *     description: Convert manuscript data to a ZIP file containing an ICML file
- *     produces:
- *       - application/zip
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -59,6 +57,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/zip:
+ *             schema:
+ *               type: string
+ *               format: binary
  */
 export const exportIcml = Router().post(
   '/export/icml',

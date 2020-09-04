@@ -37,8 +37,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /export/docx:
  *   post:
  *     description: Convert manuscript data to DOCX
- *     produces:
- *       - application/vnd.openxmlformats-officedocument.wordprocessingml.document
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -58,6 +56,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/vnd.openxmlformats-officedocument.wordprocessingml.document:
+ *             schema:
+ *               type: string
+ *               format: binary
  */
 export const exportDocx = Router().post(
   '/export/docx',

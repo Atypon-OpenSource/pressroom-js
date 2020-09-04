@@ -37,8 +37,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /export/epub:
  *   post:
  *     description: Convert manuscript data to EPUB
- *     produces:
- *       - application/epub+zip
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -58,6 +56,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/epub+zip:
+ *             schema:
+ *               type: string
+ *               format: binary
  */
 export const exportEpub = Router().post(
   '/export/epub',

@@ -41,8 +41,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /import/zip:
  *   post:
  *     description: Convert manuscript in ZIP file to Manuscripts data
- *     produces:
- *       - application/zip
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -62,6 +60,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/zip:
+ *             schema:
+ *               type: string
+ *               format: binary
  */
 export const importZip = Router().post(
   '/import/zip',

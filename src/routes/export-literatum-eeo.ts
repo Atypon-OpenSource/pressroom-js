@@ -36,8 +36,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /export/literatum-eeo:
  *   post:
  *     description: Convert manuscript data to Literatum EEO deposit
- *     produces:
- *       - application/zip
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -65,6 +63,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/zip:
+ *             schema:
+ *               type: string
+ *               format: binary
  */
 export const exportLiteratumEEO = Router().post(
   '/export/literatum-eeo',

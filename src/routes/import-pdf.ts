@@ -36,11 +36,8 @@ import { wrapAsync } from '../lib/wrap-async'
  * /import/pdf:
  *   post:
  *     description: Convert PDF file to Manuscripts data via GROBID
- *     produces:
- *       - application/zip
  *     security:
  *       - BearerAuth: []
- *     parameters:
  *     requestBody:
  *        description: multipart form data including PDF file
  *        required: true
@@ -58,6 +55,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/zip:
+ *             schema:
+ *               type: string
+ *               format: binary
  */
 export const importPDF = Router().post(
   '/import/pdf',

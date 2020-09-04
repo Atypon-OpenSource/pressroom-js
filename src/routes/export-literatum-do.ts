@@ -43,8 +43,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /export/literatum-do:
  *   post:
  *     description: Convert manuscript data to Literatum DO bundle
- *     produces:
- *       - application/zip
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -70,6 +68,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/zip:
+ *             schema:
+ *               type: string
+ *               format: binary
  */
 export const exportLiteratumDO = Router().post(
   '/export/literatum-do',

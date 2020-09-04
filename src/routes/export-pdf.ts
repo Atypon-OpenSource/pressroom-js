@@ -37,8 +37,6 @@ import { wrapAsync } from '../lib/wrap-async'
  * /export/pdf:
  *   post:
  *     description: Convert manuscript data to PDF
- *     produces:
- *       - application/pdf
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -58,6 +56,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *     responses:
  *       200:
  *         description: Conversion success
+ *         content:
+ *           application/pdf:
+ *             schema:
+ *               type: string
+ *               format: binary
  */
 export const exportPDF = Router().post(
   '/export/pdf',
