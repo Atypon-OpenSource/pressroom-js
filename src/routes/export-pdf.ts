@@ -50,6 +50,9 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  format: binary
  *                manuscriptID:
  *                  type: string
+ *                engine:
+ *                  type: string
+ *                  enum: ['prince', 'weasyprint', 'xelatex', 'tectonic']
  *            encoding:
  *              file:
  *                contentType: application/zip

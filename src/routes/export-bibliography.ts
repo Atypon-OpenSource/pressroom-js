@@ -17,7 +17,10 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import getStream from 'get-stream'
 
-import { generateBibliography } from '../lib/generate-bibliography'
+import {
+  BibliographyFormat,
+  generateBibliography,
+} from '../lib/generate-bibliography'
 import { jwtAuthentication } from '../lib/jwt-authentication'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -42,6 +45,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  format: binary
  *                format:
  *                  type: string
+ *                  enum: ['ads', 'bibtex', 'end', 'isi', 'ris', 'wordbib']
  *            encoding:
  *              file:
  *                contentType: application/json
@@ -59,12 +63,14 @@ export const exportBibliography = Router().post(
   upload.single('file'),
   celebrate({
     body: {
-      format: Joi.string().required(),
+      format: Joi.string()
+        .required()
+        .allow('ads', 'bibtex', 'end', 'isi', 'ris', 'wordbib'),
     },
   }),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
-    const { format } = req.body as { format: string }
+    const { format } = req.body as { format: BibliographyFormat }
 
     const json = await getStream(req.file.stream, { encoding: 'utf-8' })
     const records = JSON.parse(json)

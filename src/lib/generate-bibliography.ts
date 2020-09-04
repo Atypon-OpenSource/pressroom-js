@@ -56,9 +56,17 @@ const generateBibTeX = (records: CSL.Item[]): Buffer => {
   return Buffer.from(bibtex)
 }
 
+export type BibliographyFormat =
+  | 'ads'
+  | 'bibtex'
+  | 'end'
+  | 'isi'
+  | 'ris'
+  | 'wordbib'
+
 export const generateBibliography = async (
   records: CSL.Item[],
-  format: string
+  format: BibliographyFormat
 ): Promise<Buffer> => {
   const bibtex = generateBibTeX(records)
 
