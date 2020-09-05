@@ -26,6 +26,7 @@ import { exportEpub } from './export-epub'
 import { exportHtml } from './export-html'
 import { exportIcml } from './export-icml'
 import { exportJats } from './export-jats'
+import { exportLatex } from './export-latex'
 import { exportLiteratumBundle } from './export-literatum-bundle'
 import { exportLiteratumDO } from './export-literatum-do'
 import { exportLiteratumEEO } from './export-literatum-eeo'
@@ -48,6 +49,7 @@ export const routes = Router()
     exportHtml,
     exportIcml,
     exportJats,
+    exportLatex,
     exportBibliography,
     exportLiteratumBundle,
     exportLiteratumDO,
