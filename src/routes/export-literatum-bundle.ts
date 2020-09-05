@@ -36,6 +36,8 @@ import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
 import { wrapAsync } from '../lib/wrap-async'
 
+type XmlType = 'jats' | 'wileyml'
+
 /**
  * @swagger
  *
@@ -55,6 +57,19 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  format: binary
  *                manuscriptID:
  *                  type: string
+ *                deposit:
+ *                  type: string
+ *                doi:
+ *                  type: string
+ *                frontMatterOnly:
+ *                  type: string
+ *                groupDOI:
+ *                  type: string
+ *                seriesCode:
+ *                  type: string
+ *                xmlType:
+ *                  type: string
+ *                  enum: ['jats', 'wileyml']
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -79,7 +94,7 @@ export const exportLiteratumBundle = Router().post(
       groupDOI: Joi.string().required(),
       manuscriptID: Joi.string().required(),
       seriesCode: Joi.string().required(),
-      xmlType: Joi.string(),
+      xmlType: Joi.string().allow('jats', 'wileyml'),
     },
   }),
   createRequestDirectory,
@@ -100,7 +115,7 @@ export const exportLiteratumBundle = Router().post(
       groupDOI: string
       manuscriptID: string
       seriesCode: string
-      xmlType: string
+      xmlType: XmlType
     }
 
     const [, articleID] = doi.split('/', 2) // TODO: only article ID?
