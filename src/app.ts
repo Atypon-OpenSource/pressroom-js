@@ -23,7 +23,6 @@ import { defineGlobals } from './lib/define-globals'
 import { errorResponder } from './lib/error-responder'
 import { logger } from './lib/logger'
 import { routes } from './routes'
-// import { buildPickerBundle } from './routes/build-picker-bundle'
 
 defineGlobals()
 

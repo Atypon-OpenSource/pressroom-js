@@ -57,11 +57,7 @@ export const routes = Router()
   )
 
   // builders
-  .use(
-    '/',
-    buildSubmissionBundle
-    // buildPickerBundle
-  )
+  .use('/', buildSubmissionBundle)
 
   // converters
   .use('/', convertReferencesAnyStyle, convertReferencesEdifix)

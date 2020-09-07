@@ -34,12 +34,6 @@ interface Config {
     password: string
     username: string
   }
-  couchbase: {
-    bucket: string
-    connection: string
-    password: string
-    username: string
-  }
   gaia: {
     url: string
   }
@@ -74,12 +68,6 @@ export const config: Config = {
     api_key: environmentVariable('PRESSROOM_ARC_API_KEY'),
     password: environmentVariable('PRESSROOM_ARC_PASSWORD'),
     username: environmentVariable('PRESSROOM_ARC_USERNAME'),
-  },
-  couchbase: {
-    bucket: 'TODO', // environmentVariable('PRESSROOM_COUCHBASE_BUCKET'),
-    connection: 'TODO', // environmentVariable('PRESSROOM_COUCHBASE_CONNECTION'),
-    password: 'TODO', // environmentVariable('PRESSROOM_COUCHBASE_PASS'),
-    username: 'TODO', // environmentVariable('PRESSROOM_COUCHBASE_USER'),
   },
   gaia: {
     url: environmentVariable('PRESSROOM_GAIA_URL'),
