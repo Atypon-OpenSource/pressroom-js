@@ -80,7 +80,7 @@ export const exportLiteratumDO = Router().post(
   upload.single('file'),
   celebrate({
     body: {
-      deposit: Joi.boolean(),
+      deposit: Joi.boolean().empty(''),
       doType: Joi.string().required(),
       doi: Joi.string().required(),
       manuscriptID: Joi.string().required(),

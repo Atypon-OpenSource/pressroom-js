@@ -52,6 +52,9 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  type: string
  *                version:
  *                  type: string
+ *              required:
+ *                - file
+ *                - manuscriptID
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -71,7 +74,7 @@ export const exportJats = Router().post(
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
-      version: Joi.string(),
+      version: Joi.string().empty(''),
     },
   }),
   createRequestDirectory,

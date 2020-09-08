@@ -58,6 +58,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  format: binary
  *                enrichMetadata:
  *                  type: boolean
+ *              required:
+ +                - file
  *     responses:
  *       200:
  *         description: Conversion success
@@ -73,7 +75,7 @@ export const importWord = Router().post(
   upload.single('file'),
   celebrate({
     body: Joi.object({
-      enrichMetadata: Joi.boolean().optional(),
+      enrichMetadata: Joi.boolean().empty(''),
     }),
   }),
   createRequestDirectory,

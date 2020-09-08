@@ -23,7 +23,7 @@ export const createPDF = async (
   dir: string,
   inputPath: string,
   outputPath: string,
-  engine: PDFEngine = 'prince',
+  engine: PDFEngine = 'xelatex',
   options?: {
     csl?: string
     css?: string

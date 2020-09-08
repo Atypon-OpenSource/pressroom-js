@@ -35,9 +35,9 @@ import { wrapAsync } from '../lib/wrap-async'
 /**
  * @swagger
  *
- * /export/epub:
+ * /export/latex:
  *   post:
- *     description: Convert manuscript data to EPUB
+ *     description: Convert manuscript data to LaTeX
  *     security:
  *       - BearerAuth: []
  *     requestBody:

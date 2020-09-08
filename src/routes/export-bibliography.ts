@@ -35,6 +35,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *     security:
  *       - BearerAuth: []
  *     requestBody:
+ *        description: multipart form data including bibliography file as text
+ *        required: true
  *        content:
  *          multipart/form-data:
  *            schema:
@@ -65,6 +67,7 @@ export const exportBibliography = Router().post(
     body: {
       format: Joi.string()
         .required()
+        .empty('')
         .allow('ads', 'bibtex', 'end', 'isi', 'ris', 'wordbib'),
     },
   }),

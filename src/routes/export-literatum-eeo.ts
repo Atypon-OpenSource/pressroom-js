@@ -75,9 +75,9 @@ export const exportLiteratumEEO = Router().post(
   upload.single('file'),
   celebrate({
     body: {
-      deposit: Joi.boolean(),
+      deposit: Joi.boolean().empty(''),
       doi: Joi.string().required(),
-      frontMatterOnly: Joi.boolean(),
+      frontMatterOnly: Joi.boolean().empty(''),
       journalName: Joi.string().required(),
       manuscriptID: Joi.string().required(),
       notificationURL: Joi.string().required(),

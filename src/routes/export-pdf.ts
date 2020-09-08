@@ -53,6 +53,9 @@ import { wrapAsync } from '../lib/wrap-async'
  *                engine:
  *                  type: string
  *                  enum: ['prince', 'weasyprint', 'xelatex', 'tectonic']
+ *              required:
+ *                - file
+ *                - manuscriptID
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -72,12 +75,15 @@ export const exportPDF = Router().post(
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
-      engine: Joi.string().allow('prince', 'weasyprint', 'xelatex', 'tectonic'),
+      engine: Joi.string()
+        .empty('')
+        .allow('prince', 'weasyprint', 'xelatex', 'tectonic')
+        .default('xelatex'),
     },
   }),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
-    const { manuscriptID, engine = 'xelatex' } = req.body as {
+    const { manuscriptID, engine } = req.body as {
       manuscriptID: string
       engine: PDFEngine
     }
@@ -111,7 +117,13 @@ export const exportPDF = Router().post(
     const csl = await findCSL(manuscript, modelMap)
 
     // create PDF
-    await createPDF(dir, 'manuscript.xml', 'manuscript.pdf', engine, { csl })
+    await createPDF(
+      dir,
+      'manuscript.xml',
+      'manuscript.pdf',
+      engine || 'xelatex',
+      { csl }
+    )
 
     // send the file as an attachment
     res.download(dir + '/manuscript.pdf')

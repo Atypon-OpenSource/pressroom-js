@@ -88,13 +88,13 @@ export const exportLiteratumBundle = Router().post(
   upload.single('file'),
   celebrate({
     body: {
-      deposit: Joi.boolean(),
+      deposit: Joi.boolean().empty(''),
       doi: Joi.string().required(),
-      frontMatterOnly: Joi.boolean(),
+      frontMatterOnly: Joi.boolean().empty(''),
       groupDOI: Joi.string().required(),
       manuscriptID: Joi.string().required(),
       seriesCode: Joi.string().required(),
-      xmlType: Joi.string().allow('jats', 'wileyml'),
+      xmlType: Joi.string().empty('').allow('jats', 'wileyml'),
     },
   }),
   createRequestDirectory,
