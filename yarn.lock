@@ -921,6 +921,11 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
+"@iarna/word-count@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@iarna/word-count/-/word-count-1.1.2.tgz#e4a82b4fa8df0fe8b31e07263a175b5390925713"
+  integrity sha512-kHU3aSVe9u3uAnBHGmEJ+Pj1aDJTAJMgiG2H3GIBrKgZkAKCMEB8AzLMeYzyLoldB45KbK6C+aB8I3rbSoxioQ==
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -1123,6 +1128,11 @@
   resolved "https://registry.yarnpkg.com/@jsdevtools/ono/-/ono-7.1.2.tgz#373995bb40a6686589a7fcfec06b0e6e304ef6c6"
   integrity sha512-qS/a24RA5FEoiJS9wiv6Pwg2c/kiUo3IVUQcfeM9JvsR6pM8Yx+yl/6xWYLckZCT5jpLNhslgjiA8p/XcGyMRQ==
 
+"@manuscripts/data@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/data/-/data-0.1.0.tgz#b663eec1bf166e885dd1630f74ac5316c04a0c23"
+  integrity sha512-Wrq67UVjazhPL2Qb4CNQiyaQpwd05Di063h/9+blBkg1Cz/i/MxlIQ/ZSLnzqeBXRxKgHYVZW2koUAKyJft/EA==
+
 "@manuscripts/eslint-config@^0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@manuscripts/eslint-config/-/eslint-config-0.2.2.tgz#b87d813534970fd5b9df6c431e1744668c2f883d"
@@ -1150,10 +1160,10 @@
   resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema-utils/-/manuscripts-json-schema-utils-0.0.3.tgz#a74c8752a5606c98f7722657efe6526d2aeac945"
   integrity sha512-5raPRw5Wc/n6SvvraIXs/HN2V7jydivGm0mpQbubmvpgkc0fBkA3nJMkS7+n22aLBq/QGPcjntssTSZxylLGcQ==
 
-"@manuscripts/manuscripts-json-schema@^1.32.0":
-  version "1.32.0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.32.0.tgz#e47dca8d9ee215fb8cfdfec25b785a03203a9fdf"
-  integrity sha512-1Ad1prk3VWLaYPHJwCcSaGw5c9ojtG91CQ307w0R50GC8t/grfDq7b3NuHLxETXpoE8NeWGvUyFlV5yWEcL6lQ==
+"@manuscripts/manuscripts-json-schema@^1.32.0", "@manuscripts/manuscripts-json-schema@^1.32.1":
+  version "1.32.1"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.32.1.tgz#f624885ef26bf6925bb8d0c521cf50fc322977f8"
+  integrity sha512-vlEzYvwnpEkKJ5svAvZJysZnFX/dDjelFPXSlR+HXE0K5ZZLL+wj9S6x+aY5ujjgb6DeZSNwA97tuF13cZLj7Q==
   dependencies:
     ajv "^6.10.0"
     deepmerge "^3.2.0"
@@ -4046,6 +4056,11 @@ graceful-fs@^4.1.10, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0,
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
   integrity sha1-TK+tdrxi8C+gObL5Tpo906ORpyU=
+
+grapheme-splitter@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
+  integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
 growl@1.10.5:
   version "1.10.5"

@@ -78,6 +78,7 @@ describe('export PDF', () => {
     )
   })
 
+  // eslint-disable-next-line jest/no-disabled-tests
   test.skip('exports to a PDF file with Tectonic', async () => {
     const { app } = await import('../../app')
 

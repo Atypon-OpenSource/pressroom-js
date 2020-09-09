@@ -20,7 +20,10 @@
     "version": "yarn build"
   },
   "dependencies": {
+    "@iarna/word-count": "^1.1.2",
+    "@manuscripts/data": "^0.1.0",
     "@manuscripts/manuscript-transform": "^0.36.0",
+    "@manuscripts/manuscripts-json-schema": "^1.32.1",
     "@manuscripts/manuscripts-json-schema-utils": "0.0.3",
     "archiver": "^4.0.1",
     "axios": "^0.19.2",
@@ -40,6 +43,7 @@
     "fuzzball": "^1.3.0",
     "get-stream": "^5.1.0",
     "globby": "^11.0.1",
+    "grapheme-splitter": "^1.0.4",
     "http-errors": "^1.8.0",
     "jsdom": "^16.2.2",
     "jwks-rsa": "^1.8.1",
@@ -60,7 +64,6 @@
     "@babel/preset-typescript": "^7.10.4",
     "@jats4r/dtds": "^0.0.6",
     "@manuscripts/eslint-config": "^0.2.2",
-    "@manuscripts/manuscripts-json-schema": "^1.32.0",
     "@types/archiver": "^3.1.0",
     "@types/cors": "^2.8.6",
     "@types/decompress": "^4.2.3",

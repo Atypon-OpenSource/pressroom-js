@@ -1,0 +1,116 @@
+[
+  {
+    "_id": "MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article",
+    "aim": "Nature Genetics publishes the very highest quality research in genet- ics. It encompasses genetic and functional genomic studies on human traits and on other model organisms, including mouse, fly, nematode and yeast. Current emphasis is on the genetic basis for common and complex diseases and on the functional mechanism, architecture and evolution of gene networks, studied by experimental perturbation.",
+    "bundle": "MPBundle:www-zotero-org-styles-nature-genetics",
+    "category": "MPManuscriptCategory:research-article",
+    "createdAt": 1433095333.219065,
+    "desc": "An Article is a substantial novel research study, with a complex story often involving several techniques or approaches.",
+    "objectType": "MPManuscriptTemplate",
+    "parent": "Nature Genetics Journal Publication",
+    "mandatorySectionRequirements": [
+      "MPMandatorySubsectionsRequirement:7BAF709D-5895-42AC-BCB3-CF1C07A7907A",
+      "MPMandatorySubsectionsRequirement:145EF64B-9282-4AA3-BC9E-B3C269ECAFF9",
+      "MPMandatorySubsectionsRequirement:1490079D-7A05-4C23-8A83-0EB3F4BBTEST",
+      "MPMandatorySubsectionsRequirement:9AA5E639-85EE-4B9B-8635-A446439E3FD1",
+      "MPMandatorySubsectionsRequirement:9D08EFED-77A1-4E79-B91A-4C3C739A4964",
+      "MPMandatorySubsectionsRequirement:62F0E86C-5FCF-4AA7-91A2-573A947BA082",
+      "MPMandatorySubsectionsRequirement:3E9BCAA1-2A82-4BA9-85E7-933A14E7EA18"
+    ],
+    "acceptableFigureFormats": [
+      "tiff",
+      "jpeg"
+    ],
+    "maxWordCountRequirement": "MPMaximumManuscriptWordCountRequirement:9427A4BD-2902-4655-8168-B84022EA7909",
+    "minWordCountRequirement": "MPMinimumManuscriptWordCountRequirement:DAC33160-823F-420F-8A57-3F31F8559D5C",
+    "minCharacterCountRequirement": "MPMinimumManuscriptCharacterCountRequirement:2DB38985-9A65-4DA0-BC09-CE3F3E9C3ABC",
+    "maxCharacterCountRequirement": "MPMaximumManuscriptCharacterCountRequirement:2DB38985-9A65-4DA0-BC09-CE3F3E9C3AB1",
+    "maxManuscriptTitleCharacterCountRequirement": "MPMaximumManuscriptTitleCharacterCountRequirement:A985DD48-1AA0-4248-8F3D-DFF383AC5EF3",
+    "minManuscriptTitleCharacterCountRequirement": "MPMinimumManuscriptTitleCharacterCountRequirement:A985DD48-1AA0-4248-8F3D-DFF383AC5E55",
+    "maxManuscriptTitleWordCountRequirement": "MPMaximumManuscriptTitleWordCountRequirement:2DB38985-9A65-4DA0-BC09-CE3F3E9C3324",
+    "minManuscriptTitleWordCountRequirement": "MPMinimumManuscriptTitleWordCountRequirement:2DB38985-9A65-4DA0-BC09-CE3F3E9C3377",
+    "maxFigureCountRequirement": "MPMaximumFigureCountRequirement:109621BB-3EDE-462E-822B-4D749DF6D123",
+    "maxTableCountRequirement": "MPMaximumTableCountRequirement:09055BAA-F393-451A-A1F3-F624B1F27235",
+    "maxCombinedFigureTableCountRequirement": "MPMaximumCombinedFigureTableCountRequirement:1EB6D9C9-F6CA-4D2F-9666-0A26A9B1DATR",
+    "maxManuscriptReferenceCountRequirement": "MPMaximumManuscriptReferenceCountRequirement:663650BF-D382-4EEE-96A2-C6E4A216FAE6",
+    "requirementIDs": [
+      "MPMaximumAuxiliaryObjectCountRequirement:0B4A4E64-684C-4642-B92C-D19FC78E4A2A"
+    ],
+    "title": "Article",
+    "updatedAt": 1433095363.405134
+  },
+  {
+    "_id": "MPMinimumManuscriptTitleCharacterCountRequirement:A985DD48-1AA0-4248-8F3D-DFF383AC5E55",
+    "count": 20,
+    "createdAt": 1435179344.288356,
+    "objectType": "MPMinimumManuscriptTitleCharacterCountRequirement",
+    "severity": 0,
+    "updatedAt": 1435179344.602095
+  },
+  {
+    "_id": "MPMinimumManuscriptTitleWordCountRequirement:2DB38985-9A65-4DA0-BC09-CE3F3E9C3377",
+    "count": 10,
+    "createdAt": 1439634017.707647,
+    "objectType": "MPMinimumManuscriptTitleWordCountRequirement",
+    "severity": 0,
+    "updatedAt": 1439634017.900541
+  },
+  {
+    "_id": "MPMinimumManuscriptCharacterCountRequirement:2DB38985-9A65-4DA0-BC09-CE3F3E9C3ABC",
+    "count": 100,
+    "createdAt": 1439634017.707647,
+    "objectType": "MPMinimumManuscriptCharacterCountRequirement",
+    "severity": 0,
+    "updatedAt": 1439634017.900541
+  },
+  {
+    "_id": "MPMaximumManuscriptCharacterCountRequirement:2DB38985-9A65-4DA0-BC09-CE3F3E9C3AB1",
+    "count": 400,
+    "createdAt": 1439634017.707647,
+    "objectType": "MPMaximumManuscriptCharacterCountRequirement",
+    "severity": 0,
+    "updatedAt": 1439634017.900541
+  },
+  {
+    "_id": "MPMaximumFigureCountRequirement:109621BB-3EDE-462E-822B-4D749DF6D123",
+    "count": 5,
+    "createdAt": 1445196095.857493,
+    "objectType": "MPMaximumFigureCountRequirement",
+    "severity": 0,
+    "updatedAt": 1445196095.857493
+  },
+  {
+    "_id": "MPMaximumTableCountRequirement:09055BAA-F393-451A-A1F3-F624B1F27235",
+    "count": 3,
+    "createdAt": 1445196095.499612,
+    "objectType": "MPMaximumTableCountRequirement",
+    "severity": 0,
+    "updatedAt": 1445196095.51161
+  },
+  {
+    "_id": "MPMaximumCombinedFigureTableCountRequirement:1EB6D9C9-F6CA-4D2F-9666-0A26A9B1DATR",
+    "count": 3,
+    "createdAt": 1445290330.763738,
+    "objectType": "MPMaximumCombinedFigureTableCountRequirement",
+    "severity": 0,
+    "updatedAt": 1445290330.763738
+  },
+  {
+    "_id": "MPMandatorySubsectionsRequirement:1490079D-7A05-4C23-8A83-0EB3F4BBTEST",
+    "createdAt": 1433095333.226976,
+    "embeddedSectionDescriptions": [
+      {
+        "_id": "MPSectionDescription:9F8AC4A6-0B93-46A9-ADF4-BC8F6A6603BE",
+        "maxWordCount": 400,
+        "maxTitleCharLength": 400,
+        "objectType": "MPSectionDescription",
+        "required": true,
+        "sectionCategory": "MPSectionCategory:abstract"
+      }
+    ],
+    "evaluatedObject": "MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article",
+    "objectType": "MPMandatorySubsectionsRequirement",
+    "severity": 0,
+    "updatedAt": 1433095333.226976
+  }
+]
