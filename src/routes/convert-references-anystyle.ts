@@ -18,7 +18,7 @@ import { writeFile } from 'fs-extra'
 import getStream from 'get-stream'
 
 import { parseReferences } from '../lib/anystyle'
-import { jwtAuthentication } from '../lib/jwt-authentication'
+import { authentication } from '../lib/authentication'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { wrapAsync } from '../lib/wrap-async'
@@ -31,6 +31,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Convert plain text references to CSL-JSON
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        content:
  *          multipart/form-data:
@@ -54,7 +55,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const convertReferencesAnyStyle = Router().post(
   '/convert/references-anystyle',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   createRequestDirectory,
   wrapAsync(async (req, res) => {

@@ -21,9 +21,9 @@ import archiver from 'archiver'
 import { Router } from 'express'
 import getStream from 'get-stream'
 
+import { authentication } from '../lib/authentication'
 import { createJSON } from '../lib/create-json'
 import { convertPDFToTEI } from '../lib/grobid'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -38,6 +38,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Convert PDF file to Manuscripts data via GROBID
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        description: multipart form data including PDF file
  *        required: true
@@ -63,7 +64,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const importPDF = Router().post(
   '/import/pdf',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   createRequestDirectory,
   wrapAsync(async (req, res) => {

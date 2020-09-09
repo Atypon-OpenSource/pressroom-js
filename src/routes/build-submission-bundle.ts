@@ -20,7 +20,7 @@ import fs from 'fs-extra'
 import createHttpError from 'http-errors'
 import path from 'path'
 
-import { apiKeyAuthentication } from '../lib/api-key-authentication'
+import { apiKeyAuthentication } from '../lib/authentication'
 import { config } from '../lib/config'
 import { processElements, XLINK_NAMESPACE } from '../lib/data'
 import { convertWordToJATS } from '../lib/extyles-arc'

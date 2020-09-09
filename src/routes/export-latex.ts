@@ -19,11 +19,11 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
+import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createLatex } from '../lib/create-latex'
 import { findCSL } from '../lib/find-csl'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { createArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
@@ -40,6 +40,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Convert manuscript data to LaTeX
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        content:
  *          multipart/form-data:
@@ -65,7 +66,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const exportLatex = Router().post(
   '/export/latex',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   celebrate({
     body: {

@@ -17,7 +17,7 @@ import JSZip from 'jszip'
 import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
 
 describe('export Literatum EEO', () => {
   test('exports to Literatum EEO', async () => {
@@ -35,6 +35,7 @@ describe('export Literatum EEO', () => {
       .field('frontMatterOnly', false)
       .field('journalName', 'Test Journal')
       .field('notificationURL', 'https://example.com/test/567')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

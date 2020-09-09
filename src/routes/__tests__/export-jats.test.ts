@@ -17,7 +17,7 @@ import JSZip from 'jszip'
 import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
 
 describe('export JATS', () => {
   test('exports to a ZIP file containing a JATS XML file', async () => {
@@ -30,6 +30,7 @@ describe('export JATS', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -72,6 +73,7 @@ describe('export JATS', () => {
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
       .field('version', '1.1')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

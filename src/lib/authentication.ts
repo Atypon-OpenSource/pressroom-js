@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { RequestHandler } from 'express'
+import jwt from 'express-jwt'
 import createHttpError from 'http-errors'
+import jwksRsa from 'jwks-rsa'
 
 import { config } from './config'
 
@@ -23,5 +24,26 @@ export const apiKeyAuthentication: RequestHandler = (req, res, next) => {
   if (req.headers['pressroom-api-key'] !== config.api_key) {
     throw createHttpError(401, 'Incorrect API key')
   }
+  req.user = {}
   next()
+}
+
+export const jwtAuthentication = jwt({
+  secret: jwksRsa.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: `${config.jwt.root}/api/v1/project/pressroom-js.jwks`,
+  }),
+  issuer: config.jwt.issuer,
+  audience: 'pressroom-js',
+  algorithms: ['RS256'],
+})
+
+export const authentication: RequestHandler = (req, res, next) => {
+  if (config.api_key && 'pressroom-api-key' in req.headers) {
+    apiKeyAuthentication(req, res, next)
+  } else {
+    jwtAuthentication(req, res, next)
+  }
 }

@@ -15,7 +15,8 @@
  */
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
+
 jest.setTimeout(30000)
 
 describe('export PDF', () => {
@@ -29,6 +30,7 @@ describe('export PDF', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -49,6 +51,7 @@ describe('export PDF', () => {
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
       .field('engine', 'prince')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -69,6 +72,7 @@ describe('export PDF', () => {
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
       .field('engine', 'weasyprint')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -90,6 +94,7 @@ describe('export PDF', () => {
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
       .field('engine', 'tectonic')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

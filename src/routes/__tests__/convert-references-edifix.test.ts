@@ -17,7 +17,8 @@
 import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
+
 jest.mock('../../lib/edifix')
 
 describe('convert references via Edifix', () => {
@@ -32,6 +33,7 @@ describe('convert references via Edifix', () => {
         'pressroom-edifix-secret',
         Buffer.from('test:test:test').toString('base64')
       )
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

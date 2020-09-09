@@ -20,6 +20,7 @@ import { Router } from 'express'
 import fs from 'fs-extra'
 import path from 'path'
 
+import { authentication } from '../lib/authentication'
 import { config } from '../lib/config'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
@@ -28,7 +29,6 @@ import { createPDF } from '../lib/create-pdf'
 import { processElements, XLINK_NAMESPACE } from '../lib/data'
 import { depositFTPS } from '../lib/deposit-ftps'
 import { convertJATSToWileyML } from '../lib/gaia'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -46,6 +46,7 @@ type XmlType = 'jats' | 'wileyml'
  *     description: Convert manuscript data to JATS/WileyML bundle for deposit in Literatum
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        content:
  *          multipart/form-data:
@@ -84,7 +85,7 @@ type XmlType = 'jats' | 'wileyml'
  */
 export const exportLiteratumBundle = Router().post(
   '/export/literatum-bundle',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   celebrate({
     body: {

@@ -16,7 +16,8 @@
 
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
+
 jest.mock('../../lib/extyles-arc')
 
 describe('import Word via Arc', () => {
@@ -27,6 +28,7 @@ describe('import Word via Arc', () => {
       .post('/api/v2/import/word-arc')
       .attach('file', __dirname + '/__fixtures__/manuscript.docx')
       .set('pressroom-arc-secret', Buffer.from('test:test').toString('base64'))
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

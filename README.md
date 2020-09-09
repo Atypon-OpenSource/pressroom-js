@@ -20,3 +20,13 @@ A web service for manuscript conversion.
 1. `yarn global add @manuscripts/mathjax-filter`
 1. `gem install anystyle-cli`
 1. `yarn dev`
+
+## Development
+
+1. Copy `.env.example` to `.env` and edit the values as needed.
+1. Run `yarn dev` to start the server with `nodemon`.
+
+## OpenAPI
+
+* The API documentation is served at `/api/v2/docs`. 
+* After editing the Swagger documentation for a route, run `yarn build` to rebuild the `dist` folder, then restart the dev server to pick up the changes.

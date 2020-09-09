@@ -15,7 +15,7 @@
  */
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
 
 describe('import Word', () => {
   test('imports from a Word file', async () => {
@@ -24,6 +24,7 @@ describe('import Word', () => {
     const response = await request(app)
       .post('/api/v2/import/word')
       .attach('file', __dirname + '/__fixtures__/manuscript.docx')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -39,6 +40,7 @@ describe('import Word', () => {
       .post('/api/v2/import/word')
       .attach('file', __dirname + '/__fixtures__/manuscript.docx')
       .field('enrichMetadata', true)
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

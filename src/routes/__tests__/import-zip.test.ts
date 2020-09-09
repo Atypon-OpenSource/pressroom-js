@@ -15,7 +15,8 @@
  */
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
+
 jest.setTimeout(30000)
 
 describe('import ZIP', () => {
@@ -25,6 +26,7 @@ describe('import ZIP', () => {
     const response = await request(app)
       .post('/api/v2/import/zip')
       .attach('file', __dirname + '/__fixtures__/markdown.zip')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -40,6 +42,7 @@ describe('import ZIP', () => {
     const response = await request(app)
       .post('/api/v2/import/zip')
       .attach('file', __dirname + '/__fixtures__/latex.zip')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

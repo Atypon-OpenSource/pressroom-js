@@ -15,7 +15,7 @@
  */
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
 
 describe('export Literatum DO', () => {
   test('exports to Literatum DO', async () => {
@@ -31,6 +31,7 @@ describe('export Literatum DO', () => {
       .field('deposit', false)
       .field('doi', '10.1234/567')
       .field('doType', 'HTML')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

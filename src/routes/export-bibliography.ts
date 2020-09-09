@@ -17,11 +17,11 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import getStream from 'get-stream'
 
+import { authentication } from '../lib/authentication'
 import {
   BibliographyFormat,
   generateBibliography,
 } from '../lib/generate-bibliography'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { wrapAsync } from '../lib/wrap-async'
@@ -34,6 +34,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Convert CSL JSON to other bibliography formats
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        description: multipart form data including bibliography file as text
  *        required: true
@@ -61,7 +62,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const exportBibliography = Router().post(
   '/export/bibliography',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   celebrate({
     body: {

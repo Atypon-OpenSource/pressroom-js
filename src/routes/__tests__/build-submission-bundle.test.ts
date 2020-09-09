@@ -15,7 +15,8 @@
  */
 import request from 'supertest'
 
-jest.mock('../../lib/api-key-authentication')
+import { config } from '../../lib/config'
+
 jest.mock('../../lib/extyles-arc')
 jest.mock('../../lib/fetch-literatum-attachment')
 jest.mock('../../lib/gaia')
@@ -42,6 +43,7 @@ describe('build submission bundle', () => {
           doi: '10.0000/1234',
         },
       })
+      .set('pressroom-api-key', config.api_key)
       .set('Content-Type', 'application/json')
 
     expect(response.status).toBe(200)

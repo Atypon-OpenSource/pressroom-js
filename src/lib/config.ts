@@ -27,21 +27,12 @@ const environmentVariable = (name: string): string => {
   return value
 }
 
-const isTrue = (name: string): boolean => {
-  const value = process.env[name]
-
-  return value === 'true' || value === '1'
-}
-
 interface Config {
   api_key: string
   arc: {
     api_key: string
     password: string
     username: string
-  }
-  authentication: {
-    disabled: boolean
   }
   gaia: {
     url: string
@@ -77,9 +68,6 @@ export const config: Config = {
     api_key: environmentVariable('PRESSROOM_ARC_API_KEY'),
     password: environmentVariable('PRESSROOM_ARC_PASSWORD'),
     username: environmentVariable('PRESSROOM_ARC_USERNAME'),
-  },
-  authentication: {
-    disabled: isTrue('PRESSROOM_DISABLE_AUTHENTICATION'),
   },
   gaia: {
     url: environmentVariable('PRESSROOM_GAIA_URL'),

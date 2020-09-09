@@ -15,7 +15,7 @@
  */
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
 
 describe('validate manuscript', () => {
   test('validates a manuscript with a test template', async () => {
@@ -33,7 +33,9 @@ describe('validate manuscript', () => {
         'templateID',
         'MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article'
       )
+      .set('pressroom-api-key', config.api_key)
       .responseType('json')
+
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/json; charset=utf-8')
     expect(JSON.parse(response.body.toString())).toMatchSnapshot(

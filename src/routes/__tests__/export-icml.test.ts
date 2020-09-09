@@ -16,7 +16,7 @@
 import JSZip from 'jszip'
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
 
 describe('export ICML', () => {
   test('exports to a ZIP file containing an ICML file', async () => {
@@ -29,6 +29,7 @@ describe('export ICML', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

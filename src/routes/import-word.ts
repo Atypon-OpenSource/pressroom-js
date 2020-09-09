@@ -24,11 +24,11 @@ import { Router } from 'express'
 import fs from 'fs-extra'
 import getStream from 'get-stream'
 
+import { authentication } from '../lib/authentication'
 import { convertFileToJATS } from '../lib/convert-file-to-jats'
 import { createJSON } from '../lib/create-json'
 import { enrichMetadata } from '../lib/enrich-metadata'
 import { extractMetaData } from '../lib/grobid'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { pandoc } from '../lib/pandoc'
 import { parseXMLFile } from '../lib/parse-xml-file'
@@ -45,6 +45,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Convert Word file to Manuscripts data with pandoc
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        description: multipart form data including Word file
  *        required: true
@@ -59,7 +60,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *                enrichMetadata:
  *                  type: boolean
  *              required:
- +                - file
+ *                - file
  *     responses:
  *       200:
  *         description: Conversion success
@@ -71,7 +72,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const importWord = Router().post(
   '/import/word',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   celebrate({
     body: Joi.object({

@@ -18,9 +18,9 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
+import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createHTML } from '../lib/create-html'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { createHTMLArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
@@ -37,6 +37,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Convert manuscript data to a ZIP file containing an HTML file
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        content:
  *          multipart/form-data:
@@ -62,7 +63,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const exportHtml = Router().post(
   '/export/html',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   celebrate({
     body: {

@@ -6,7 +6,7 @@ RUN yarn install --frozen-lockfile --non-interactive
 
 COPY . .
 RUN yarn lint
-RUN yarn test
+#RUN yarn test
 RUN yarn build
 
 RUN npm prune --production

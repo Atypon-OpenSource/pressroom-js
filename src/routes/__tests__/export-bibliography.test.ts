@@ -15,7 +15,7 @@
  */
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
 
 describe('export bibliography', () => {
   test('exports CSL JSON as BibTeX', async () => {
@@ -25,6 +25,7 @@ describe('export bibliography', () => {
       .post('/api/v2/export/bibliography')
       .attach('file', __dirname + '/__fixtures__/csl.json')
       .field('format', 'bibtex')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -39,6 +40,7 @@ describe('export bibliography', () => {
       .post('/api/v2/export/bibliography')
       .attach('file', __dirname + '/__fixtures__/csl.json')
       .field('format', 'ris')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -53,6 +55,7 @@ describe('export bibliography', () => {
       .post('/api/v2/export/bibliography')
       .attach('file', __dirname + '/__fixtures__/csl.json')
       .field('format', 'end')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

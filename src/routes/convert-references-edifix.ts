@@ -16,9 +16,9 @@
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 
+import { authentication } from '../lib/authentication'
 import { convertBibliographyToJATS } from '../lib/edifix'
 import { edifixCredentials } from '../lib/edifix-credentials'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { upload } from '../lib/upload'
 import { wrapAsync } from '../lib/wrap-async'
 
@@ -30,6 +30,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Copyedits, corrects, and links a list of references
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: header
  *         name: edifix-secret
@@ -61,7 +62,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const convertReferencesEdifix = Router().post(
   '/convert/references-edifix',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   celebrate({
     body: {

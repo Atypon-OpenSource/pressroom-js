@@ -18,7 +18,7 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
-import { jwtAuthentication } from '../lib/jwt-authentication'
+import { authentication } from '../lib/authentication'
 import { logger } from '../lib/logger'
 import { templateModelMap } from '../lib/requirements/templates'
 import { runManuscriptValidator } from '../lib/requirements/validate'
@@ -37,6 +37,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *       - application/json
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        content:
  *          multipart/form-data:
@@ -247,7 +248,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const validateManuscript = Router().post(
   '/validate/manuscript',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   celebrate({
     body: {

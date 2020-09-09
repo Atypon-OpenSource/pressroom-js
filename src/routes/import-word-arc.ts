@@ -25,10 +25,10 @@ import createHttpError from 'http-errors'
 import path from 'path'
 
 import { arcCredentials } from '../lib/arc-credentials'
+import { authentication } from '../lib/authentication'
 import { createJSON } from '../lib/create-json'
 import { processElements, XLINK_NAMESPACE } from '../lib/data'
 import { convertWordToJATS } from '../lib/extyles-arc'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
@@ -45,6 +45,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Convert Word file to Manuscripts data via Arc
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     parameters:
  *      - in: header
  *        name: pressroom-extylesarc-secret
@@ -73,7 +74,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const importWordArc = Router().post(
   '/import/word-arc',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   arcCredentials,
   upload.single('file'),
   createRequestDirectory,

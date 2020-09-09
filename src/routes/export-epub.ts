@@ -19,12 +19,12 @@ import { Router } from 'express'
 import fs from 'fs-extra'
 import path from 'path'
 
+import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createEpub } from '../lib/create-epub'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { XLINK_NAMESPACE } from '../lib/data'
 import { findCSL } from '../lib/find-csl'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
@@ -39,6 +39,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Convert manuscript data to EPUB
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        content:
  *          multipart/form-data:
@@ -64,7 +65,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const exportEpub = Router().post(
   '/export/epub',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   celebrate({
     body: {

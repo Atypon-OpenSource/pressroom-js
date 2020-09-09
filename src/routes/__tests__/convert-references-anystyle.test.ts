@@ -16,7 +16,7 @@
 
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
 
 describe('convert references via AnyStyle', () => {
   test('converts references from text to CSL-JSON', async () => {
@@ -25,6 +25,7 @@ describe('convert references via AnyStyle', () => {
     const response = await request(app)
       .post('/api/v2/convert/references-anystyle')
       .attach('file', __dirname + '/__fixtures__/references.txt')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

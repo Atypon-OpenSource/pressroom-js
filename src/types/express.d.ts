@@ -22,8 +22,6 @@ declare module 'express-serve-static-core' {
 
   interface Request {
     user: {
-      containerID: string
-      audience: string
       arc?: ExtylesArcCredentials
       edifix?: EdifixCredentials
     }

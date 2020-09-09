@@ -16,7 +16,7 @@
 import { errors } from 'celebrate'
 import cors from 'cors'
 import express from 'express'
-import createError from 'http-errors'
+import createHttpError from 'http-errors'
 import morgan from 'morgan'
 
 import { defineGlobals } from './lib/define-globals'
@@ -43,7 +43,7 @@ export const app = express()
 
   // not found handler
   .use((req, res, next) => {
-    next(createError(404))
+    next(createHttpError(404))
   })
 
   // error logger

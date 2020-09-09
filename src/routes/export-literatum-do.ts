@@ -21,6 +21,7 @@ import { Router } from 'express'
 import fs from 'fs-extra'
 import path from 'path'
 
+import { authentication } from '../lib/authentication'
 import { config } from '../lib/config'
 import { createArticle } from '../lib/create-article'
 import { createHTML } from '../lib/create-html'
@@ -28,7 +29,6 @@ import { buildManifest } from '../lib/create-manifest'
 import { buildContainer } from '../lib/create-mets'
 import { processElements } from '../lib/data'
 import { depositSFTP } from '../lib/deposit-sftp'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { createHTMLArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
@@ -45,6 +45,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Convert manuscript data to Literatum DO bundle
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        content:
  *          multipart/form-data:
@@ -76,7 +77,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const exportLiteratumDO = Router().post(
   '/export/literatum-do',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   celebrate({
     body: {

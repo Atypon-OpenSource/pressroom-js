@@ -22,11 +22,11 @@ import archiver from 'archiver'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
+import { authentication } from '../lib/authentication'
 import { convertFileToJATS } from '../lib/convert-file-to-jats'
 import { convertLatexToJATS } from '../lib/convert-latex-to-jats'
 import { createJSON } from '../lib/create-json'
 import { findManuscriptFile } from '../lib/find-manuscript-file'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
@@ -43,6 +43,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Convert manuscript in ZIP file to Manuscripts data
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        description: multipart form data including ZIP file containing manuscript
  *        required: true
@@ -68,7 +69,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const importZip = Router().post(
   '/import/zip',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   createRequestDirectory,
   wrapAsync(async (req, res) => {

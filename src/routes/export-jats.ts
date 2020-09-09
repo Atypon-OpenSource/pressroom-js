@@ -19,10 +19,10 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
+import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createIdGenerator } from '../lib/id-generator'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { createArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
@@ -39,6 +39,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Convert manuscript data to a ZIP file containing a JATS XML file
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        content:
  *          multipart/form-data:
@@ -69,7 +70,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const exportJats = Router().post(
   '/export/jats',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   celebrate({
     body: {

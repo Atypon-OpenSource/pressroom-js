@@ -17,7 +17,8 @@
 import JSZip from 'jszip'
 import request from 'supertest'
 
-jest.mock('../../lib/jwt-authentication')
+import { config } from '../../lib/config'
+
 jest.mock('../../lib/grobid')
 
 describe('import PDF', () => {
@@ -27,6 +28,7 @@ describe('import PDF', () => {
     const response = await request(app)
       .post('/api/v2/import/pdf')
       .attach('file', __dirname + '/__fixtures__/manuscript.pdf')
+      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

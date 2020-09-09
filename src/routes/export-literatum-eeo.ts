@@ -18,11 +18,11 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
+import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createPDF } from '../lib/create-pdf'
 import { depositEEO } from '../lib/deposit-eeo'
-import { jwtAuthentication } from '../lib/jwt-authentication'
 import { logger } from '../lib/logger'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -38,6 +38,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *     description: Convert manuscript data to Literatum EEO deposit
  *     security:
  *       - BearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *        content:
  *          multipart/form-data:
@@ -71,7 +72,7 @@ import { wrapAsync } from '../lib/wrap-async'
  */
 export const exportLiteratumEEO = Router().post(
   '/export/literatum-eeo',
-  jwtAuthentication('pressroom-js'),
+  authentication,
   upload.single('file'),
   celebrate({
     body: {
