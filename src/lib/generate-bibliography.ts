@@ -16,6 +16,7 @@
 // @ts-ignore
 import CSL from 'citeproc'
 import fs from 'fs'
+import createHttpError from 'http-errors'
 import { v4 as uuid } from 'uuid'
 
 import { convertBibtex } from './bibutils'
@@ -82,6 +83,6 @@ export const generateBibliography = async (
       return await convertBibtex(bibtex, format)
 
     default:
-      throw new Error('Unknown bibliography format')
+      throw createHttpError(400, `Unknown bibliography format "${format}"`)
   }
 }

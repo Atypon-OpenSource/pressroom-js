@@ -67,9 +67,9 @@ export const exportBibliography = Router().post(
   celebrate({
     body: {
       format: Joi.string()
-        .required()
         .empty('')
-        .allow('ads', 'bibtex', 'end', 'isi', 'ris', 'wordbib'),
+        .allow('ads', 'bibtex', 'end', 'isi', 'ris', 'wordbib')
+        .required(),
     },
   }),
   createRequestDirectory,
