@@ -30,6 +30,7 @@ import { exportLatex } from './export-latex'
 import { exportLiteratumBundle } from './export-literatum-bundle'
 import { exportLiteratumDO } from './export-literatum-do'
 import { exportLiteratumEEO } from './export-literatum-eeo'
+import { exportMarkdown } from './export-markdown'
 import { exportPDF } from './export-pdf'
 import { importPDF } from './import-pdf'
 import { importWord } from './import-word'
@@ -51,6 +52,7 @@ export const routes = Router()
     exportIcml,
     exportJats,
     exportLatex,
+    exportMarkdown,
     exportBibliography,
     exportLiteratumBundle,
     exportLiteratumDO,

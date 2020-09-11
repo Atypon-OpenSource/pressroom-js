@@ -22,7 +22,7 @@ import fs from 'fs-extra'
 import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
-import { createLatex } from '../lib/create-latex'
+import { createMarkdown } from '../lib/create-markdown'
 import { findCSL } from '../lib/find-csl'
 import { logger } from '../lib/logger'
 import { createArchivePathGenerator } from '../lib/path-generator'
@@ -35,9 +35,9 @@ import { wrapAsync } from '../lib/wrap-async'
 /**
  * @swagger
  *
- * /export/latex:
+ * /export/markdown:
  *   post:
- *     description: Convert manuscript data to LaTeX
+ *     description: Convert manuscript data to Markdown
  *     security:
  *       - BearerAuth: []
  *       - ApiKeyAuth: []
@@ -64,8 +64,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *               type: string
  *               format: binary
  */
-export const exportLatex = Router().post(
-  '/export/latex',
+export const exportMarkdown = Router().post(
+  '/export/markdown',
   authentication,
   upload.single('file'),
   celebrate({
@@ -101,11 +101,11 @@ export const exportLatex = Router().post(
     // use the CSL style defined in the manuscript bundle
     const csl = await findCSL(manuscript, modelMap)
 
-    // create LaTeX
-    await createLatex(dir, 'manuscript.xml', 'manuscript.tex', { csl })
+    // create Markdown
+    await createMarkdown(dir, 'manuscript.xml', 'manuscript.md', { csl })
 
-    archive.append(fs.createReadStream(dir + '/manuscript.tex'), {
-      name: 'manuscript.tex',
+    archive.append(fs.createReadStream(dir + '/manuscript.md'), {
+      name: 'manuscript.md',
     })
 
     // TODO: add images to archive
