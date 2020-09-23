@@ -104,4 +104,43 @@ describe('export JATS', () => {
         'http://jats.nlm.nih.gov/archiving/1.1/JATS-archive-oasis-article1-mathml3.dtd',
     })
   })
+
+  test('automatically chooses a manuscript ID', async () => {
+    const { app } = await import('../../app')
+
+    const response = await request(app)
+      .post('/api/v2/export/jats')
+      .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
+      .field('manuscriptID', 'auto')
+      .set('pressroom-api-key', config.api_key)
+      .responseType('blob')
+
+    expect(response.status).toBe(200)
+    expect(response.get('Content-Type')).toBe('application/zip')
+    expect(response.get('Content-Disposition')).toBe(
+      'attachment; filename="manuscript.zip"'
+    )
+
+    const zip = await new JSZip().loadAsync(response.body)
+
+    expect(Object.keys(zip.files).length).toBe(2)
+
+    const xml = await zip.files['manuscript.xml'].async('text')
+
+    const doc = parseXml(xml, {
+      dtdload: true,
+      dtdvalid: true,
+      nonet: true,
+    })
+
+    expect(doc.errors.length).toBe(0)
+
+    expect(doc.getDtd()).toEqual({
+      externalId:
+        '-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with OASIS Tables with MathML3 v1.2 20190208//EN',
+      name: 'article',
+      systemId:
+        'http://jats.nlm.nih.gov/archiving/1.2/JATS-archive-oasis-article1-mathml3.dtd',
+    })
+  })
 })

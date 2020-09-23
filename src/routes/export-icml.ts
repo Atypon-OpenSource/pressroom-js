@@ -25,6 +25,7 @@ import { createIcml } from '../lib/create-icml'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { findCSL } from '../lib/find-csl'
 import { logger } from '../lib/logger'
+import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -68,6 +69,7 @@ export const exportIcml = Router().post(
   '/export/icml',
   authentication,
   upload.single('file'),
+  chooseManuscriptID,
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),

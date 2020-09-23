@@ -30,6 +30,7 @@ import { processElements, XLINK_NAMESPACE } from '../lib/data'
 import { depositFTPS } from '../lib/deposit-ftps'
 import { convertJATSToWileyML } from '../lib/gaia'
 import { logger } from '../lib/logger'
+import { chooseManuscriptID } from '../lib/manuscript-id'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
@@ -87,6 +88,7 @@ export const exportLiteratumBundle = Router().post(
   '/export/literatum-bundle',
   authentication,
   upload.single('file'),
+  chooseManuscriptID,
   celebrate({
     body: {
       deposit: Joi.boolean().empty(''),

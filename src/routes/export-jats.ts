@@ -24,6 +24,7 @@ import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createIdGenerator } from '../lib/id-generator'
 import { logger } from '../lib/logger'
+import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -72,6 +73,7 @@ export const exportJats = Router().post(
   '/export/jats',
   authentication,
   upload.single('file'),
+  chooseManuscriptID,
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),

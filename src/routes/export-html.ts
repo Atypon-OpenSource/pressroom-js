@@ -22,6 +22,7 @@ import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createHTML } from '../lib/create-html'
 import { logger } from '../lib/logger'
+import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createHTMLArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -65,6 +66,7 @@ export const exportHtml = Router().post(
   '/export/html',
   authentication,
   upload.single('file'),
+  chooseManuscriptID,
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),

@@ -20,6 +20,7 @@ import fs from 'fs-extra'
 
 import { authentication } from '../lib/authentication'
 import { logger } from '../lib/logger'
+import { chooseManuscriptID } from '../lib/manuscript-id'
 import { templateModelMap } from '../lib/requirements/templates'
 import { runManuscriptValidator } from '../lib/requirements/validate'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -250,6 +251,7 @@ export const validateManuscript = Router().post(
   '/validate/manuscript',
   authentication,
   upload.single('file'),
+  chooseManuscriptID,
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),

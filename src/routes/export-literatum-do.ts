@@ -30,6 +30,7 @@ import { buildContainer } from '../lib/create-mets'
 import { processElements } from '../lib/data'
 import { depositSFTP } from '../lib/deposit-sftp'
 import { logger } from '../lib/logger'
+import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createHTMLArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -87,6 +88,7 @@ export const exportLiteratumDO = Router().post(
       manuscriptID: Joi.string().required(),
     },
   }),
+  chooseManuscriptID,
   createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { deposit, doi, doType, manuscriptID } = req.body as {

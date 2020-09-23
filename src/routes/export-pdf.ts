@@ -26,6 +26,7 @@ import { createPDF, PDFEngine } from '../lib/create-pdf'
 import { XLINK_NAMESPACE } from '../lib/data'
 import { findCSL } from '../lib/find-csl'
 import { logger } from '../lib/logger'
+import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
@@ -73,6 +74,7 @@ export const exportPDF = Router().post(
   '/export/pdf',
   authentication,
   upload.single('file'),
+  chooseManuscriptID,
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),

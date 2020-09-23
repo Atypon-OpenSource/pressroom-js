@@ -24,6 +24,7 @@ import { createJATSXML } from '../lib/create-jats-xml'
 import { createPDF } from '../lib/create-pdf'
 import { depositEEO } from '../lib/deposit-eeo'
 import { logger } from '../lib/logger'
+import { chooseManuscriptID } from '../lib/manuscript-id'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
@@ -74,6 +75,7 @@ export const exportLiteratumEEO = Router().post(
   '/export/literatum-eeo',
   authentication,
   upload.single('file'),
+  chooseManuscriptID,
   celebrate({
     body: {
       deposit: Joi.boolean().empty(''),

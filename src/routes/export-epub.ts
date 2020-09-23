@@ -26,6 +26,7 @@ import { createJATSXML } from '../lib/create-jats-xml'
 import { XLINK_NAMESPACE } from '../lib/data'
 import { findCSL } from '../lib/find-csl'
 import { logger } from '../lib/logger'
+import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
@@ -67,6 +68,7 @@ export const exportEpub = Router().post(
   '/export/epub',
   authentication,
   upload.single('file'),
+  chooseManuscriptID,
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
