@@ -88,7 +88,7 @@ Array [
   },
   Object {
     "data": Object {
-      "count": 459,
+      "count": 458,
       "value": 400,
     },
     "passed": false,
@@ -97,7 +97,7 @@ Array [
   },
   Object {
     "data": Object {
-      "count": 459,
+      "count": 458,
       "value": 100,
     },
     "passed": true,
@@ -142,7 +142,7 @@ Array [
   },
   Object {
     "data": Object {
-      "count": 17,
+      "count": 16,
       "value": 80,
     },
     "passed": true,
@@ -151,7 +151,7 @@ Array [
   },
   Object {
     "data": Object {
-      "count": 17,
+      "count": 16,
       "value": 20,
     },
     "passed": false,
@@ -210,6 +210,46 @@ Array [
     "passed": false,
     "severity": 0,
     "type": "figure-format-validation",
+  },
+  Object {
+    "data": Object {
+      "count": 304,
+      "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
+      "value": 600,
+    },
+    "passed": false,
+    "severity": 0,
+    "type": "figure-minimum-width-resolution",
+  },
+  Object {
+    "data": Object {
+      "count": 304,
+      "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
+      "value": 4000,
+    },
+    "passed": true,
+    "severity": 0,
+    "type": "figure-maximum-width-resolution",
+  },
+  Object {
+    "data": Object {
+      "count": 350,
+      "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
+      "value": 400,
+    },
+    "passed": false,
+    "severity": 0,
+    "type": "figure-minimum-height-resolution",
+  },
+  Object {
+    "data": Object {
+      "count": 350,
+      "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
+      "value": 1000,
+    },
+    "passed": true,
+    "severity": 0,
+    "type": "figure-maximum-height-resolution",
   },
 ]
 `;

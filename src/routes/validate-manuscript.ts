@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ManuscriptTemplate } from '@manuscripts/manuscripts-json-schema'
+import { createTemplateValidator, InputError } from '@manuscripts/requirements'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
+import createHttpError from 'http-errors'
 
 import { authentication } from '../lib/authentication'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
-import { templateModelMap } from '../lib/requirements/templates'
-import { runManuscriptValidator } from '../lib/requirements/validate'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
@@ -235,6 +234,10 @@ import { wrapAsync } from '../lib/wrap-async'
  *                 - manuscript-maximum-tables
  *                 - manuscript-maximum-combined-figure-tables
  *                 - manuscript-maximum-references
+ *                 - figure-minimum-width-resolution
+ *                 - figure-maximum-width-resolution
+ *                 - figure-minimum-height-resolution
+ *                 - figure-maximum-height-resolution
  *               description:
  *                 validates the counting requirements
  *             data:
@@ -242,10 +245,14 @@ import { wrapAsync } from '../lib/wrap-async'
  *               properties:
  *                 count:
  *                   type: number
- *                   description: the required number
+ *                   description: current number
  *                 value:
  *                   type: number
- *                   description: the current number
+ *                   description: required number
+ *                 id:
+ *                   type: string
+ *                   description: The ID of the manuscript object
+ *                   required: false
  */
 export const validateManuscript = Router().post(
   '/validate/manuscript',
@@ -270,25 +277,33 @@ export const validateManuscript = Router().post(
     logger.debug(`Extracting ZIP archive to ${dir}`)
     await unzip(req.file.stream, dir)
 
-    // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    //TODO: validate that ManuscriptID found in the passed Manuscript file matches the one passed to the API
-    const template = templateModelMap.get(templateID) as ManuscriptTemplate
 
-    logger.info(
-      `Validating manuscript with template "${template.parent} ${template.title}"`
-    )
+    try {
+      const requirementValidator = createTemplateValidator(templateID)
 
-    const results = await runManuscriptValidator(data, template, manuscriptID)
+      logger.info(`Validating manuscript with template "${templateID}"`)
 
-    // for (const result of results) {
-    //   const { passed, severity } = result
-    //   const message = validationMessage(result)
-    //   const icon = severity > 0 ? '⚠️' : 'ℹ️'
-    //   const output = `${icon} ${message}`
-    //   const colour = passed ? 'green' : 'red'
-    // }
+      const results = await requirementValidator(
+        data,
+        manuscriptID,
+        (id: string) => {
+          const fileName = id.replace(':', '_')
+          const path = `${dir}/Data/${fileName}`
+          if (!fs.existsSync(path)) {
+            throw createHttpError(400, `${fileName} was not found`)
+          }
+          return fs.promises.readFile(path)
+        }
+      )
 
-    res.json(results)
+      res.json(results)
+    } catch (e) {
+      if (e instanceof InputError) {
+        throw createHttpError(400, e.message)
+      } else {
+        throw e
+      }
+    }
   })
 )

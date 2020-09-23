@@ -25,6 +25,7 @@
     "@manuscripts/manuscript-transform": "^0.36.0",
     "@manuscripts/manuscripts-json-schema": "^1.32.1",
     "@manuscripts/manuscripts-json-schema-utils": "0.0.3",
+    "@manuscripts/requirements": "^0.1.0",
     "archiver": "^4.0.1",
     "axios": "^0.19.2",
     "basic-ftp": "^4.6.2",
