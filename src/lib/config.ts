@@ -34,6 +34,9 @@ interface Config {
     password: string
     username: string
   }
+  authorization: {
+    emails: string
+  }
   gaia: {
     url: string
   }
@@ -68,6 +71,9 @@ export const config: Config = {
     api_key: environmentVariable('PRESSROOM_ARC_API_KEY'),
     password: environmentVariable('PRESSROOM_ARC_PASSWORD'),
     username: environmentVariable('PRESSROOM_ARC_USERNAME'),
+  },
+  authorization: {
+    emails: environmentVariable('PRESSROOM_AUTHORIZATION_EMAILS'),
   },
   gaia: {
     url: environmentVariable('PRESSROOM_GAIA_URL'),

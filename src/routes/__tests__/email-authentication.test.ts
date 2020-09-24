@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 import { RequestHandler } from 'express'
-import JSZip from 'jszip'
-import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
 import { app } from '../../app'
 
 jest.mock('express-jwt', () => (): RequestHandler => (req, res, next) => {
-  req.user = { email: 'test@atypon.com' }
+  req.user = { email: 'test@foo.com' }
   next()
 })
 
-describe('export Literatum Bundle', () => {
-  test('exports to Literatum Bundle', async () => {
+describe('email authentication', () => {
+  test('limits endpoint access by email domain', async () => {
     const response = await request(app)
       .post('/api/v2/export/literatum-bundle')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
@@ -41,22 +39,6 @@ describe('export Literatum Bundle', () => {
       .field('frontMatterOnly', false)
       .responseType('blob')
 
-    expect(response.status).toBe(200)
-    expect(response.get('Content-Type')).toBe('application/zip')
-    expect(response.get('Content-Disposition')).toBe(
-      'attachment; filename="manuscript.zip"'
-    )
-
-    const zip = await new JSZip().loadAsync(response.body)
-
-    const xml = await zip.files['test/567/567.xml'].async('text')
-
-    const doc = parseXml(xml, {
-      dtdload: true,
-      dtdvalid: true,
-      nonet: true,
-    })
-
-    expect(doc.errors.length).toBe(0)
+    expect(response.status).toBe(401)
   })
 })

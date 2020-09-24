@@ -29,6 +29,7 @@ import { buildManifest } from '../lib/create-manifest'
 import { buildContainer } from '../lib/create-mets'
 import { processElements } from '../lib/data'
 import { depositSFTP } from '../lib/deposit-sftp'
+import { emailAuthorization } from '../lib/email-authorization'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createHTMLArchivePathGenerator } from '../lib/path-generator'
@@ -79,6 +80,7 @@ import { wrapAsync } from '../lib/wrap-async'
 export const exportLiteratumDO = Router().post(
   '/export/literatum-do',
   authentication,
+  emailAuthorization,
   upload.single('file'),
   celebrate({
     body: {

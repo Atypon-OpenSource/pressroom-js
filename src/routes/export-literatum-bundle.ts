@@ -28,6 +28,7 @@ import { buildManifest } from '../lib/create-manifest'
 import { createPDF } from '../lib/create-pdf'
 import { processElements, XLINK_NAMESPACE } from '../lib/data'
 import { depositFTPS } from '../lib/deposit-ftps'
+import { emailAuthorization } from '../lib/email-authorization'
 import { convertJATSToWileyML } from '../lib/gaia'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
@@ -87,6 +88,7 @@ type XmlType = 'jats' | 'wileyml'
 export const exportLiteratumBundle = Router().post(
   '/export/literatum-bundle',
   authentication,
+  emailAuthorization,
   upload.single('file'),
   chooseManuscriptID,
   celebrate({

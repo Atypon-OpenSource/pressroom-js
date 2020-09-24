@@ -23,6 +23,7 @@ import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createPDF } from '../lib/create-pdf'
 import { depositEEO } from '../lib/deposit-eeo'
+import { emailAuthorization } from '../lib/email-authorization'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { sendArchive } from '../lib/send-archive'
@@ -74,6 +75,7 @@ import { wrapAsync } from '../lib/wrap-async'
 export const exportLiteratumEEO = Router().post(
   '/export/literatum-eeo',
   authentication,
+  emailAuthorization,
   upload.single('file'),
   chooseManuscriptID,
   celebrate({

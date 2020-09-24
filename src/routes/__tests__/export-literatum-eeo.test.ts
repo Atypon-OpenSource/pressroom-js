@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { RequestHandler } from 'express'
 import JSZip from 'jszip'
 import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
-import { config } from '../../lib/config'
+jest.mock('express-jwt', () => (): RequestHandler => (req, res, next) => {
+  req.user = { email: 'test@atypon.com' }
+  next()
+})
 
 describe('export Literatum EEO', () => {
   test('exports to Literatum EEO', async () => {
@@ -35,7 +39,6 @@ describe('export Literatum EEO', () => {
       .field('frontMatterOnly', false)
       .field('journalName', 'Test Journal')
       .field('notificationURL', 'https://example.com/test/567')
-      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

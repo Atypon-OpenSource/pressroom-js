@@ -13,19 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import Express from 'express'
 
-declare module 'express-serve-static-core' {
-  import { ExtylesArcCredentials } from '../lib/extyles-arc'
-  import { EdifixCredentials } from '../lib/edifix'
+import { RequestHandler } from 'express'
+import createHttpError from 'http-errors'
 
-  interface Request {
-    user: {
-      arc?: ExtylesArcCredentials
-      edifix?: EdifixCredentials
-      email?: string
-    }
-    tempDir: string
+import { config } from './config'
+
+const allowed = new RegExp(config.authorization.emails || '@atypon\\.com$')
+
+export const emailAuthorization: RequestHandler = (req, res, next) => {
+  const { email } = req.user
+
+  if (!email) {
+    throw createHttpError(401, 'No email address found in authentication token')
   }
+
+  if (!allowed.test(email)) {
+    throw createHttpError(
+      401,
+      'Access to this endpoint is restricted by email address domain'
+    )
+  }
+
+  next()
 }

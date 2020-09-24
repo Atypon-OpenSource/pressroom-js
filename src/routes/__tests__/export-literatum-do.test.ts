@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { RequestHandler } from 'express'
 import request from 'supertest'
 
-import { config } from '../../lib/config'
+jest.mock('express-jwt', () => (): RequestHandler => (req, res, next) => {
+  req.user = { email: 'test@atypon.com' }
+  next()
+})
 
 describe('export Literatum DO', () => {
   test('exports to Literatum DO', async () => {
@@ -31,7 +35,6 @@ describe('export Literatum DO', () => {
       .field('deposit', false)
       .field('doi', '10.1234/567')
       .field('doType', 'HTML')
-      .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
     expect(response.status).toBe(200)

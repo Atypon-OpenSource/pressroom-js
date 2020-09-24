@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import express from 'express'
+import { RequestHandler } from 'express'
 import rimraf from 'rimraf'
 import { promisify } from 'util'
 
@@ -26,14 +26,10 @@ export const createTempDir = tempy.directory
 
 export const removeTempDir = promisify(rimraf)
 
-export const createRequestDirectory: express.RequestHandler = (
-  request: express.Request,
-  response: express.Response,
-  next: express.NextFunction
-) => {
+export const createRequestDirectory: RequestHandler = (req, res, next) => {
   const dir = createTempDir()
-  request.tempDir = dir
-  response.on('close', () => {
+  req.tempDir = dir
+  res.on('close', () => {
     removeTempDir(dir).catch((error) => logger.error(error))
   })
   next()
