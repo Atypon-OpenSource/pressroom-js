@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const environmentVariable = (name: string): string => {
+const environmentVariable = (name: string, defaultValue?: string): string => {
   const value = process.env[name]
 
   if (value === undefined || value === '') {
+    if (defaultValue !== undefined) {
+      return defaultValue
+    }
+
     if (process.env.NODE_ENV === 'test') {
       return ''
     } else {
@@ -73,7 +77,10 @@ export const config: Config = {
     username: environmentVariable('PRESSROOM_ARC_USERNAME'),
   },
   authorization: {
-    emails: environmentVariable('PRESSROOM_AUTHORIZATION_EMAILS'),
+    emails: environmentVariable(
+      'PRESSROOM_AUTHORIZATION_EMAILS',
+      '@atypon\\.com$'
+    ),
   },
   gaia: {
     url: environmentVariable('PRESSROOM_GAIA_URL'),

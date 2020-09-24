@@ -19,7 +19,7 @@ import createHttpError from 'http-errors'
 
 import { config } from './config'
 
-const allowed = new RegExp(config.authorization.emails || '@atypon\\.com$')
+const allowed = new RegExp(config.authorization.emails)
 
 export const emailAuthorization: RequestHandler = (req, res, next) => {
   const { email } = req.user
