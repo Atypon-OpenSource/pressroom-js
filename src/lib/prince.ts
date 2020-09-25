@@ -16,17 +16,40 @@
 import { execFile } from 'child_process'
 import { promisify } from 'util'
 
-export const DEFAULT_CSL = __dirname + '/../assets/csl/nature.csl'
+export const DEFAULT_CSS = __dirname + '/../assets/css/print.css'
 
-export const pandoc = async (
+export const prince = async (
+  cwd: string,
   inputPath: string,
   outputPath: string,
-  args: string[],
-  cwd: string
+  options: {
+    css?: string
+  } = {}
 ): Promise<void> => {
-  await promisify(execFile)(
-    'pandoc',
-    [...args, '--output', outputPath, inputPath],
+  const { stdout, stderr } = await promisify(execFile)(
+    'prince',
+    [
+      inputPath,
+      '--output',
+      outputPath,
+      '--style',
+      options.css || DEFAULT_CSS,
+      '--fail-dropped-content',
+      '--fail-missing-resources',
+      '--fail-missing-glyphs',
+      // '--no-artificial-fonts',
+      // '--no-network',
+      // '--javascript',
+      // '--tagged-pdf',
+    ],
     { cwd }
   )
+
+  if (stdout) {
+    console.log(stdout)
+  }
+
+  if (stderr) {
+    console.warn(stderr)
+  }
 }

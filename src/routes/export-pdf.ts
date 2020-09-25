@@ -21,12 +21,15 @@ import path from 'path'
 
 import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
+import { createHTML } from '../lib/create-html'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createPDF, PDFEngine } from '../lib/create-pdf'
 import { XLINK_NAMESPACE } from '../lib/data'
+import { emailAuthorization } from '../lib/email-authorization'
 import { findCSL } from '../lib/find-csl'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
+import { prince } from '../lib/prince'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
@@ -55,6 +58,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                engine:
  *                  type: string
  *                  enum: ['prince', 'weasyprint', 'xelatex', 'tectonic']
+ *                theme:
+ *                  type: string
  *              required:
  *                - file
  *                - manuscriptID
@@ -80,15 +85,32 @@ export const exportPDF = Router().post(
       manuscriptID: Joi.string().required(),
       engine: Joi.string()
         .empty('')
-        .allow('prince', 'weasyprint', 'xelatex', 'tectonic')
+        .allow('prince', 'prince-html', 'weasyprint', 'xelatex', 'tectonic')
         .default('xelatex'),
+      theme: Joi.string(),
     },
   }),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
-    const { manuscriptID, engine } = req.body as {
+    const { manuscriptID, engine, theme } = req.body as {
       manuscriptID: string
-      engine: PDFEngine
+      engine: PDFEngine | 'prince-html'
+      theme?: string
+    }
+
+    // restrict access to Prince by email address
+    const restrictedEngines = ['prince', 'prince-html']
+
+    if (restrictedEngines.includes(engine)) {
+      await new Promise((resolve, reject) =>
+        emailAuthorization(req, res, (error?: unknown) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(error)
+          }
+        })
+      )
     }
 
     // unzip the input
@@ -101,32 +123,58 @@ export const exportPDF = Router().post(
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
     const { article, modelMap } = createArticle(data, manuscriptID)
 
-    // create XML
-    const jats = await createJATSXML(article.content, modelMap, {
-      mediaPathGenerator: async (element) => {
-        const href = element.getAttributeNS(XLINK_NAMESPACE, 'href')
+    if (engine === 'prince-html') {
+      const html = await createHTML(article, modelMap, {
+        mediaPathGenerator: async (element) => {
+          const src = element.getAttribute('src')
 
-        const { name } = path.parse(href as string)
+          const { name } = path.parse(src as string)
 
-        return `Data/${name}`
-      },
-    })
+          return `Data/${name}`
+        },
+      })
 
-    await fs.writeFile(dir + '/manuscript.xml', jats)
+      await fs.writeFile(dir + '/manuscript.html', html)
 
-    const manuscript = modelMap.get(manuscriptID) as Manuscript
+      const options: {
+        css?: string
+      } = {}
 
-    // use the CSL style defined in the manuscript bundle
-    const csl = await findCSL(manuscript, modelMap)
+      if (theme) {
+        options.css = require.resolve(
+          `@manuscripts/themes/themes/${theme}/print.css`
+        )
+      }
 
-    // create PDF
-    await createPDF(
-      dir,
-      'manuscript.xml',
-      'manuscript.pdf',
-      engine || 'xelatex',
-      { csl }
-    )
+      await prince(dir, 'manuscript.html', 'manuscript.pdf', options)
+    } else {
+      // create XML
+      const jats = await createJATSXML(article.content, modelMap, {
+        mediaPathGenerator: async (element) => {
+          const href = element.getAttributeNS(XLINK_NAMESPACE, 'href')
+
+          const { name } = path.parse(href as string)
+
+          return `Data/${name}`
+        },
+      })
+
+      await fs.writeFile(dir + '/manuscript.xml', jats)
+
+      const manuscript = modelMap.get(manuscriptID) as Manuscript
+
+      // use the CSL style defined in the manuscript bundle
+      const csl = await findCSL(manuscript, modelMap)
+
+      // create PDF
+      await createPDF(
+        dir,
+        'manuscript.xml',
+        'manuscript.pdf',
+        engine || 'xelatex',
+        { csl }
+      )
+    }
 
     // send the file as an attachment
     res.download(dir + '/manuscript.pdf')

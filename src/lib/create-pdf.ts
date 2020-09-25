@@ -15,7 +15,8 @@
  */
 import { DEFAULT_CSL, pandoc } from './pandoc'
 
-const DEFAULT_CSS = __dirname + '/../assets/pandoc/example.css'
+const DEFAULT_CSS = __dirname + '/../assets/css/print.css'
+const DEFAULT_METADATA = __dirname + '/../assets/pandoc/metadata.yml'
 
 export type PDFEngine = 'prince' | 'xelatex' | 'weasyprint' | 'tectonic'
 
@@ -27,6 +28,7 @@ export const createPDF = async (
   options?: {
     csl?: string
     css?: string
+    metadata?: string
   }
 ): Promise<void> => {
   const args = [
@@ -41,13 +43,13 @@ export const createPDF = async (
   switch (engine) {
     case 'prince':
       args.push('--filter=mathjax-filter')
-      args.push(`--metadata-file=${__dirname + '/../assets/pandoc/prince.yml'}`)
+      args.push(`--metadata-file=${options?.metadata || DEFAULT_METADATA}`)
       args.push(`--pdf-engine-opt=--style=${options?.css || DEFAULT_CSS}`)
       break
 
     case 'weasyprint':
       args.push('--filter=mathjax-filter')
-      args.push(`--metadata-file=${__dirname + '/../assets/pandoc/prince.yml'}`)
+      args.push(`--metadata-file=${options?.metadata || DEFAULT_METADATA}`)
       // args.push(`--metadata=mathjax.noInlineSVG:true`)
       args.push(`--pdf-engine-opt=--stylesheet=${options?.css || DEFAULT_CSS}`)
       break

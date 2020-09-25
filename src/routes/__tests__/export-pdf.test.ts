@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { RequestHandler } from 'express'
 import request from 'supertest'
 
 import { config } from '../../lib/config'
 
 jest.setTimeout(30000)
+
+jest.mock('express-jwt', () => (): RequestHandler => (req, res, next) => {
+  req.user = { email: 'test@atypon.com' }
+  next()
+})
 
 describe('export PDF', () => {
   test('exports to a PDF file with xelatex (default)', async () => {
@@ -40,7 +46,7 @@ describe('export PDF', () => {
     )
   })
 
-  test('exports to a PDF file with Prince ', async () => {
+  test('exports to a PDF file with Prince', async () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
@@ -51,7 +57,47 @@ describe('export PDF', () => {
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
       .field('engine', 'prince')
-      .set('pressroom-api-key', config.api_key)
+      .responseType('blob')
+
+    expect(response.status).toBe(200)
+    expect(response.get('Content-Type')).toBe('application/pdf')
+    expect(response.get('Content-Disposition')).toBe(
+      'attachment; filename="manuscript.pdf"'
+    )
+  })
+
+  test('exports to a PDF file with Prince via HTML', async () => {
+    const { app } = await import('../../app')
+
+    const response = await request(app)
+      .post('/api/v2/export/pdf')
+      .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
+      .field(
+        'manuscriptID',
+        'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
+      )
+      .field('engine', 'prince-html')
+      .responseType('blob')
+
+    expect(response.status).toBe(200)
+    expect(response.get('Content-Type')).toBe('application/pdf')
+    expect(response.get('Content-Disposition')).toBe(
+      'attachment; filename="manuscript.pdf"'
+    )
+  })
+
+  test('exports to a PDF file with Prince via HTML using a theme', async () => {
+    const { app } = await import('../../app')
+
+    const response = await request(app)
+      .post('/api/v2/export/pdf')
+      .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
+      .field(
+        'manuscriptID',
+        'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
+      )
+      .field('engine', 'prince-html')
+      .field('theme', 'plos-one')
       .responseType('blob')
 
     expect(response.status).toBe(200)
