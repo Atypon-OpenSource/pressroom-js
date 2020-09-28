@@ -22,13 +22,12 @@ import archiver from 'archiver'
 import { Router } from 'express'
 import fs from 'fs-extra'
 import createHttpError from 'http-errors'
-import path from 'path'
 
 import { arcCredentials } from '../lib/arc-credentials'
 import { authentication } from '../lib/authentication'
 import { createJSON } from '../lib/create-json'
-import { processElements, XLINK_NAMESPACE } from '../lib/data'
 import { convertWordToJATS } from '../lib/extyles-arc'
+import { fixImageReferences } from '../lib/fix-jats-references'
 import { logger } from '../lib/logger'
 import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
@@ -110,20 +109,7 @@ export const importWordArc = Router().post(
     // parse the JATS XML and fix data references
     const doc = await parseXMLFile(dir + '/manuscript.XML')
     const imageDirPath: string = dir + '/images'
-    const imageDirExist: boolean = await fs.pathExists(imageDirPath)
-    const images = imageDirExist ? await fs.readdir(imageDirPath) : []
-
-    for (const image of images) {
-      const { name } = path.parse(image)
-
-      await processElements(
-        doc,
-        `//*[@xlink:href="${name}"]`,
-        async (element) => {
-          element.setAttributeNS(XLINK_NAMESPACE, 'href', `images/${image}`)
-        }
-      )
-    }
+    await fixImageReferences(imageDirPath, doc)
 
     // convert JATS XML to Manuscripts data
     const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]

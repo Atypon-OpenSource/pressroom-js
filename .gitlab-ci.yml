@@ -44,7 +44,7 @@ run:
     PRESSROOM_LITERATUM_SFTP_PREFIX: data
     PRESSROOM_LITERATUM_SFTP_USERNAME: your-username
   services:
-    - name: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHA
+    - name: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
       alias: pressroom-js
   script:
     - curl --fail http://pressroom-js:5000/

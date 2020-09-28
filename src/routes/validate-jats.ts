@@ -13,6 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  ContainedModel,
+  isFigure,
+  parseJATSArticle,
+} from '@manuscripts/manuscript-transform'
+import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 import { createTemplateValidator, InputError } from '@manuscripts/requirements'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
@@ -20,8 +26,8 @@ import fs from 'fs-extra'
 import createHttpError from 'http-errors'
 
 import { authentication } from '../lib/authentication'
-import { logger } from '../lib/logger'
-import { chooseManuscriptID } from '../lib/manuscript-id'
+import { fixImageReferences } from '../lib/fix-jats-references'
+import { parseXMLFile } from '../lib/parse-xml-file'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
@@ -30,9 +36,9 @@ import { wrapAsync } from '../lib/wrap-async'
 /**
  * @swagger
  *
- * /validate/manuscript:
+ * /validate/jats:
  *   post:
- *     description: Validate a manuscript against a template
+ *     description: Validate JATS against a template
  *     produces:
  *       - application/json
  *     security:
@@ -47,8 +53,6 @@ import { wrapAsync } from '../lib/wrap-async'
  *                file:
  *                  type: string
  *                  format: binary
- *                manuscriptID:
- *                  type: string
  *                templateID:
  *                  type: string
  *            encoding:
@@ -61,49 +65,67 @@ import { wrapAsync } from '../lib/wrap-async'
  *             schema:
  *               $ref: '#/components/schemas/Results'
  */
-export const validateManuscript = Router().post(
-  '/validate/manuscript',
+export const validateJATS = Router().post(
+  '/validate/jats',
   authentication,
   upload.single('file'),
-  chooseManuscriptID,
   celebrate({
     body: {
-      manuscriptID: Joi.string().required(),
       templateID: Joi.string().required(),
     },
   }),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
-    const { manuscriptID, templateID } = req.body as {
-      manuscriptID: string
+    const { templateID } = req.body as {
       templateID: string
     }
-
     const dir = req.tempDir
 
-    logger.debug(`Extracting ZIP archive to ${dir}`)
+    // unzip the input
     await unzip(req.file.stream, dir)
 
-    const { data } = await fs.readJSON(dir + '/index.manuscript-json')
+    const jatsPath = dir + '/manuscript.xml'
+    if (!fs.existsSync(jatsPath)) {
+      throw createHttpError(400, `manuscript.xml not found`)
+    }
+    // parse the JATS XML and fix data references
+    const doc = await parseXMLFile(jatsPath)
+    await fixImageReferences(dir + '/images', doc)
+
+    // convert the JATS XML to Manuscripts data
+    const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]
+    // find manuscript ID
+    const manuscriptObject = manuscriptModels.find(
+      (item) => item.objectType === ObjectTypes.Manuscript
+    )
+    if (!manuscriptObject) {
+      throw new Error('Could not find a Manuscript object')
+    }
+
+    const figurePath = new Map<string, string>()
+    for (const model of manuscriptModels) {
+      if (isFigure(model)) {
+        if (model.originalURL) {
+          const path = `${dir}/${model.originalURL}`
+          figurePath.set(model._id, path)
+        }
+      }
+    }
+    const getData = (id: string): Promise<Buffer> => {
+      const path = figurePath.get(id)
+      if (!path || !fs.existsSync(path)) {
+        throw createHttpError(400, `${id} was not found`)
+      }
+      return fs.readFile(path)
+    }
 
     try {
-      const requirementValidator = createTemplateValidator(templateID)
-
-      logger.info(`Validating manuscript with template "${templateID}"`)
-
-      const results = await requirementValidator(
-        data,
-        manuscriptID,
-        (id: string) => {
-          const fileName = id.replace(':', '_')
-          const path = `${dir}/Data/${fileName}`
-          if (!fs.existsSync(path)) {
-            throw createHttpError(400, `${fileName} was not found`)
-          }
-          return fs.promises.readFile(path)
-        }
+      const validator = createTemplateValidator(templateID)
+      const results = await validator(
+        manuscriptModels,
+        manuscriptObject._id,
+        getData
       )
-
       res.json(results)
     } catch (e) {
       if (e instanceof InputError) {

@@ -36,6 +36,7 @@ import { importPDF } from './import-pdf'
 import { importWord } from './import-word'
 import { importWordArc } from './import-word-arc'
 import { importZip } from './import-zip'
+import { validateJATS } from './validate-jats'
 import { validateManuscript } from './validate-manuscript'
 
 export const routes = Router()
@@ -66,7 +67,7 @@ export const routes = Router()
   .use('/', convertReferencesAnyStyle, convertReferencesEdifix)
 
   // validators
-  .use('/', validateManuscript)
+  .use('/', validateManuscript, validateJATS)
 
   // OpenAPI description for people
   .use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))

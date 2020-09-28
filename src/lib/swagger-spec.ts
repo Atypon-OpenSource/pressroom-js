@@ -42,5 +42,8 @@ export const swaggerSpec = swaggerJSDoc({
       },
     },
   },
-  apis: ['./dist/routes/*.js'],
+  apis: [
+    './dist/routes/*.js',
+    './dist/assets/components/validation-results.yaml',
+  ],
 })
