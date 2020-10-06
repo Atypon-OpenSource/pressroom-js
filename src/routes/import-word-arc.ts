@@ -91,7 +91,8 @@ export const importWordArc = Router().post(
     logger.debug('Converting Word file to JATS XML with Arc')
 
     // @ts-ignore
-    const extension = req.file.detectedFileExtension
+    // const extension = req.file.detectedFileExtension
+    const extension = req.file.clientReportedFileExtension
     if (!/^\.docx?$/.test(extension)) {
       throw createHttpError(400, 'Only .docx and .doc files are supported')
     }
