@@ -126,14 +126,20 @@ export const importZip = Router().post(
     for (const model of manuscriptModels) {
       if (isFigure(model)) {
         if (model.originalURL) {
-          const name = model._id.replace(':', '_')
+          const filePath = `${dir}/${model.originalURL}`
 
-          logger.debug(`Adding ${model.originalURL} as Data/${name}`)
+          if (await fs.pathExists(filePath)) {
+            const name = model._id.replace(':', '_')
 
-          archive.append(fs.createReadStream(`${dir}/${model.originalURL}`), {
-            name,
-            prefix: 'Data/',
-          })
+            logger.debug(`Adding ${model.originalURL} as Data/${name}`)
+
+            archive.append(fs.createReadStream(filePath), {
+              name,
+              prefix: 'Data/',
+            })
+          } else {
+            logger.warn(`File ${model.originalURL} does not exist`)
+          }
         }
       }
     }

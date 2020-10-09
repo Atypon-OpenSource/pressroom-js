@@ -52,6 +52,22 @@ describe('import ZIP', () => {
     )
   })
 
+  test('imports from a JATS file in a ZIP file', async () => {
+    const { app } = await import('../../app')
+
+    const response = await request(app)
+      .post('/api/v2/import/zip')
+      .attach('file', __dirname + '/__fixtures__/jats.zip')
+      .set('pressroom-api-key', config.api_key)
+      .responseType('blob')
+
+    expect(response.status).toBe(200)
+    expect(response.get('Content-Type')).toBe('application/zip')
+    expect(response.get('Content-Disposition')).toBe(
+      'attachment; filename="manuscript.manuproj"'
+    )
+  })
+
   // TODO: imports from a JATS XML file in a ZIP file
   // TODO: imports from a HTML file in a ZIP file
 })

@@ -31,6 +31,9 @@ export const defineGlobals = (): void => {
     Element: {
       value: window.Element,
     },
+    Node: {
+      value: window.Node,
+    },
     XMLSerializer: {
       value: window.XMLSerializer,
     },
