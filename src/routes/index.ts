@@ -32,6 +32,7 @@ import { exportLiteratumDO } from './export-literatum-do'
 import { exportLiteratumEEO } from './export-literatum-eeo'
 import { exportMarkdown } from './export-markdown'
 import { exportPDF } from './export-pdf'
+import { importJATSArc } from './import-jats-arc'
 import { importPDF } from './import-pdf'
 import { importWord } from './import-word'
 import { importWordArc } from './import-word-arc'
@@ -41,7 +42,7 @@ import { validateManuscript } from './validate-manuscript'
 
 export const routes = Router()
   // importers
-  .use('/', importPDF, importWord, importWordArc, importZip)
+  .use('/', importPDF, importWord, importWordArc, importZip, importJATSArc)
 
   // exporters
   .use(

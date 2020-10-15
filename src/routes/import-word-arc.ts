@@ -13,23 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  ContainedModel,
-  isFigure,
-  parseJATSArticle,
-} from '@manuscripts/manuscript-transform'
-import archiver from 'archiver'
 import { Router } from 'express'
-import fs from 'fs-extra'
 import createHttpError from 'http-errors'
 
 import { arcCredentials } from '../lib/arc-credentials'
 import { authentication } from '../lib/authentication'
-import { createJSON } from '../lib/create-json'
+import { convertJATSArc } from '../lib/convert-jats-arc'
 import { convertWordToJATS } from '../lib/extyles-arc'
-import { fixImageReferences } from '../lib/fix-jats-references'
 import { logger } from '../lib/logger'
-import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
@@ -86,10 +77,6 @@ export const importWordArc = Router().post(
 
     const dir = req.tempDir
 
-    const archive = archiver.create('zip')
-
-    logger.debug('Converting Word file to JATS XML with Arc')
-
     // @ts-ignore
     // const extension = req.file.detectedFileExtension
     const extension = req.file.clientReportedFileExtension
@@ -107,40 +94,7 @@ export const importWordArc = Router().post(
     // unzip the input
     await unzip(zip, dir)
 
-    // parse the JATS XML and fix data references
-    const doc = await parseXMLFile(dir + '/manuscript.XML')
-    const imageDirPath: string = dir + '/images'
-    await fixImageReferences(imageDirPath, doc)
-
-    // convert JATS XML to Manuscripts data
-    const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]
-
-    // output JSON
-    const index = createJSON(manuscriptModels)
-    archive.append(index, {
-      name: 'index.manuscript-json',
-    })
-
-    for (const model of manuscriptModels) {
-      if (isFigure(model)) {
-        if (model.originalURL) {
-          if (await fs.pathExists(`${dir}/${model.originalURL}`)) {
-            const name = model._id.replace(':', '_')
-
-            logger.debug(`Adding ${model.originalURL} as Data/${name}`)
-
-            archive.append(fs.createReadStream(`${dir}/${model.originalURL}`), {
-              name,
-              prefix: 'Data/',
-            })
-          } else {
-            logger.warn(`Missing file ${model.originalURL}`)
-          }
-        }
-      }
-    }
-
-    await archive.finalize()
+    const archive = await convertJATSArc(dir)
 
     sendArchive(res, archive, 'manuscript.manuproj')
   })
