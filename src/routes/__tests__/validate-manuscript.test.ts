@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { AnyValidationResult } from '@manuscripts/requirements'
 import request from 'supertest'
 
 import { config } from '../../lib/config'
@@ -38,8 +39,16 @@ describe('validate manuscript', () => {
 
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/json; charset=utf-8')
-    expect(JSON.parse(response.body.toString())).toMatchSnapshot(
-      'validation-results-using-test-template'
-    )
+    const results = JSON.parse(response.body.toString()) as Array<
+      AnyValidationResult
+    >
+    results.forEach((result) => {
+      expect(result).toMatchSnapshot(
+        {
+          _id: expect.any(String),
+        },
+        'validate-manuscript'
+      )
+    })
   })
 })

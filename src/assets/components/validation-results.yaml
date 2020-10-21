@@ -12,6 +12,8 @@ components:
           - $ref: '#/components/schemas/CountValidationResult'
           - $ref: '#/components/schemas/FigureFormatValidationResult'
           - $ref: '#/components/schemas/BibliographyValidationResult'
+          - $ref: '#/components/schemas/KeywordsOrderValidationResult'
+          - $ref: '#/components/schemas/FigureImageValidationResult'
     ValidationResult:
       type: object
       properties:
@@ -21,6 +23,9 @@ components:
         severity:
           type: number
           description: the severity of the requirement
+        fix:
+          type: boolean
+          description: true if validation error can be fixed automatically false otherwise.
     SectionTitleValidationResult:
       allOf:
         - $ref: '#/components/schemas/ValidationResult'
@@ -45,6 +50,9 @@ components:
                 title:
                   type: string
                   description: The required title
+                sectionCategory:
+                  type: string
+                  description: category of the section
     RequiredSectionValidationResult:
       allOf:
         - $ref: '#/components/schemas/ValidationResult'
@@ -62,6 +70,9 @@ components:
                   properties:
                     sectionCategory:
                       type: string
+                sectionCategory:
+                  type: string
+                  description: category of the section
     SectionBodyValidationResult:
       allOf:
         - $ref: '#/components/schemas/ValidationResult'
@@ -77,6 +88,9 @@ components:
                 id:
                   type: string
                   description: The ID of the manuscript object
+                sectionCategory:
+                  type: string
+                  description: category of the section
     BibliographyValidationResult:
       allOf:
         - $ref: '#/components/schemas/ValidationResult'
@@ -113,6 +127,9 @@ components:
                 id:
                   type: string
                   description: The ID of the manuscript object
+                sectionCategory:
+                  type: string
+                  description: category of the section
     SectionOrderValidationResult:
       allOf:
         - $ref: '#/components/schemas/ValidationResult'
@@ -148,6 +165,38 @@ components:
                 contentType:
                   type: string
                   description: the contentType of the figure
+    KeywordsOrderValidationResult:
+      allOf:
+        - $ref: '#/components/schemas/ValidationResult'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [ keywords-order ]
+              description: validates order of the keywords lexicographically ignoring case sensitivity
+            data:
+              type: object
+              properties:
+                order:
+                  description: the correct order of the keywords
+                  type: array
+                  items:
+                    type: string
+    FigureImageValidationResult:
+      allOf:
+        - $ref: '#/components/schemas/ValidationResult'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [figure-contains-image]
+              description: validates if the figure contains an image
+            data:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: the ID of the manuscript object
     CountValidationResult:
       allOf:
         - $ref: '#/components/schemas/ValidationResult'

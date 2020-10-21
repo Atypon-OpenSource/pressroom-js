@@ -1,255 +1,395 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`validate manuscript validates a manuscript with a test template: validation-results-using-test-template 1`] = `
-Array [
-  Object {
-    "data": Object {
-      "sectionDescription": Object {
-        "_id": "MPSectionDescription:30856582-BC9E-426A-B4C5-56F5F681CDF8",
-        "objectType": "MPSectionDescription",
-        "required": true,
-        "sectionCategory": "MPSectionCategory:introduction",
-      },
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 1`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "sectionCategory": "MPSectionCategory:introduction",
+    "sectionDescription": Object {
+      "_id": "MPSectionDescription:30856582-BC9E-426A-B4C5-56F5F681CDF8",
+      "objectType": "MPSectionDescription",
+      "required": true,
+      "sectionCategory": "MPSectionCategory:introduction",
     },
-    "passed": false,
-    "severity": 0,
-    "type": "required-section",
   },
-  Object {
-    "data": Object {
-      "sectionDescription": Object {
-        "_id": "MPSectionDescription:03FC1135-1F04-49A0-9D8F-E595EC2E6863",
-        "objectType": "MPSectionDescription",
-        "required": true,
-        "sectionCategory": "MPSectionCategory:materials-method",
-        "title": "online methods",
-      },
+  "fix": true,
+  "objectType": "MPRequiredSectionValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "required-section",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 2`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "sectionCategory": "MPSectionCategory:materials-method",
+    "sectionDescription": Object {
+      "_id": "MPSectionDescription:03FC1135-1F04-49A0-9D8F-E595EC2E6863",
+      "objectType": "MPSectionDescription",
+      "required": true,
+      "sectionCategory": "MPSectionCategory:materials-method",
+      "title": "online methods",
     },
-    "passed": false,
-    "severity": 0,
-    "type": "required-section",
   },
-  Object {
-    "data": Object {
-      "sectionDescription": Object {
-        "_id": "MPSectionDescription:9F8AC4A6-0B93-46A9-ADF4-BC8F6A6603BE",
-        "maxTitleCharLength": 400,
-        "maxWordCount": 400,
-        "objectType": "MPSectionDescription",
-        "required": true,
-        "sectionCategory": "MPSectionCategory:abstract",
-      },
+  "fix": true,
+  "objectType": "MPRequiredSectionValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "required-section",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 3`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "sectionCategory": "MPSectionCategory:abstract",
+    "sectionDescription": Object {
+      "_id": "MPSectionDescription:9F8AC4A6-0B93-46A9-ADF4-BC8F6A6603BE",
+      "maxTitleCharLength": 400,
+      "maxWordCount": 400,
+      "objectType": "MPSectionDescription",
+      "required": true,
+      "sectionCategory": "MPSectionCategory:abstract",
     },
-    "passed": false,
-    "severity": 0,
-    "type": "required-section",
   },
-  Object {
-    "data": Object {
-      "sectionDescription": Object {
-        "_id": "MPSectionDescription:6C7F0155-A41D-456E-B396-E06FEB081CA9",
-        "objectType": "MPSectionDescription",
-        "required": true,
-        "sectionCategory": "MPSectionCategory:results",
-        "title": "Results",
-      },
+  "fix": true,
+  "objectType": "MPRequiredSectionValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "required-section",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 4`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "sectionCategory": "MPSectionCategory:results",
+    "sectionDescription": Object {
+      "_id": "MPSectionDescription:6C7F0155-A41D-456E-B396-E06FEB081CA9",
+      "objectType": "MPSectionDescription",
+      "required": true,
+      "sectionCategory": "MPSectionCategory:results",
+      "title": "Results",
     },
-    "passed": false,
-    "severity": 0,
-    "type": "required-section",
   },
-  Object {
-    "data": Object {
-      "sectionDescription": Object {
-        "_id": "MPSectionDescription:C37FB688-B8E2-44A3-959A-C76CA1C405A3",
-        "objectType": "MPSectionDescription",
-        "required": true,
-        "sectionCategory": "MPSectionCategory:competing-interests",
-        "title": "Competing financial interest",
-      },
+  "fix": true,
+  "objectType": "MPRequiredSectionValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "required-section",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 5`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "sectionCategory": "MPSectionCategory:competing-interests",
+    "sectionDescription": Object {
+      "_id": "MPSectionDescription:C37FB688-B8E2-44A3-959A-C76CA1C405A3",
+      "objectType": "MPSectionDescription",
+      "required": true,
+      "sectionCategory": "MPSectionCategory:competing-interests",
+      "title": "Competing financial interest",
     },
-    "passed": false,
-    "severity": 0,
-    "type": "required-section",
   },
-  Object {
-    "data": Object {
-      "sectionDescription": Object {
-        "_id": "MPSectionDescription:43239655-328D-4A07-A587-B21BF8E4230F",
-        "objectType": "MPSectionDescription",
-        "required": true,
-        "sectionCategory": "MPSectionCategory:discussion",
-        "title": "Discussion",
-      },
+  "fix": true,
+  "objectType": "MPRequiredSectionValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "required-section",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 6`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "sectionCategory": "MPSectionCategory:discussion",
+    "sectionDescription": Object {
+      "_id": "MPSectionDescription:43239655-328D-4A07-A587-B21BF8E4230F",
+      "objectType": "MPSectionDescription",
+      "required": true,
+      "sectionCategory": "MPSectionCategory:discussion",
+      "title": "Discussion",
     },
-    "passed": false,
-    "severity": 0,
-    "type": "required-section",
   },
-  Object {
-    "data": Object {
-      "count": 458,
-      "value": 400,
-    },
-    "passed": false,
-    "severity": 0,
-    "type": "manuscript-maximum-characters",
+  "fix": true,
+  "objectType": "MPRequiredSectionValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "required-section",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 7`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 458,
+    "value": 400,
   },
-  Object {
-    "data": Object {
-      "count": 458,
-      "value": 100,
-    },
-    "passed": true,
-    "severity": 0,
-    "type": "manuscript-minimum-characters",
+  "objectType": "MPCountValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "manuscript-maximum-characters",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 8`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 458,
+    "value": 100,
   },
-  Object {
-    "data": Object {
-      "count": 80,
-      "value": 4000,
-    },
-    "passed": true,
-    "severity": 0,
-    "type": "manuscript-maximum-words",
+  "objectType": "MPCountValidationResult",
+  "passed": true,
+  "severity": 0,
+  "type": "manuscript-minimum-characters",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 9`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 80,
+    "value": 4000,
   },
-  Object {
-    "data": Object {
-      "count": 80,
-      "value": 2000,
-    },
-    "passed": false,
-    "severity": 0,
-    "type": "manuscript-minimum-words",
+  "objectType": "MPCountValidationResult",
+  "passed": true,
+  "severity": 0,
+  "type": "manuscript-maximum-words",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 10`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 80,
+    "value": 2000,
   },
-  Object {
-    "data": Object {
-      "count": 3,
-      "value": 50,
-    },
-    "passed": true,
-    "severity": 0,
-    "type": "manuscript-title-maximum-words",
+  "objectType": "MPCountValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "manuscript-minimum-words",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 11`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 3,
+    "value": 50,
   },
-  Object {
-    "data": Object {
-      "count": 3,
-      "value": 10,
-    },
-    "passed": false,
-    "severity": 0,
-    "type": "manuscript-title-minimum-words",
+  "objectType": "MPCountValidationResult",
+  "passed": true,
+  "severity": 0,
+  "type": "manuscript-title-maximum-words",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 12`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 3,
+    "value": 10,
   },
-  Object {
-    "data": Object {
-      "count": 16,
-      "value": 80,
-    },
-    "passed": true,
-    "severity": 0,
-    "type": "manuscript-title-maximum-characters",
+  "objectType": "MPCountValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "manuscript-title-minimum-words",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 13`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 16,
+    "value": 80,
   },
-  Object {
-    "data": Object {
-      "count": 16,
-      "value": 20,
-    },
-    "passed": false,
-    "severity": 0,
-    "type": "manuscript-title-minimum-characters",
+  "objectType": "MPCountValidationResult",
+  "passed": true,
+  "severity": 0,
+  "type": "manuscript-title-maximum-characters",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 14`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 16,
+    "value": 20,
   },
-  Object {
-    "data": Object {
-      "count": 1,
-      "value": 15,
-    },
-    "passed": true,
-    "severity": 0,
-    "type": "manuscript-maximum-references",
+  "objectType": "MPCountValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "manuscript-title-minimum-characters",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 15`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 1,
+    "value": 15,
   },
-  Object {
-    "data": Object {
-      "id": "MPBibliographyItem:6C6AF046-1C45-4CC5-9F38-93BC736E5293",
-    },
-    "passed": false,
-    "severity": 0,
-    "type": "bibliography-doi-exist",
+  "objectType": "MPCountValidationResult",
+  "passed": true,
+  "severity": 0,
+  "type": "manuscript-maximum-references",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 16`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "id": "MPBibliographyItem:6C6AF046-1C45-4CC5-9F38-93BC736E5293",
   },
-  Object {
-    "data": Object {
-      "count": 1,
-      "value": 5,
-    },
-    "passed": true,
-    "severity": 0,
-    "type": "manuscript-maximum-figures",
+  "objectType": "MPBibliographyValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "bibliography-doi-exist",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 17`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 1,
+    "value": 5,
   },
-  Object {
-    "data": Object {
-      "count": 1,
-      "value": 3,
-    },
-    "passed": true,
-    "severity": 0,
-    "type": "manuscript-maximum-tables",
+  "objectType": "MPCountValidationResult",
+  "passed": true,
+  "severity": 0,
+  "type": "manuscript-maximum-figures",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 18`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 1,
+    "value": 3,
   },
-  Object {
-    "data": Object {
-      "count": 2,
-      "value": 3,
-    },
-    "passed": true,
-    "severity": 0,
-    "type": "manuscript-maximum-combined-figure-tables",
+  "objectType": "MPCountValidationResult",
+  "passed": true,
+  "severity": 0,
+  "type": "manuscript-maximum-tables",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 19`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 2,
+    "value": 3,
   },
-  Object {
-    "data": Object {
-      "contentType": "image/png",
-      "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
-    },
-    "passed": false,
-    "severity": 0,
-    "type": "figure-format-validation",
+  "objectType": "MPCountValidationResult",
+  "passed": true,
+  "severity": 0,
+  "type": "manuscript-maximum-combined-figure-tables",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 20`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "contentType": "image/png",
+    "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
   },
-  Object {
-    "data": Object {
-      "count": 304,
-      "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
-      "value": 600,
-    },
-    "passed": false,
-    "severity": 0,
-    "type": "figure-minimum-width-resolution",
+  "objectType": "MPFigureFormatValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "figure-format-validation",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 21`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
   },
-  Object {
-    "data": Object {
-      "count": 304,
-      "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
-      "value": 4000,
-    },
-    "passed": true,
-    "severity": 0,
-    "type": "figure-maximum-width-resolution",
+  "objectType": "MPFigureImageValidationResult",
+  "passed": true,
+  "severity": 0,
+  "type": "figure-contains-image",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 22`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 304,
+    "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
+    "value": 600,
   },
-  Object {
-    "data": Object {
-      "count": 350,
-      "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
-      "value": 400,
-    },
-    "passed": false,
-    "severity": 0,
-    "type": "figure-minimum-height-resolution",
+  "objectType": "MPCountValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "figure-minimum-width-resolution",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 23`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 304,
+    "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
+    "value": 4000,
   },
-  Object {
-    "data": Object {
-      "count": 350,
-      "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
-      "value": 1000,
-    },
-    "passed": true,
-    "severity": 0,
-    "type": "figure-maximum-height-resolution",
+  "objectType": "MPCountValidationResult",
+  "passed": true,
+  "severity": 0,
+  "type": "figure-maximum-width-resolution",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 24`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 350,
+    "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
+    "value": 400,
   },
-]
+  "objectType": "MPCountValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "figure-minimum-height-resolution",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 25`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "count": 350,
+    "id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
+    "value": 1000,
+  },
+  "objectType": "MPCountValidationResult",
+  "passed": true,
+  "severity": 0,
+  "type": "figure-maximum-height-resolution",
+}
 `;
