@@ -33,7 +33,7 @@ export const jwtAuthentication = jwt({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: `${config.jwt.root}/api/v1/project/pressroom-js.jwks`,
+    jwksUri: `${config.jwt.root}/.well-known/jwks.json`,
   }),
   issuer: config.jwt.issuer,
   audience: 'pressroom-js',
