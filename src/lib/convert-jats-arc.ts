@@ -24,6 +24,10 @@ import createHttpError from 'http-errors'
 
 import { createJSON } from './create-json'
 import { fixImageReferences } from './fix-jats-references'
+import {
+  markCommentsWithTokens,
+  replaceTokensWithHighlights,
+} from './jats-arc-comments'
 import { logger } from './logger'
 import { parseXMLFile } from './parse-xml-file'
 
@@ -37,11 +41,13 @@ export const convertJATSArc = async (dir: string): Promise<Archiver> => {
     throw createHttpError(400, 'manuscript.XML is missing')
   }
   const doc = await parseXMLFile(path)
+  const authorQueriesMap = markCommentsWithTokens(doc)
   const imageDirPath: string = dir + '/images'
   await fixImageReferences(imageDirPath, doc)
 
   // convert JATS XML to Manuscripts data
   const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]
+  replaceTokensWithHighlights(authorQueriesMap, manuscriptModels)
 
   // output JSON
   const index = createJSON(manuscriptModels)
