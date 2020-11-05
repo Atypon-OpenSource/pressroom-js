@@ -32,7 +32,7 @@ export const createDocx = (
       '--from=jats',
       '--to=docx',
       `--csl=${options?.csl || DEFAULT_CSL}`,
-      '--filter=pandoc-citeproc',
+      '--citeproc',
     ],
     dir
   )

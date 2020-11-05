@@ -31,7 +31,7 @@ export const createLatex = (
       '--from=jats',
       '--to=latex',
       `--csl=${options?.csl || DEFAULT_CSL}`,
-      '--filter=pandoc-citeproc',
+      '--citeproc',
     ],
     dir
   )

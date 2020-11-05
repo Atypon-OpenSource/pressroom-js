@@ -35,7 +35,7 @@ export const createPDF = async (
     '--standalone',
     '--from=jats',
     '--to=pdf',
-    '--filter=pandoc-citeproc',
+    '--citeproc',
     `--csl=${options?.csl || DEFAULT_CSL}`,
     `--pdf-engine=${engine}`,
   ]

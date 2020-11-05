@@ -29,6 +29,6 @@ export const convertFileToJATS = async ({
   pandoc(
     inputPath,
     outputPath,
-    ['--standalone', `--from=${from}`, `--to=jats`, '--filter=pandoc-citeproc'],
+    ['--standalone', `--from=${from}`, `--to=jats`, '--citeproc'],
     dir
   )

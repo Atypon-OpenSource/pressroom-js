@@ -31,7 +31,7 @@ export const createIcml = (
       '--from=jats',
       '--to=icml',
       `--csl=${options?.csl || DEFAULT_CSL}`,
-      '--filter=pandoc-citeproc',
+      '--citeproc',
     ],
     dir
   )

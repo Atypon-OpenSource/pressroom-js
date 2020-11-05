@@ -32,7 +32,7 @@ export const createEpub = (
       '--from=jats',
       '--to=epub',
       `--csl=${options?.csl || DEFAULT_CSL}`,
-      '--filter=pandoc-citeproc',
+      '--citeproc',
     ],
     dir
   )

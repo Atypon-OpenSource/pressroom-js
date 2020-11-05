@@ -31,7 +31,7 @@ export const createMarkdown = (
       '--from=jats',
       '--to=markdown',
       `--csl=${options?.csl || DEFAULT_CSL}`,
-      '--filter=pandoc-citeproc',
+      '--citeproc',
     ],
     dir
   )

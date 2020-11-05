@@ -10,7 +10,7 @@ A web service for manuscript conversion.
 
 ## Running in macOS
 
-1. `brew install pandoc pandoc-citeproc`
+1. `brew install pandoc`
 1. `brew install latexml`
 1. `brew install bibutils`
 1. `brew install tectonic`
@@ -25,6 +25,15 @@ A web service for manuscript conversion.
 
 1. Copy `.env.example` to `.env` and edit the values as needed.
 1. Run `yarn dev` to start the server with `nodemon`.
+
+## Updating test snapshots in Docker
+
+```sh
+docker run --rm -it -v "$(pwd)":/app:delegated registry.gitlab.com/mpapp-public/pressroom-base/master:latest /bin/bash
+cd /app
+yarn install --force
+yarn test -u
+```
 
 ## OpenAPI
 

@@ -27,7 +27,7 @@ export const findCSL = async (
     if (identifier) {
       const id = basename(identifier)
 
-      // TODO: check that the file exists in $HOME/.csl?
+      // TODO: check that the file exists in $HOME/.pandoc/csl?
       return `${id}.csl`
     }
   }
