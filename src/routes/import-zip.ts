@@ -84,7 +84,7 @@ export const importZip = Router().post(
     // find the main manuscript file
     const result = await findManuscriptFile(dir)
 
-    // pre-convert a LaTeX manuscript file to HTML5 via latexml
+    // pre-convert a LaTeX manuscript file to JATS XML via latexml
     if (result.format === 'latex') {
       logger.debug(`Converting ${result.format} file ${result.file} to HTML`)
 
