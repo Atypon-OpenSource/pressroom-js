@@ -100,13 +100,18 @@ export const importZip = Router().post(
 
     logger.debug(`Converting ${result.format} file ${result.file} to JATS XML`)
 
-    // convert the manuscript file to JATS XML via pandoc
-    await convertFileToJATS({
-      dir,
-      from: result.format,
-      inputPath: result.file,
-      outputPath: 'manuscript.xml',
-    })
+    if (result.format === 'jats') {
+      // rename the JATS XML file
+      await fs.rename(`${dir}/${result.file}`, `${dir}/manuscript.xml`)
+    } else {
+      // convert the manuscript file to JATS XML via pandoc
+      await convertFileToJATS({
+        dir,
+        from: result.format,
+        inputPath: result.file,
+        outputPath: 'manuscript.xml',
+      })
+    }
 
     // parse the JATS XML
     const doc = await parseXMLFile(dir + '/manuscript.xml')

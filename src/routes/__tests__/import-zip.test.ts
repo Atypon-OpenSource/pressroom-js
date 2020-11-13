@@ -52,7 +52,7 @@ describe('import ZIP', () => {
     )
   })
 
-  test('imports from a JATS file in a ZIP file', async () => {
+  test('imports from a JATS XML file in a ZIP file', async () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
@@ -68,6 +68,5 @@ describe('import ZIP', () => {
     )
   })
 
-  // TODO: imports from a JATS XML file in a ZIP file
   // TODO: imports from a HTML file in a ZIP file
 })
