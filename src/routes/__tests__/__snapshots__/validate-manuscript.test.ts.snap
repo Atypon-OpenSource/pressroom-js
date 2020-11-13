@@ -130,6 +130,28 @@ exports[`validate manuscript validates a manuscript with a test template: valida
 Object {
   "_id": Any<String>,
   "data": Object {
+    "sectionCategory": "MPSectionCategory:keywords",
+    "sectionDescription": Object {
+      "_id": "MPSectionDescription:B16D5504-DB50-4FE4-B2EE-6B77223CE511",
+      "maxKeywordCount": 6,
+      "minKeywordCount": 4,
+      "objectType": "MPSectionDescription",
+      "required": true,
+      "sectionCategory": "MPSectionCategory:keywords",
+    },
+  },
+  "fix": true,
+  "objectType": "MPRequiredSectionValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "required-section",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 8`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
     "count": 458,
     "value": 400,
   },
@@ -140,7 +162,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 8`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 9`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -154,7 +176,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 9`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 10`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -168,7 +190,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 10`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 11`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -182,7 +204,21 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 11`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 12`] = `
+Object {
+  "_id": Any<String>,
+  "data": Object {
+    "id": "MPSection:FFC7095E-A048-4CC4-BFF3-ADA4AF2C919E",
+    "sectionCategory": "MPSectionCategory:bibliography",
+  },
+  "objectType": "MPSectionBodyValidationResult",
+  "passed": false,
+  "severity": 0,
+  "type": "section-body-has-content",
+}
+`;
+
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 13`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -196,7 +232,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 12`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 14`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -210,7 +246,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 13`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 15`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -224,7 +260,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 14`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 16`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -238,7 +274,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 15`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 17`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -252,7 +288,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 16`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 18`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -265,7 +301,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 17`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 19`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -279,7 +315,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 18`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 20`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -293,7 +329,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 19`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 21`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -307,7 +343,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 20`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 22`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -321,7 +357,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 21`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 23`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -334,7 +370,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 22`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 24`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -349,7 +385,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 23`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 25`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -364,7 +400,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 24`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 26`] = `
 Object {
   "_id": Any<String>,
   "data": Object {
@@ -379,7 +415,7 @@ Object {
 }
 `;
 
-exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 25`] = `
+exports[`validate manuscript validates a manuscript with a test template: validate-manuscript 27`] = `
 Object {
   "_id": Any<String>,
   "data": Object {

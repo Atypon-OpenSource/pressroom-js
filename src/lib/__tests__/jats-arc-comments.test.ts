@@ -64,52 +64,78 @@ describe('eXtyles JATS comments', () => {
 
     replaceTokensWithHighlights(map, markedData)
 
+    const comparableModels: Array<HighlightableModel[]> = []
+
     for (const model of markedData) {
       if (isHighlightableModel(model)) {
-        const { contents, title, caption, _id } = model
-        const originalModel = modelMap.get(_id)
+        const originalModel = modelMap.get(model._id)
         if (originalModel && isHighlightableModel(originalModel)) {
-          const {
-            contents: originalContent,
-            title: originalTitle,
-            caption: originalCaption,
-          } = originalModel as HighlightableModel
-          expect(contents).toStrictEqual(originalContent)
-          expect(title).toStrictEqual(originalTitle)
-          expect(caption).toStrictEqual(originalCaption)
+          comparableModels.push([model, originalModel])
         }
       }
     }
+
+    for (const [model, originalModel] of comparableModels) {
+      expect(model.contents).toStrictEqual(originalModel.contents)
+      expect(model.title).toStrictEqual(originalModel.title)
+      expect(model.caption).toStrictEqual(originalModel.caption)
+    }
   })
-  const jatsArcInput =
-    __dirname + '/../__mocks__/__fixtures__/manuscript-jats-arc.xml'
+
   test('Comments highlight against snapshot', async () => {
+    const jatsArcInput =
+      __dirname + '/../__mocks__/__fixtures__/manuscript-jats-arc.xml'
+
     const doc = await parseXMLFile(jatsArcInput)
     const authorQueriesMap = markCommentsWithTokens(doc)
+
     const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]
+
     replaceTokensWithHighlights(authorQueriesMap, manuscriptModels)
-    const removeTags = (content: string) => {
+
+    const removeTags = (content: string): string | null | undefined => {
       const node = new DOMParser().parseFromString(
         `<div>${content}</div>`,
         'application/xml'
       ).firstChild
+
       if (node) {
         return node.textContent
       }
     }
+
+    interface Result {
+      contents?: string | null
+      title?: string | null
+      caption?: string | null
+    }
+
+    const results: Result[] = []
+
     manuscriptModels.forEach((model) => {
       if (isHighlightableModel(model)) {
         const { contents, title, caption } = model
-        if (contents) {
-          expect(removeTags(contents)).toMatchSnapshot()
+
+        const result: Result = {}
+
+        if (contents !== undefined) {
+          result.contents = removeTags(contents)
         }
-        if (title) {
-          expect(removeTags(title)).toMatchSnapshot()
+
+        if (title !== undefined) {
+          result.title = removeTags(title)
         }
-        if (caption) {
-          expect(removeTags(caption)).toMatchSnapshot()
+
+        if (caption !== undefined) {
+          result.caption = removeTags(caption)
+        }
+
+        if (Object.keys(result).length) {
+          results.push(result)
         }
       }
     })
+
+    expect(results).toMatchSnapshot()
   })
 })
