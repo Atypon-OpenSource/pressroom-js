@@ -145,7 +145,7 @@ export const exportLiteratumEEO = Router().post(
         .append(xmlStream, { name: 'manuscript.xml' })
         .append(pdfStream, { name: 'manuscript.pdf' })
 
-      await archive.finalize()
+      archive.finalize()
 
       sendArchive(res, archive) // for debugging
     }

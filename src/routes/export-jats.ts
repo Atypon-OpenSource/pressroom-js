@@ -108,7 +108,7 @@ export const exportJats = Router().post(
 
     archive.append(jats, { name: 'manuscript.xml' })
 
-    await archive.finalize()
+    archive.finalize()
 
     sendArchive(res, archive)
   })

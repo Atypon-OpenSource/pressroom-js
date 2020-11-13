@@ -101,7 +101,7 @@ export const importPDF = Router().post(
       name: 'index.manuscript-json',
     })
 
-    await archive.finalize()
+    archive.finalize()
 
     sendArchive(res, archive, 'manuscript.manuproj')
   })

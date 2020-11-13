@@ -112,7 +112,7 @@ export const exportLatex = Router().post(
 
     // TODO: add images to archive
 
-    await archive.finalize()
+    archive.finalize()
 
     sendArchive(res, archive)
   })

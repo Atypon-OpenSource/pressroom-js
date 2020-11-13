@@ -97,7 +97,7 @@ export const exportHtml = Router().post(
 
     archive.append(html, { name: 'manuscript.html' })
 
-    await archive.finalize()
+    archive.finalize()
 
     sendArchive(res, archive)
   })

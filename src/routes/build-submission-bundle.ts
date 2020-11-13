@@ -205,7 +205,7 @@ export const buildSubmissionBundle = express.Router().post(
           prefix,
         })
 
-        await archive.finalize()
+        archive.finalize()
 
         sendArchive(res, archive)
 

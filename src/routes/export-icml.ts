@@ -110,7 +110,7 @@ export const exportIcml = Router().post(
       name: 'manuscript.icml',
     })
 
-    await archive.finalize()
+    archive.finalize()
 
     sendArchive(res, archive)
   })

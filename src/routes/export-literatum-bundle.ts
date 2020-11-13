@@ -216,7 +216,7 @@ export const exportLiteratumBundle = Router().post(
     })
     archive.append(manifest, { name: 'manifest.xml' })
 
-    await archive.finalize()
+    archive.finalize()
 
     if (deposit) {
       logger.debug(`Depositing to Literatum`)

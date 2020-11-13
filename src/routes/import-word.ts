@@ -144,7 +144,7 @@ export const importWord = Router().post(
       }
     }
 
-    await archive.finalize()
+    archive.finalize()
 
     sendArchive(res, archive, 'manuscript.manuproj')
   })
