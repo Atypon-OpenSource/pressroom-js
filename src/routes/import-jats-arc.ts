@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 
 import { authentication } from '../lib/authentication'
@@ -43,6 +44,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                file:
  *                  type: string
  *                  format: binary
+ *                addBundledData:
+ *                  type: boolean
  *     responses:
  *       200:
  *         description: Conversion success
@@ -56,12 +59,19 @@ export const importJATSArc = Router().post(
   '/import/jats-arc',
   authentication,
   upload.single('file'),
+  celebrate({
+    body: Joi.object({
+      addBundledData: Joi.boolean().empty(''),
+    }),
+  }),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
+    const { addBundledData = false } = req.body as { addBundledData?: boolean }
+
     const dir = req.tempDir
     await unzip(req.file.stream, dir)
 
-    const archive = await convertJATSArc(dir)
+    const archive = await convertJATSArc(dir, { addBundledData })
 
     sendArchive(res, archive, 'manuscript.manuproj')
   })

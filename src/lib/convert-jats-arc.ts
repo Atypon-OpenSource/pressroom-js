@@ -15,7 +15,9 @@
  */
 import {
   ContainedModel,
+  fromPrototype,
   isFigure,
+  loadBundledDependencies,
   parseJATSArticle,
 } from '@manuscripts/manuscript-transform'
 import archiver, { Archiver } from 'archiver'
@@ -31,7 +33,14 @@ import {
 import { logger } from './logger'
 import { parseXMLFile } from './parse-xml-file'
 
-export const convertJATSArc = async (dir: string): Promise<Archiver> => {
+interface Options {
+  addBundledData?: boolean
+}
+
+export const convertJATSArc = async (
+  dir: string,
+  options: Options = {}
+): Promise<Archiver> => {
   logger.debug('Converting Word file to JATS XML with Arc')
 
   const archive = archiver.create('zip')
@@ -48,6 +57,16 @@ export const convertJATSArc = async (dir: string): Promise<Archiver> => {
   // convert JATS XML to Manuscripts data
   const manuscriptModels = (await parseJATSArticle(doc)) as ContainedModel[]
   replaceTokensWithHighlights(authorQueriesMap, manuscriptModels)
+
+  // add bundled data if needed
+  if (options.addBundledData) {
+    const dependencies = await loadBundledDependencies()
+    manuscriptModels.push(...dependencies.map(fromPrototype))
+  }
+
+  // TODO: add template data and requirements if needed
+  // TODO: set manuscript.pageLayout?
+  // TODO: choose citation style and set manuscript.bundle?
 
   // output JSON
   const index = createJSON(manuscriptModels)

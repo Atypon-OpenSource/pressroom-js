@@ -87,7 +87,7 @@ export const exportPDF = Router().post(
         .empty('')
         .allow('prince', 'prince-html', 'weasyprint', 'xelatex', 'tectonic')
         .default('xelatex'),
-      theme: Joi.string(),
+      theme: Joi.string().empty(''),
     },
   }),
   createRequestDirectory,
