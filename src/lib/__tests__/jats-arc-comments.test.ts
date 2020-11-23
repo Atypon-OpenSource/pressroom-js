@@ -23,14 +23,12 @@ import {
 import fs from 'fs-extra'
 import randomstring from 'randomstring'
 
-import { defineGlobals } from '../define-globals'
 import {
   markCommentsWithTokens,
   replaceTokensWithHighlights,
 } from '../jats-arc-comments'
 import { parseXMLFile } from '../parse-xml-file'
 
-defineGlobals()
 describe('eXtyles JATS comments', () => {
   const mockInputFile =
     __dirname + '/../__mocks__/__fixtures__/index.manuscript-json'
@@ -89,7 +87,7 @@ describe('eXtyles JATS comments', () => {
     const doc = await parseXMLFile(jatsArcInput)
     const authorQueriesMap = markCommentsWithTokens(doc)
 
-    const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]
+    const manuscriptModels = (await parseJATSArticle(doc)) as ContainedModel[]
 
     replaceTokensWithHighlights(authorQueriesMap, manuscriptModels)
 

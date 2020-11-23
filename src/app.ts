@@ -19,12 +19,9 @@ import express from 'express'
 import createHttpError from 'http-errors'
 import morgan from 'morgan'
 
-import { defineGlobals } from './lib/define-globals'
 import { errorResponder } from './lib/error-responder'
 import { logger } from './lib/logger'
 import { routes } from './routes'
-
-defineGlobals()
 
 export const app = express()
   // log requests

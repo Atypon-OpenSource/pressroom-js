@@ -93,7 +93,7 @@ export const validateJATS = Router().post(
     await fixImageReferences(dir + '/images', doc)
 
     // convert the JATS XML to Manuscripts data
-    const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]
+    const manuscriptModels = (await parseJATSArticle(doc)) as ContainedModel[]
     // find manuscript ID
     const manuscriptObject = manuscriptModels.find(
       (item) => item.objectType === ObjectTypes.Manuscript

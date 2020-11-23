@@ -117,7 +117,7 @@ export const importZip = Router().post(
     const doc = await parseXMLFile(dir + '/manuscript.xml')
 
     // convert the JATS XML to Manuscripts data
-    const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]
+    const manuscriptModels = (await parseJATSArticle(doc)) as ContainedModel[]
 
     // prepare the output ZIP
     const archive = archiver.create('zip')

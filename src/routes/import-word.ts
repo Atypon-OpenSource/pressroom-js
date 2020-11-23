@@ -122,7 +122,7 @@ export const importWord = Router().post(
       enrichMetadata(metadataXML, doc)
     }
     // convert the JATS XML to Manuscripts data
-    const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]
+    const manuscriptModels = (await parseJATSArticle(doc)) as ContainedModel[]
 
     // output JSON
     archive.append(createJSON(manuscriptModels), {

@@ -46,7 +46,7 @@ export const convertJATSArc = async (dir: string): Promise<Archiver> => {
   await fixImageReferences(imageDirPath, doc)
 
   // convert JATS XML to Manuscripts data
-  const manuscriptModels = parseJATSArticle(doc) as ContainedModel[]
+  const manuscriptModels = (await parseJATSArticle(doc)) as ContainedModel[]
   replaceTokensWithHighlights(authorQueriesMap, manuscriptModels)
 
   // output JSON

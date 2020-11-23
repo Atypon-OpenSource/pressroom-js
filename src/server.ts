@@ -15,6 +15,9 @@
  */
 import errorhandler from 'errorhandler'
 
+import { defineGlobals } from './lib/define-globals'
+defineGlobals()
+
 import { app } from './app'
 import { logger } from './lib/logger'
 
