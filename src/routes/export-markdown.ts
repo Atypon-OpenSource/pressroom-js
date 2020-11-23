@@ -24,6 +24,7 @@ import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createMarkdown } from '../lib/create-markdown'
 import { findCSL } from '../lib/find-csl'
+import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createArchivePathGenerator } from '../lib/path-generator'
@@ -96,7 +97,7 @@ export const exportMarkdown = Router().post(
       mediaPathGenerator: createArchivePathGenerator(dir, archive),
     })
 
-    await fs.writeFile(dir + '/manuscript.xml', jats)
+    await fs.writeFile(dir + '/manuscript.xml', removeCodeListing(jats))
 
     const manuscript = modelMap.get(manuscriptID) as Manuscript
 

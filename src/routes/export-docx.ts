@@ -25,6 +25,7 @@ import { createDocx } from '../lib/create-docx'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { XLINK_NAMESPACE } from '../lib/data'
 import { findCSL } from '../lib/find-csl'
+import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -98,7 +99,7 @@ export const exportDocx = Router().post(
       },
     })
 
-    await fs.writeFile(dir + '/manuscript.xml', jats)
+    await fs.writeFile(dir + '/manuscript.xml', removeCodeListing(jats))
 
     const manuscript = modelMap.get(manuscriptID) as Manuscript
 

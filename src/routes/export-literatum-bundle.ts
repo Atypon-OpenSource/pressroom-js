@@ -30,6 +30,7 @@ import { processElements, XLINK_NAMESPACE } from '../lib/data'
 import { depositFTPS } from '../lib/deposit-ftps'
 import { emailAuthorization } from '../lib/email-authorization'
 import { convertJATSToWileyML } from '../lib/gaia'
+import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { sendArchive } from '../lib/send-archive'
@@ -187,7 +188,7 @@ export const exportLiteratumBundle = Router().post(
     }
 
     const jats = new XMLSerializer().serializeToString(doc)
-    await fs.writeFile(dir + '/manuscript.xml', jats)
+    await fs.writeFile(dir + '/manuscript.xml', removeCodeListing(jats))
 
     if (xmlType === 'wileyml') {
       // write WileyML XML file

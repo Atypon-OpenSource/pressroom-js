@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  ContainedModel,
-  JATSExporter,
-  JATSExporterOptions,
-  ManuscriptFragment,
-} from '@manuscripts/manuscript-transform'
 
-export const createJATSXML = async (
-  fragment: ManuscriptFragment,
-  modelMap: Map<string, ContainedModel>,
-  options: JATSExporterOptions = {}
-): Promise<string> =>
-  new JATSExporter().serializeToJATS(fragment, modelMap, options)
+export const removeCodeListing = (jats: string): string => {
+  const doc = new DOMParser().parseFromString(jats, 'application/xml')
+  const codeListing = doc.querySelectorAll('fig[specific-use="source"]')
+  codeListing.forEach((node) => {
+    node.remove()
+  })
+  return new XMLSerializer().serializeToString(doc)
+}

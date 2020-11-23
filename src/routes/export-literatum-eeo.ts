@@ -24,6 +24,7 @@ import { createJATSXML } from '../lib/create-jats-xml'
 import { createPDF } from '../lib/create-pdf'
 import { depositEEO } from '../lib/deposit-eeo'
 import { emailAuthorization } from '../lib/email-authorization'
+import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { sendArchive } from '../lib/send-archive'
@@ -122,7 +123,7 @@ export const exportLiteratumEEO = Router().post(
       doi,
       frontMatterOnly,
     })
-    await fs.writeFile(dir + '/manuscript.xml', jats)
+    await fs.writeFile(dir + '/manuscript.xml', removeCodeListing(jats))
     const xmlStream = fs.createReadStream(dir + '/manuscript.xml')
 
     // create PDF
