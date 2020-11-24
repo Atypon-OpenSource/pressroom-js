@@ -2,6 +2,10 @@
 
 A web service for manuscript conversion.
 
+## Upgrading pressroom-base
+
+The `pressroom-base` Docker image tag is referenced in 3 places: twice in `Dockerfile` and once in `gitlab-ci.yml`. To upgrade the base image replace the image tag in all these places with the latest image tag (which is the latest commit hash on the `pressroom-base` master branch).
+
 ## Running in Docker
 
 1. `docker-compose up --build`
