@@ -66,7 +66,7 @@ type XmlType = 'jats' | 'wileyml'
  *                doi:
  *                  type: string
  *                frontMatterOnly:
- *                  type: string
+ *                  type: boolean
  *                groupDOI:
  *                  type: string
  *                seriesCode:
