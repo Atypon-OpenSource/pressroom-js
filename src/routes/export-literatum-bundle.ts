@@ -62,7 +62,7 @@ type XmlType = 'jats' | 'wileyml'
  *                manuscriptID:
  *                  type: string
  *                deposit:
- *                  type: string
+ *                  type: boolean
  *                doi:
  *                  type: string
  *                frontMatterOnly:
