@@ -29,8 +29,8 @@ import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
-import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
+import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
 
 /**
@@ -78,6 +78,8 @@ export const exportLiteratumEEO = Router().post(
   authentication,
   emailAuthorization,
   upload.single('file'),
+  createRequestDirectory,
+  decompressManuscript,
   chooseManuscriptID,
   celebrate({
     body: {
@@ -89,7 +91,6 @@ export const exportLiteratumEEO = Router().post(
       notificationURL: Joi.string().required(),
     },
   }),
-  createRequestDirectory,
   wrapAsync(async (req, res) => {
     // validate the input
     const {
@@ -110,9 +111,6 @@ export const exportLiteratumEEO = Router().post(
 
     // unzip the input
     const dir = req.tempDir
-
-    logger.debug(`Extracting ZIP archive to ${dir}`)
-    await unzip(req.file.stream, dir)
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')

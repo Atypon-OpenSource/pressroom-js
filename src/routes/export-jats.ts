@@ -23,13 +23,12 @@ import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createIdGenerator } from '../lib/id-generator'
-import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
-import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
+import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
 
 /**
@@ -73,6 +72,8 @@ export const exportJats = Router().post(
   '/export/jats',
   authentication,
   upload.single('file'),
+  createRequestDirectory,
+  decompressManuscript,
   chooseManuscriptID,
   celebrate({
     body: {
@@ -80,7 +81,6 @@ export const exportJats = Router().post(
       version: Joi.string().empty(''),
     },
   }),
-  createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { manuscriptID, version } = req.body as {
       manuscriptID: string
@@ -88,10 +88,6 @@ export const exportJats = Router().post(
     }
 
     const dir = req.tempDir
-
-    logger.debug(`Extracting ZIP archive to ${dir}`)
-    await unzip(req.file.stream, dir)
-
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
     const { article, modelMap } = createArticle(data, manuscriptID)

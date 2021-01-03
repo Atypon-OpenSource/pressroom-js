@@ -35,8 +35,8 @@ import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
-import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
+import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
 
 type XmlType = 'jats' | 'wileyml'
@@ -91,6 +91,8 @@ export const exportLiteratumBundle = Router().post(
   authentication,
   emailAuthorization,
   upload.single('file'),
+  createRequestDirectory,
+  decompressManuscript,
   chooseManuscriptID,
   celebrate({
     body: {
@@ -103,7 +105,6 @@ export const exportLiteratumBundle = Router().post(
       xmlType: Joi.string().empty('').allow('jats', 'wileyml'),
     },
   }),
-  createRequestDirectory,
   wrapAsync(async (req, res) => {
     // validate the input
     const {
@@ -129,9 +130,6 @@ export const exportLiteratumBundle = Router().post(
 
     // unzip the input
     const dir = req.tempDir
-
-    logger.debug(`Extracting ZIP archive to ${dir}`)
-    await unzip(req.file.stream, dir)
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')

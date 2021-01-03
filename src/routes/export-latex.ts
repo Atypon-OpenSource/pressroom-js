@@ -25,13 +25,12 @@ import { createJATSXML } from '../lib/create-jats-xml'
 import { createLatex } from '../lib/create-latex'
 import { findCSL } from '../lib/find-csl'
 import { removeCodeListing } from '../lib/jats-utils'
-import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
-import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
+import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
 
 /**
@@ -70,20 +69,18 @@ export const exportLatex = Router().post(
   '/export/latex',
   authentication,
   upload.single('file'),
+  createRequestDirectory,
+  decompressManuscript,
   chooseManuscriptID,
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
     },
   }),
-  createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { manuscriptID } = req.body as { manuscriptID: string }
 
     const dir = req.tempDir
-
-    logger.debug(`Extracting ZIP archive to ${dir}`)
-    await unzip(req.file.stream, dir)
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')

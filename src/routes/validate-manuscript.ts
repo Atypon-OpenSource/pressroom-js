@@ -23,8 +23,8 @@ import { authentication } from '../lib/authentication'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createRequestDirectory } from '../lib/temp-dir'
-import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
+import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
 
 /**
@@ -65,6 +65,8 @@ export const validateManuscript = Router().post(
   '/validate/manuscript',
   authentication,
   upload.single('file'),
+  createRequestDirectory,
+  decompressManuscript,
   chooseManuscriptID,
   celebrate({
     body: {
@@ -72,7 +74,6 @@ export const validateManuscript = Router().post(
       templateID: Joi.string().required(),
     },
   }),
-  createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { manuscriptID, templateID } = req.body as {
       manuscriptID: string
@@ -80,9 +81,6 @@ export const validateManuscript = Router().post(
     }
 
     const dir = req.tempDir
-
-    logger.debug(`Extracting ZIP archive to ${dir}`)
-    await unzip(req.file.stream, dir)
 
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
 

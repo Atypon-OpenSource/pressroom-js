@@ -26,11 +26,10 @@ import { createJATSXML } from '../lib/create-jats-xml'
 import { XLINK_NAMESPACE } from '../lib/data'
 import { findCSL } from '../lib/find-csl'
 import { removeCodeListing } from '../lib/jats-utils'
-import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createRequestDirectory } from '../lib/temp-dir'
-import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
+import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
 
 /**
@@ -69,20 +68,18 @@ export const exportEpub = Router().post(
   '/export/epub',
   authentication,
   upload.single('file'),
+  createRequestDirectory,
+  decompressManuscript,
   chooseManuscriptID,
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
     },
   }),
-  createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { manuscriptID } = req.body as { manuscriptID: string }
 
     const dir = req.tempDir
-
-    logger.debug(`Extracting ZIP archive to ${dir}`)
-    await unzip(req.file.stream, dir)
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')

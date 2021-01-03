@@ -15,8 +15,8 @@
  */
 import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 import { RequestHandler } from 'express'
-import { readFile } from 'fs-extra'
-import JSZip from 'jszip'
+import fs from 'fs-extra'
+import createHttpError from 'http-errors'
 
 export const chooseManuscriptID: RequestHandler = async (
   req,
@@ -24,24 +24,20 @@ export const chooseManuscriptID: RequestHandler = async (
   next
 ): Promise<void> => {
   const { manuscriptID } = req.body
-
   if (manuscriptID === 'auto') {
-    const buffer = await readFile(req.file.path)
+    const dir = req.tempDir
 
-    const zip = await new JSZip().loadAsync(buffer)
+    const file = dir + '/index.manuscript-json'
 
-    const file = zip.file('index.manuscript-json')
-
-    if (!file) {
-      throw new Error('Could not find index.manuscript-json')
-    }
-
-    const json = await file.async('text')
-
-    const { data } = JSON.parse(json)
+    const { data } = fs.readJSONSync(file)
 
     if (!Array.isArray(data)) {
-      throw new Error('Could not read data array from index.manuscript-json')
+      return next(
+        createHttpError(
+          400,
+          'Could not read data array from index.manuscript-json'
+        )
+      )
     }
 
     const manuscript = data.find(
@@ -49,11 +45,10 @@ export const chooseManuscriptID: RequestHandler = async (
     )
 
     if (!manuscript) {
-      throw new Error('Could not find a Manuscript object')
+      return next(createHttpError(400, 'Could not find a Manuscript object'))
     }
 
     req.body.manuscriptID = manuscript._id
   }
-
   next()
 }

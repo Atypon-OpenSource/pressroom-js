@@ -28,12 +28,11 @@ import { XLINK_NAMESPACE } from '../lib/data'
 import { emailAuthorization } from '../lib/email-authorization'
 import { findCSL } from '../lib/find-csl'
 import { removeCodeListing } from '../lib/jats-utils'
-import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { prince } from '../lib/prince'
 import { createRequestDirectory } from '../lib/temp-dir'
-import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
+import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
 
 /**
@@ -80,6 +79,8 @@ export const exportPDF = Router().post(
   '/export/pdf',
   authentication,
   upload.single('file'),
+  createRequestDirectory,
+  decompressManuscript,
   chooseManuscriptID,
   celebrate({
     body: {
@@ -91,7 +92,6 @@ export const exportPDF = Router().post(
       theme: Joi.string().empty(''),
     },
   }),
-  createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { manuscriptID, engine, theme } = req.body as {
       manuscriptID: string
@@ -116,9 +116,6 @@ export const exportPDF = Router().post(
 
     // unzip the input
     const dir = req.tempDir
-
-    logger.debug(`Extracting ZIP archive to ${dir}`)
-    await unzip(req.file.stream, dir)
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
