@@ -22,7 +22,7 @@
   "dependencies": {
     "@iarna/word-count": "^1.1.2",
     "@manuscripts/data": "^0.1.2",
-    "@manuscripts/manuscript-transform": "^0.39.0",
+    "@manuscripts/manuscript-transform": "0.40.2",
     "@manuscripts/manuscripts-json-schema": "^1.39.1",
     "@manuscripts/manuscripts-json-schema-utils": "0.0.3",
     "@manuscripts/requirements": "^0.3.0",

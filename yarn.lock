@@ -1308,13 +1308,13 @@
     eslint-config-prettier "^6.11.0"
     prettier "^2.1.1"
 
-"@manuscripts/manuscript-transform@^0.38.0":
-  version "0.38.2"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.38.2.tgz#29d1b7c14b46eef7cee6f52b2186c010df81413c"
-  integrity sha512-zh7GjttCnOGwTOkVW5QoH+TUa8K+LnrxrisG6Y0YhYMiJwNE8hs/0zD6Js/0DQRZUzR6nVKSSaEwYiKbBAxfkg==
+"@manuscripts/manuscript-transform@0.40.2":
+  version "0.40.2"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.40.2.tgz#0b9a6fbb8ae9930f97263098d5304f20c041acb8"
+  integrity sha512-bJsTz2eMZ9B/wl86FYvM3blqmS8bT390yWUTaxp/K6BbxzAeaOGZ2V3EtXnCkfOX+qVOC46p5szdiqvbuJQvqg==
   dependencies:
     "@manuscripts/data" "^0.1.3"
-    "@manuscripts/manuscripts-json-schema" "^1.38.0"
+    "@manuscripts/manuscripts-json-schema" "^1.42.0"
     debug "^4.1.1"
     mathjax-full "^3.1.2"
     mime "^2.4.6"
@@ -1322,13 +1322,13 @@
     uuid "^8.2.0"
     w3c-xmlserializer "^2.0.0"
 
-"@manuscripts/manuscript-transform@^0.39.0":
-  version "0.39.0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.39.0.tgz#60d4065962ff0d74df11a848eea3b238d9c008fd"
-  integrity sha512-iF6WYK019Z0zIvO1kkM0fNQ1GvCj2Q3sCKL6VS5mFybnTBxozFG29g3rdb+aBJM0Rvd9Kvee42zDzCq28j/vzQ==
+"@manuscripts/manuscript-transform@^0.38.0":
+  version "0.38.2"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.38.2.tgz#29d1b7c14b46eef7cee6f52b2186c010df81413c"
+  integrity sha512-zh7GjttCnOGwTOkVW5QoH+TUa8K+LnrxrisG6Y0YhYMiJwNE8hs/0zD6Js/0DQRZUzR6nVKSSaEwYiKbBAxfkg==
   dependencies:
     "@manuscripts/data" "^0.1.3"
-    "@manuscripts/manuscripts-json-schema" "^1.42.0"
+    "@manuscripts/manuscripts-json-schema" "^1.38.0"
     debug "^4.1.1"
     mathjax-full "^3.1.2"
     mime "^2.4.6"
