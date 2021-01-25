@@ -23,7 +23,7 @@ components:
         severity:
           type: number
           description: the severity of the requirement
-        fix:
+        fixable:
           type: boolean
           description: true if validation error can be fixed automatically false otherwise.
     SectionTitleValidationResult:
@@ -41,12 +41,12 @@ components:
                 <li>'section-title-match' title matches template title</li>
                 <li>'section-title-contains-content' title contains content</li>
                 </ul>
+              affectedElementId:
+                type: string
+                description: The ID of the manuscript object
             data:
               type: object
               properties:
-                id:
-                  type: string
-                  description: The ID of the manuscript object
                 title:
                   type: string
                   description: The required title
@@ -82,12 +82,12 @@ components:
               type: string
               enum: [section-body-has-content]
               description: validates if the section body contains content
+            affectedElementId:
+              type: string
+              description: The ID of the manuscript object
             data:
               type: object
               properties:
-                id:
-                  type: string
-                  description: The ID of the manuscript object
                 sectionCategory:
                   type: string
                   description: category of the section
@@ -106,13 +106,10 @@ components:
                 <li>'bibliography-doi-format' validates the format of the doi</li>
                 <li>'bibliography-doi-exist' validates if the doi exist</li>
                 </ul>
-            data:
-              type: object
-              properties:
-                id:
-                  type: string
-                  description: The ID of the manuscript object
-    SectionCategoryValidation:
+            affectedElementId:
+              type: string
+              description: The ID of the manuscript object
+    SectionCategoryValidationResult:
       allOf:
         - $ref: '#/components/schemas/ValidationResult'
         - type: object
@@ -121,12 +118,12 @@ components:
               type: string
               enum: [section-category-uniqueness]
               description: validates if the section should be unique in its scope
+            affectedElementId:
+              type: string
+              description: The ID of the manuscript object
             data:
               type: object
               properties:
-                id:
-                  type: string
-                  description: The ID of the manuscript object
                 sectionCategory:
                   type: string
                   description: category of the section
@@ -156,15 +153,20 @@ components:
               type: string
               enum: [figure-format-validation]
               description: validates the format of the figure
+            affectedElementId:
+              type: string
+              description: the ID of the manuscript object
             data:
               type: object
               properties:
-                id:
-                  type: string
-                  description: the ID of the manuscript object
                 contentType:
                   type: string
                   description: the contentType of the figure
+                allowedImageTypes:
+                  type: array
+                  items:
+                    type: string
+                  description: list of the allowed image types
     KeywordsOrderValidationResult:
       allOf:
         - $ref: '#/components/schemas/ValidationResult'
@@ -191,12 +193,9 @@ components:
               type: string
               enum: [figure-contains-image]
               description: validates if the figure contains an image
-            data:
-              type: object
-              properties:
-                id:
-                  type: string
-                  description: the ID of the manuscript object
+            affectedElementId:
+              type: string
+              description: the ID of the manuscript object
     CountValidationResult:
       allOf:
         - $ref: '#/components/schemas/ValidationResult'
@@ -213,19 +212,26 @@ components:
                 - section-minimum-characters
                 - section-maximum-words
                 - section-minimum-words
+                - section-maximum-paragraphs
                 - manuscript-title-maximum-characters
                 - manuscript-title-minimum-characters
                 - manuscript-title-maximum-words
                 - manuscript-title-minimum-words
+                - manuscript-running-title-maximum-characters
                 - manuscript-maximum-figures
                 - manuscript-maximum-tables
+                - manuscript-maximum-corresponding-authors
                 - manuscript-maximum-combined-figure-tables
                 - manuscript-maximum-references
                 - figure-minimum-width-resolution
-                - figure-maximum-width-resolution
                 - figure-minimum-height-resolution
+                - figure-maximum-width-resolution
                 - figure-maximum-height-resolution
               description: validates the counting requirements
+            affectedElementId:
+              type: string
+              description: The ID of the manuscript object
+              required: false
             data:
               type: object
               properties:
@@ -235,7 +241,3 @@ components:
                 value:
                   type: number
                   description: required number
-                id:
-                  type: string
-                  description: The ID of the manuscript object
-                  required: false
