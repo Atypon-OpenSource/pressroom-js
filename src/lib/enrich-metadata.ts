@@ -157,9 +157,11 @@ const mergeAuthors = (authors: NodeListOf<Element>, jats: Document) => {
 const searchAndDelete = (root: Element, targetHTML: string, threshold = 95) => {
   const serializedRoot = new XMLSerializer().serializeToString(root)
   const processedRoot = fuzz.full_process(serializedRoot)
-  const numberOfOcc = (subStr: string) =>
-    (processedRoot.match(new RegExp(subStr, 'gi')) || []).length
-
+  const numberOfOcc = (reg: string) => {
+    const searchValue = /(?=[.\\+*?[^\]$(){}|])/g
+    const subStr = reg.replace(searchValue, '\\')
+    return processedRoot.match(new RegExp(subStr, 'gi')) || [].length
+  }
   const safeToRemove = (nodeHTML: string) => {
     const similarity = fuzz.ratio(nodeHTML, targetHTML)
     return (
