@@ -51,6 +51,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  format: binary
  *                manuscriptID:
  *                  type: string
+ *                allowMissingElements:
+ *                  type: boolean
  *                version:
  *                  type: string
  *              required:
@@ -78,19 +80,25 @@ export const exportJats = Router().post(
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
+      allowMissingElements: Joi.boolean().empty('').default(false),
       version: Joi.string().empty(''),
     },
   }),
   wrapAsync(async (req, res) => {
-    const { manuscriptID, version } = req.body as {
+    const { manuscriptID, version, allowMissingElements } = req.body as {
       manuscriptID: string
       version?: Version
+      allowMissingElements: boolean
     }
 
     const dir = req.tempDir
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const { article, modelMap } = createArticle(data, manuscriptID)
+    const { article, modelMap } = createArticle(
+      data,
+      manuscriptID,
+      allowMissingElements
+    )
 
     // prepare the output archive
     const archive = archiver.create('zip')

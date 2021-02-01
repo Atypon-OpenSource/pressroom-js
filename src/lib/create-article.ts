@@ -17,11 +17,14 @@ import {
   ContainedModel,
   Decoder,
   ManuscriptNode,
+  MissingElement,
 } from '@manuscripts/manuscript-transform'
+import createHttpError from 'http-errors'
 
 export const createArticle = (
   data: ContainedModel[],
-  manuscriptID: string
+  manuscriptID: string,
+  allowMissingElements = false
 ): {
   article: ManuscriptNode
   decoder: Decoder
@@ -37,9 +40,15 @@ export const createArticle = (
     manuscriptModels.map((model) => [model._id, model])
   )
 
-  const decoder = new Decoder(modelMap)
-
-  const article = decoder.createArticleNode(manuscriptID)
-
-  return { article, decoder, modelMap, manuscriptModels }
+  const decoder = new Decoder(modelMap, allowMissingElements)
+  try {
+    const article = decoder.createArticleNode(manuscriptID)
+    return { article, decoder, modelMap, manuscriptModels }
+  } catch (e) {
+    if (e instanceof MissingElement) {
+      throw createHttpError(400, e)
+    } else {
+      throw e
+    }
+  }
 }

@@ -55,6 +55,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  format: binary
  *                manuscriptID:
  *                  type: string
+ *                allowMissingElements:
+ *                  type: boolean
  *                engine:
  *                  type: string
  *                  enum: ['prince', 'weasyprint', 'xelatex', 'tectonic']
@@ -90,13 +92,15 @@ export const exportPDF = Router().post(
         .allow('prince', 'prince-html', 'weasyprint', 'xelatex', 'tectonic')
         .default('xelatex'),
       theme: Joi.string().empty(''),
+      allowMissingElements: Joi.boolean().empty('').default(false),
     },
   }),
   wrapAsync(async (req, res) => {
-    const { manuscriptID, engine, theme } = req.body as {
+    const { manuscriptID, engine, theme, allowMissingElements } = req.body as {
       manuscriptID: string
       engine: PDFEngine | 'prince-html'
       theme?: string
+      allowMissingElements: boolean
     }
 
     // restrict access to Prince by email address
@@ -119,7 +123,11 @@ export const exportPDF = Router().post(
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const { article, modelMap } = createArticle(data, manuscriptID)
+    const { article, modelMap } = createArticle(
+      data,
+      manuscriptID,
+      allowMissingElements
+    )
 
     if (engine === 'prince-html') {
       const html = await createHTML(article, modelMap, {

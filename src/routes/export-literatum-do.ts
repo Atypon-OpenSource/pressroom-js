@@ -63,6 +63,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  type: string
  *                manuscriptID:
  *                  type: string
+ *                allowMissingElements:
+ *                  type: boolean
  *                deposit:
  *                  type: boolean
  *            encoding:
@@ -91,14 +93,22 @@ export const exportLiteratumDO = Router().post(
       doType: Joi.string().required(),
       doi: Joi.string().required(),
       manuscriptID: Joi.string().required(),
+      allowMissingElements: Joi.boolean().empty('').default(false),
     },
   }),
   wrapAsync(async (req, res) => {
-    const { deposit, doi, doType, manuscriptID } = req.body as {
+    const {
+      deposit,
+      doi,
+      doType,
+      manuscriptID,
+      allowMissingElements,
+    } = req.body as {
       deposit?: boolean
       doType: string
       doi: string
       manuscriptID: string
+      allowMissingElements: boolean
     }
 
     const [, id] = doi.split('/', 2)
@@ -108,7 +118,11 @@ export const exportLiteratumDO = Router().post(
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const { article, modelMap } = createArticle(data, manuscriptID)
+    const { article, modelMap } = createArticle(
+      data,
+      manuscriptID,
+      allowMissingElements
+    )
 
     // prepare the output archive
     const archive = archiver.create('zip')

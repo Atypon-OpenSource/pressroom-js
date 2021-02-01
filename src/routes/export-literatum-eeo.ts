@@ -53,6 +53,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  format: binary
  *                manuscriptID:
  *                  type: string
+ *                allowMissingElements:
+ *                  type: boolean
  *                doi:
  *                  type: string
  *                journalName:
@@ -89,6 +91,7 @@ export const exportLiteratumEEO = Router().post(
       journalName: Joi.string().required(),
       manuscriptID: Joi.string().required(),
       notificationURL: Joi.string().required(),
+      allowMissingElements: Joi.boolean().empty('').default(false),
     },
   }),
   wrapAsync(async (req, res) => {
@@ -100,6 +103,7 @@ export const exportLiteratumEEO = Router().post(
       journalName,
       manuscriptID,
       notificationURL,
+      allowMissingElements,
     } = req.body as {
       deposit: boolean
       doi: string
@@ -107,6 +111,7 @@ export const exportLiteratumEEO = Router().post(
       journalName: string
       manuscriptID: string
       notificationURL: string
+      allowMissingElements: boolean
     }
 
     // unzip the input
@@ -114,7 +119,11 @@ export const exportLiteratumEEO = Router().post(
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const { article, modelMap } = createArticle(data, manuscriptID)
+    const { article, modelMap } = createArticle(
+      data,
+      manuscriptID,
+      allowMissingElements
+    )
 
     // create XML
     const jats = await createJATSXML(article.content, modelMap, {

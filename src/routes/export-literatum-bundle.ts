@@ -61,6 +61,8 @@ type XmlType = 'jats' | 'wileyml'
  *                  format: binary
  *                manuscriptID:
  *                  type: string
+ *                allowMissingElements:
+ *                  type: boolean
  *                deposit:
  *                  type: boolean
  *                doi:
@@ -103,6 +105,7 @@ export const exportLiteratumBundle = Router().post(
       manuscriptID: Joi.string().required(),
       seriesCode: Joi.string().required(),
       xmlType: Joi.string().empty('').allow('jats', 'wileyml'),
+      allowMissingElements: Joi.boolean().empty('').default(false),
     },
   }),
   wrapAsync(async (req, res) => {
@@ -115,6 +118,7 @@ export const exportLiteratumBundle = Router().post(
       manuscriptID,
       seriesCode,
       xmlType = 'jats',
+      allowMissingElements,
     } = req.body as {
       deposit: boolean
       doi: string
@@ -123,6 +127,7 @@ export const exportLiteratumBundle = Router().post(
       manuscriptID: string
       seriesCode: string
       xmlType: XmlType
+      allowMissingElements: boolean
     }
 
     const [, articleID] = doi.split('/', 2) // TODO: only article ID?
@@ -133,7 +138,11 @@ export const exportLiteratumBundle = Router().post(
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const { article, modelMap } = createArticle(data, manuscriptID)
+    const { article, modelMap } = createArticle(
+      data,
+      manuscriptID,
+      allowMissingElements
+    )
 
     // create JATS XML
     const xml = await createJATSXML(article.content, modelMap, {
