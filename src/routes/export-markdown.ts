@@ -25,6 +25,7 @@ import { createJATSXML } from '../lib/create-jats-xml'
 import { createMarkdown } from '../lib/create-markdown'
 import { findCSL } from '../lib/find-csl'
 import { removeCodeListing } from '../lib/jats-utils'
+import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
@@ -110,9 +111,19 @@ export const exportMarkdown = Router().post(
 
     // use the CSL style defined in the manuscript bundle
     const csl = await findCSL(manuscript, modelMap)
-
-    // create Markdown
-    await createMarkdown(dir, 'manuscript.xml', 'manuscript.md', { csl })
+    try {
+      // create Markdown
+      await createMarkdown(
+        dir,
+        'manuscript.xml',
+        'manuscript.md',
+        { csl },
+        (childProcess) => res.on('close', () => childProcess.kill())
+      )
+    } catch (e) {
+      logger.error(e)
+      throw new Error('Conversion failed when exporting to Markdown')
+    }
 
     archive.append(fs.createReadStream(dir + '/manuscript.md'), {
       name: 'manuscript.md',

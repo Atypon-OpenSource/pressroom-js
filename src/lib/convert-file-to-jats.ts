@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ChildProcess } from 'child_process'
+
 import { pandoc } from './pandoc'
 
-export const convertFileToJATS = async ({
-  dir,
-  inputPath,
-  outputPath,
-  from,
-}: {
-  dir: string
-  inputPath: string
-  outputPath: string
-  from: string
-}): Promise<void> =>
+export const convertFileToJATS = async (
+  {
+    dir,
+    inputPath,
+    outputPath,
+    from,
+  }: {
+    dir: string
+    inputPath: string
+    outputPath: string
+    from: string
+  },
+  callback?: (childProcess: ChildProcess) => void
+): Promise<void> =>
   pandoc(
     inputPath,
     outputPath,
     ['--standalone', `--from=${from}`, `--to=jats`, '--citeproc'],
-    dir
+    dir,
+    callback
   )

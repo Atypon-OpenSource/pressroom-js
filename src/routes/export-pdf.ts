@@ -28,6 +28,7 @@ import { XLINK_NAMESPACE } from '../lib/data'
 import { emailAuthorization } from '../lib/email-authorization'
 import { findCSL } from '../lib/find-csl'
 import { removeCodeListing } from '../lib/jats-utils'
+import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { prince } from '../lib/prince'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -171,15 +172,20 @@ export const exportPDF = Router().post(
 
       // use the CSL style defined in the manuscript bundle
       const csl = await findCSL(manuscript, modelMap)
-
-      // create PDF
-      await createPDF(
-        dir,
-        'manuscript.xml',
-        'manuscript.pdf',
-        engine || 'xelatex',
-        { csl }
-      )
+      try {
+        // create PDF
+        await createPDF(
+          dir,
+          'manuscript.xml',
+          'manuscript.pdf',
+          engine || 'xelatex',
+          { csl },
+          (childProcess) => res.on('close', () => childProcess.kill())
+        )
+      } catch (e) {
+        logger.error(e)
+        throw new Error('Conversion failed when exporting to PDF')
+      }
     }
 
     // send the file as an attachment

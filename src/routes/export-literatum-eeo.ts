@@ -132,9 +132,20 @@ export const exportLiteratumEEO = Router().post(
     })
     await fs.writeFile(dir + '/manuscript.xml', removeCodeListing(jats))
     const xmlStream = fs.createReadStream(dir + '/manuscript.xml')
-
-    // create PDF
-    await createPDF(dir, 'manuscript.xml', 'manuscript.pdf')
+    try {
+      // create PDF
+      await createPDF(
+        dir,
+        'manuscript.xml',
+        'manuscript.pdf',
+        'xelatex',
+        {},
+        (childProcess) => res.on('close', () => childProcess.kill())
+      )
+    } catch (e) {
+      logger.error(e)
+      throw new Error('Conversion failed when exporting to PDF (Literatum EEO)')
+    }
     const pdfStream = fs.createReadStream(dir + '/manuscript.pdf')
 
     if (deposit) {

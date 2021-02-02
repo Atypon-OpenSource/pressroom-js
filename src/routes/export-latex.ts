@@ -25,6 +25,7 @@ import { createJATSXML } from '../lib/create-jats-xml'
 import { createLatex } from '../lib/create-latex'
 import { findCSL } from '../lib/find-csl'
 import { removeCodeListing } from '../lib/jats-utils'
+import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
@@ -110,9 +111,19 @@ export const exportLatex = Router().post(
 
     // use the CSL style defined in the manuscript bundle
     const csl = await findCSL(manuscript, modelMap)
-
-    // create LaTeX
-    await createLatex(dir, 'manuscript.xml', 'manuscript.tex', { csl })
+    try {
+      // create LaTeX
+      await createLatex(
+        dir,
+        'manuscript.xml',
+        'manuscript.tex',
+        { csl },
+        (childProcess) => res.on('close', () => childProcess.kill())
+      )
+    } catch (e) {
+      logger.error(e)
+      throw new Error('Conversion failed when exporting to LaTeX')
+    }
 
     archive.append(fs.createReadStream(dir + '/manuscript.tex'), {
       name: 'manuscript.tex',

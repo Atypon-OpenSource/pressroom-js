@@ -25,6 +25,7 @@ import { createIcml } from '../lib/create-icml'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { findCSL } from '../lib/find-csl'
 import { removeCodeListing } from '../lib/jats-utils'
+import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
@@ -110,9 +111,19 @@ export const exportIcml = Router().post(
 
     // use the CSL style defined in the manuscript bundle
     const csl = await findCSL(manuscript, modelMap)
-
-    // create ICML
-    await createIcml(dir, 'manuscript.xml', 'manuscript.icml', { csl })
+    try {
+      // create ICML
+      await createIcml(
+        dir,
+        'manuscript.xml',
+        'manuscript.icml',
+        { csl },
+        (childProcess) => res.on('close', () => childProcess.kill())
+      )
+    } catch (e) {
+      logger.error(e)
+      throw new Error('Conversion failed when exporting to ICML')
+    }
 
     archive.append(fs.createReadStream(dir + '/manuscript.icml'), {
       name: 'manuscript.icml',

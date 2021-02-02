@@ -26,6 +26,7 @@ import { createJATSXML } from '../lib/create-jats-xml'
 import { XLINK_NAMESPACE } from '../lib/data'
 import { findCSL } from '../lib/find-csl'
 import { removeCodeListing } from '../lib/jats-utils'
+import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -111,9 +112,19 @@ export const exportEpub = Router().post(
 
     // use the CSL style defined in the manuscript bundle
     const csl = await findCSL(manuscript, modelMap)
-
-    // create EPUB
-    await createEpub(dir, 'manuscript.xml', 'manuscript.epub', { csl })
+    try {
+      // create EPUB
+      await createEpub(
+        dir,
+        'manuscript.xml',
+        'manuscript.epub',
+        { csl },
+        (childProcess) => res.on('close', () => childProcess.kill())
+      )
+    } catch (e) {
+      logger.error(e)
+      throw new Error('Conversion failed when exporting to EPUB')
+    }
 
     // send the file as an attachment
     res.download(dir + '/manuscript.epub')

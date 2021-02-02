@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ChildProcess } from 'child_process'
+
 import { DEFAULT_CSL, pandoc } from './pandoc'
 
 export const createLatex = (
@@ -21,7 +23,8 @@ export const createLatex = (
   outputPath: string,
   options?: {
     csl?: string
-  }
+  },
+  callback?: (childProcess: ChildProcess) => void
 ): Promise<void> =>
   pandoc(
     inputPath,
@@ -33,5 +36,6 @@ export const createLatex = (
       `--csl=${options?.csl || DEFAULT_CSL}`,
       '--citeproc',
     ],
-    dir
+    dir,
+    callback
   )

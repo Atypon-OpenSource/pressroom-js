@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ChildProcess } from 'child_process'
+
 import { DEFAULT_CSL, pandoc } from './pandoc'
 
 const DEFAULT_CSS = __dirname + '/../assets/css/print.css'
@@ -29,7 +31,8 @@ export const createPDF = async (
     csl?: string
     css?: string
     metadata?: string
-  }
+  },
+  callback?: (childProcess: ChildProcess) => void
 ): Promise<void> => {
   const args = [
     '--standalone',
@@ -55,5 +58,5 @@ export const createPDF = async (
       break
   }
 
-  return pandoc(inputPath, outputPath, args, dir)
+  return pandoc(inputPath, outputPath, args, dir, callback)
 }

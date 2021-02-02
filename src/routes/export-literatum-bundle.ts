@@ -205,9 +205,22 @@ export const exportLiteratumBundle = Router().post(
       // write JATS XML file
       archive.append(jats, { name: `${articleID}.xml`, prefix })
     }
-
-    // write PDF file
-    await createPDF(dir, 'manuscript.xml', 'manuscript.pdf')
+    try {
+      // write PDF file
+      await createPDF(
+        dir,
+        'manuscript.xml',
+        'manuscript.pdf',
+        'xelatex',
+        {},
+        (childProcess) => res.on('close', () => childProcess.kill())
+      )
+    } catch (e) {
+      logger.error(e)
+      throw new Error(
+        'Conversion failed when exporting to PDF (Literatum bundle)'
+      )
+    }
     archive.append(fs.createReadStream(dir + '/manuscript.pdf'), {
       name: `${articleID}.pdf`,
       prefix,

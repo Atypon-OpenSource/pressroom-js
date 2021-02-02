@@ -95,12 +95,20 @@ export const importWord = Router().post(
 
     // convert the Word file to JATS XML via pandoc
     logger.debug('Converting Word file to JATS XML via pandoc')
-    await convertFileToJATS({
-      dir,
-      from: 'docx',
-      inputPath: 'manuscript.docx',
-      outputPath: 'manuscript.xml',
-    })
+    try {
+      await convertFileToJATS(
+        {
+          dir,
+          from: 'docx',
+          inputPath: 'manuscript.docx',
+          outputPath: 'manuscript.xml',
+        },
+        (childProcess) => res.on('close', () => childProcess.kill())
+      )
+    } catch (e) {
+      logger.error(e)
+      throw new Error('Conversion failed when importing docx')
+    }
 
     // parse the JATS XML
     const doc = await parseXMLFile(dir + '/manuscript.xml')

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { execFile } from 'child_process'
+import { ChildProcess, execFile } from 'child_process'
 import { promisify } from 'util'
 
 export const DEFAULT_CSL = __dirname + '/../assets/csl/nature.csl'
@@ -22,11 +22,16 @@ export const pandoc = async (
   inputPath: string,
   outputPath: string,
   args: string[],
-  cwd: string
+  cwd: string,
+  callback?: (child: ChildProcess) => void
 ): Promise<void> => {
-  await promisify(execFile)(
+  const process = promisify(execFile)(
     'pandoc',
     [...args, '--output', outputPath, inputPath],
     { cwd }
   )
+  if (typeof callback === 'function') {
+    callback(process.child)
+  }
+  await process
 }
