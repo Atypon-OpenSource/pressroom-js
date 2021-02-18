@@ -17,6 +17,7 @@ import { Manuscript } from '@manuscripts/manuscripts-json-schema'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
+import createHttpError from 'http-errors'
 import path from 'path'
 
 import { authentication } from '../lib/authentication'
@@ -148,9 +149,11 @@ export const exportPDF = Router().post(
       } = {}
 
       if (theme) {
-        options.css = require.resolve(
-          `@manuscripts/themes/themes/${theme}/print.css`
-        )
+        const cssPath = __dirname + `/../assets/themes/${theme}/print.css`
+        if (!fs.existsSync(cssPath)) {
+          throw createHttpError(400, `${theme} theme not found`)
+        }
+        options.css = cssPath
       }
 
       await prince(dir, 'manuscript.html', 'manuscript.pdf', options)

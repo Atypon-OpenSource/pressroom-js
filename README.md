@@ -43,3 +43,10 @@ yarn test -u
 
 * The API documentation is served at `/api/v2/docs`. 
 * After editing the Swagger documentation for a route, run `yarn build` to rebuild the `dist` folder, then restart the dev server to pick up the changes.
+
+## PDF themes & Citation styles
+Pressroom-js copies the content of 
+* https://github.com/citation-style-language/styles-distribution 
+* https://gitlab.com/mpapp-public/manuscripts-themes
+
+to the project directory during build time

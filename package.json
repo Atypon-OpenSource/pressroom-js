@@ -26,7 +26,7 @@
     "@manuscripts/manuscripts-json-schema": "^1.45.0",
     "@manuscripts/manuscripts-json-schema-utils": "0.0.3",
     "@manuscripts/requirements": "^0.4.0 ",
-    "@manuscripts/themes": "git+https://gitlab.com/mpapp-public/manuscripts-themes",
+    "@manuscripts/themes": "^0.1.1",
     "archiver": "^5.1.0",
     "axios": "^0.21.0",
     "basic-ftp": "^4.6.3",

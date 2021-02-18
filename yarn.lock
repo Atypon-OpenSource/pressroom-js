@@ -1350,9 +1350,10 @@
     image-size "^0.9.1"
     uuid "^8.3.0"
 
-"@manuscripts/themes@git+https://gitlab.com/mpapp-public/manuscripts-themes":
-  version "0.0.1"
-  resolved "git+https://gitlab.com/mpapp-public/manuscripts-themes#a1ecec68928e929d25b6c6882707bb44d0843a5b"
+"@manuscripts/themes@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@manuscripts/themes/-/themes-0.1.1.tgz#9fc20a69145d1498e662fb7dbdb97fd2ac52a97e"
+  integrity sha512-Bw8J71L9N9nCJKetBSIhvIvTPne9xL4esxwBCvo4H2k+gKVG2E9DyLiFKsLcceIfWoq7gqxR9mcBNJaCzwO42Q==
 
 "@marudor/node-pre-gyp@^0.16.1":
   version "0.16.1"

@@ -1,0 +1,374 @@
+@import "fonts.css";
+
+@page {
+  size: Letter;
+  margin: 70pt 40pt;
+  font-family: 'Helvetica', sans-serif;
+  prince-shrink-to-fit: auto;
+
+  @top-left {
+    content: string(journal-name);
+    font-size: 11pt;
+    font-weight: 400;
+    padding-top: 20pt;
+    border-bottom: 1px solid #000;
+    margin-bottom: 24pt;
+  }
+
+  @top-right {
+    content: string(running-title);
+    font-size: 8pt;
+    font-weight: 400;
+    padding-top: 20pt;
+    border-bottom: 1px solid #000;
+    margin-bottom: 24pt;
+  }
+
+  @bottom-left {
+    content: string(journal-name) " | " string(doi) ;
+    font-size: 8pt;
+    padding-bottom: 10pt;
+  }
+
+  @bottom-center {
+    content: string(article-date);
+    font-size: 8pt;
+    padding-bottom: 10pt;
+  }
+
+  @bottom-right {
+    content: counter(page) " / " counter(pages);
+    font-size: 8pt;
+    padding-bottom: 10pt;
+  }
+}
+
+@page:first {
+  @top-left {
+    content: string(journal-name);
+    font-size: 20.6pt;
+    font-weight: 400;
+    padding-top: 20pt;
+    border-bottom: 1px solid #000;
+    margin-bottom: 24pt;
+  }
+
+  @top-right {
+    content: normal;
+  }
+}
+
+body {
+  font-family: 'Minion Pro', serif;
+  font-size: 10pt;
+  background: none;
+  line-height: 1.3;
+  -webkit-print-color-adjust: exact;
+  prince-linebreak-magic: auto;
+  prince-image-resolution: auto, 600dpi;
+  /*noinspection CssInvalidFunction*/
+  prince-image-magic: jpeq-quality(90);
+  prince-hyphenate-after: 5;
+  prince-hyphenate-before: 2;
+  prince-hyphenate-lines: 1;
+  margin-left: 30%;
+}
+
+p {
+  text-align: left;
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 1.2;
+  hyphens: auto;
+  orphans: 2;
+  widows: 2;
+  font-size: 10pt;
+  text-indent: 1.5em;
+}
+
+/** headings **/
+
+h1 {
+  font-family: "Open Sans", sans-serif;
+  font-size: 12pt;
+  font-weight: 800;
+  margin-top: 0;
+  margin-bottom: 4pt;
+  page-break-after: avoid;
+  /*line-height: 1;*/
+}
+
+article > section > section h1 {
+  font-family: "Minion Pro", serif;
+}
+
+/** header **/
+
+header {
+  font-family: Helvetica, sans-serif;
+}
+
+header .contrib-group > span:not(:last-of-type):after {
+  content: ", "
+}
+
+header > div > h1 {
+  string-set: title content();
+  font-family: "Open Sans", sans-serif;
+  font-size: 18pt;
+  font-weight: 400;
+  margin: 8pt 0 16pt;
+  line-height: 1.1;
+  /*text-wrap: balance;*/
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a[href]:after {
+  content: none !important;
+}
+
+sup, sub {
+  line-height: 0;
+}
+
+[position="float"] {
+  clear: none;
+}
+
+section {
+  margin-bottom: 16pt;
+}
+
+/** abstract **/
+
+section[data-category="MPSectionCategory:abstract"] {
+  margin: 20pt 0;
+  padding-bottom: 10pt;
+  border-bottom: 1pt solid #aaa;
+}
+
+section[data-category="MPSectionCategory:abstract"] h1 {
+  font-family: "Open Sans", sans-serif;
+  font-size: 14.5pt;
+  font-weight: 400;
+}
+
+
+section[data-category="MPSectionCategory:abstract"] p {
+  line-height: 1.4;
+  font-size: 9.5pt;
+  text-indent: 0;
+  font-family: Helvetica, sans-serif;
+}
+
+section > p:first-of-type {
+  text-indent: 0;
+}
+
+/** authors **/
+
+header .contrib-group {
+  font-family: Helvetica, sans-serif;
+  margin-top: 12pt;
+  margin-bottom: 12pt;
+  font-weight: 800;
+  font-size: 9pt;
+  line-height: 1.2;
+}
+
+header .contrib-group a[href^="mailto:"] {
+  content: "📧"
+}
+
+header .contrib-group .contrib-name {
+  white-space: nowrap;
+}
+
+header .contrib-group a[data-ref-type="aff"] {
+  font-size: 5.5pt;
+  vertical-align: baseline;
+  line-height: 0;
+}
+
+/** affiliations **/
+
+header .affiliations-list {
+  font-weight: 400;
+  margin: 12pt 0 12pt 20pt;
+  line-height: 1.2;
+  font-size: 8pt;
+}
+
+header .affiliations-list li {
+  padding-left: 0;
+}
+
+/** figures **/
+
+figure[data-size-fraction="2"] {
+  margin-left: -30%;
+}
+
+figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0 0 12pt;
+  page-break-inside: avoid;
+  /*noinspection CssInvalidPropertyValue*/
+  float: prince-snap;
+  width: 100%;
+  overflow: hidden;
+  border-bottom: 1px solid black;
+}
+
+figure > img {
+  max-height: 410pt;
+  max-width: 100%;
+  margin-bottom: 4pt;
+}
+
+figure .figure-label,
+figure .figure-title {
+  font-weight: 800;
+  display: inline;
+}
+
+figcaption {
+  width: 100%;
+  text-align: left;
+  font-size: 8pt;
+  text-indent: 0;
+  line-height: 1.2;
+}
+
+figure .fn {
+  font-size: 7pt;
+  margin-top: 1pt;
+}
+
+/** tables **/
+
+.table-container, table {
+  width: 100%;
+}
+
+td, th {
+  padding: 1pt 0;
+  text-align: left;
+}
+
+td sup {
+  line-height: 0;
+  position: relative;
+  top: 1pt;
+  font-size: 6pt;
+}
+
+td:not(:last-child), th:not(:last-child) {
+  padding-right: 4pt;
+}
+
+th,
+table tr:first-of-type > td {
+  font-weight: 400 !important;
+  padding-top: 3pt;
+  background: #e6e6e6 !important;
+}
+
+table {
+  border-collapse: collapse;
+  page-break-inside: auto;
+  page-break-after: auto;
+  font-size: 8pt;
+  width: 100% !important;
+  margin: 2pt 0;
+}
+
+tr {
+  page-break-inside: avoid;
+  page-break-after: auto;
+}
+
+td {
+  page-break-inside: avoid;
+  page-break-after: auto;
+}
+
+thead {
+  display: table-header-group;
+}
+
+tfoot {
+  display: table-footer-group;
+}
+
+/* references */
+
+.csl-bib-body {
+  font-family: Helvetica, sans-serif;
+  font-size: 8pt;
+  margin-left: 4pt;
+  display: table;
+  line-height: 1.2;
+  prince-hyphenate-after: 5;
+  prince-hyphenate-before: 5;
+  prince-hyphenate-lines: 3;
+}
+
+.csl-entry {
+  display: table-row;
+  padding-left: 0;
+  margin-bottom: 6pt;
+}
+
+.csl-left-margin,
+.csl-right-inline {
+  display: table-cell;
+}
+
+.csl-left-margin {
+  text-align: right;
+  padding-right: 8pt;
+  white-space: pre;
+}
+
+.csl-right-inline {
+  text-align: left;
+}
+
+.citation sup {
+  vertical-align: baseline;
+  font-size: 1em;
+}
+
+/** bookmarks **/
+
+h1 {
+  prince-bookmark-level: 1
+}
+
+h2 {
+  prince-bookmark-level: 2
+}
+
+h3 {
+  prince-bookmark-level: 3
+}
+
+h4 {
+  prince-bookmark-level: 4
+}
+
+h5 {
+  prince-bookmark-level: 5
+}
+
+h6 {
+  prince-bookmark-level: 6
+}
