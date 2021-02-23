@@ -61,7 +61,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  type: boolean
  *                engine:
  *                  type: string
- *                  enum: ['prince', 'weasyprint', 'xelatex', 'tectonic']
+ *                  enum: ['prince-html', 'prince', 'weasyprint', 'xelatex', 'tectonic']
  *                theme:
  *                  type: string
  *              required:
