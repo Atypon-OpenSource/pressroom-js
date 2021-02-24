@@ -32,6 +32,8 @@ import { exportLiteratumDO } from './export-literatum-do'
 import { exportLiteratumEEO } from './export-literatum-eeo'
 import { exportMarkdown } from './export-markdown'
 import { exportPDF } from './export-pdf'
+import { extylesCreateJob } from './extyles-create-Job'
+import { extylesImportResult } from './extyles-import-result'
 import { importJATSArc } from './import-jats-arc'
 import { importPDF } from './import-pdf'
 import { importWord } from './import-word'
@@ -60,6 +62,8 @@ export const routes = Router()
     exportLiteratumDO,
     exportLiteratumEEO
   )
+  // Extyles
+  .use('/', extylesCreateJob, extylesImportResult)
 
   // builders
   .use('/', buildSubmissionBundle)

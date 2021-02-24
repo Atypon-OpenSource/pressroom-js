@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import axios from 'axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import FormData from 'form-data'
 import fs from 'fs-extra'
 import stream from 'stream'
 
 import { config } from '../config'
-import { convertWordToJATS } from '../extyles-arc'
+import { convertWordToJATS, extylesClient } from '../extyles-arc'
 
 const mockInputFile = __dirname + '/../__mocks__/__fixtures__/arc-input.docx'
 const mockOutputFile = __dirname + '/../__mocks__/__fixtures__/arc-output.zip'
@@ -34,7 +33,7 @@ describe('eXtyles Arc', () => {
       get_results: 0,
     }
 
-    const mockClient = new AxiosMockAdapter(axios)
+    const mockClient = new AxiosMockAdapter(extylesClient)
 
     mockClient
       .onPost('https://www.extylesarc.com/api/login')
