@@ -159,13 +159,14 @@ export const exportLiteratumBundle = Router().post(
     // fix image references
     if (await fs.pathExists(dir + '/Data')) {
       const images = await fs.readdir(dir + '/Data')
-
+      const graphicPath = dir + '/graphic'
+      fs.renameSync(dir + '/Data', graphicPath)
       for (const image of images) {
         const { ext, name } = path.parse(image)
 
         await processElements(
           doc,
-          `//*[@xlink:href="${name}"]`,
+          `//graphic[starts-with(@xlink:href,"graphic/${name}")]`,
           async (element) => {
             const parentFigure = element.closest('fig')
 
@@ -176,7 +177,8 @@ export const exportLiteratumBundle = Router().post(
             const newName = parentFigureID ? `${parentFigureID}${ext}` : image
 
             const lowerCaseName = newName.toLowerCase()
-
+            const newImagePath = `${graphicPath}/${newName}`
+            fs.renameSync(`${graphicPath}/${image}`, newImagePath)
             const nodeName = element.nodeName.toLowerCase()
 
             element.setAttributeNS(
@@ -184,8 +186,7 @@ export const exportLiteratumBundle = Router().post(
               'href',
               `${nodeName}/${lowerCaseName}`
             )
-
-            archive.append(fs.createReadStream(`${dir}/images/${image}`), {
+            archive.append(fs.createReadStream(newImagePath), {
               name: lowerCaseName,
               prefix: `${prefix}/${nodeName}`,
             })

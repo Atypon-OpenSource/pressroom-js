@@ -49,6 +49,18 @@ describe('export Literatum Bundle', () => {
 
     const zip = await new JSZip().loadAsync(response.body)
 
+    const expectedFiles = [
+      'test/567/graphic/fig-2',
+      'test/567/567.xml',
+      'test/567/567.pdf',
+      'manifest.xml',
+    ]
+    const zipFiles: Array<string> = []
+    zip.forEach((path) => {
+      zipFiles.push(path)
+    })
+
+    expect(zipFiles).toStrictEqual(expectedFiles)
     const xml = await zip.files['test/567/567.xml'].async('text')
 
     const doc = parseXml(xml, {
