@@ -20,6 +20,7 @@ import { arcCredentials } from '../lib/arc-credentials'
 import { authentication } from '../lib/authentication'
 import { convertJATSArc } from '../lib/convert-jats-arc'
 import { getResult, isFinishedJob, login } from '../lib/extyles-arc'
+import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
@@ -85,8 +86,8 @@ export const extylesImportResult = Router().post(
         const zip = await getResult(job_id, token)
         // unzip the input
         await unzip(zip, dir)
-
-        const archive = await convertJATSArc(dir)
+        const doc = await parseXMLFile(dir + '/manuscript.XML')
+        const archive = await convertJATSArc(dir, doc)
 
         sendArchive(res, archive, 'manuscript.manuproj')
       })

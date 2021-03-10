@@ -22,7 +22,6 @@ import {
 } from '@manuscripts/manuscript-transform'
 import archiver, { Archiver } from 'archiver'
 import fs from 'fs-extra'
-import createHttpError from 'http-errors'
 
 import { createJSON } from './create-json'
 import { fixImageReferences } from './fix-jats-references'
@@ -31,7 +30,6 @@ import {
   replaceTokensWithHighlights,
 } from './jats-arc-comments'
 import { logger } from './logger'
-import { parseXMLFile } from './parse-xml-file'
 
 interface Options {
   addBundledData?: boolean
@@ -39,17 +37,13 @@ interface Options {
 
 export const convertJATSArc = async (
   dir: string,
+  doc: Document,
   options: Options = {}
 ): Promise<Archiver> => {
   logger.debug('Converting Word file to JATS XML with Arc')
 
   const archive = archiver.create('zip')
   // parse the JATS XML and fix data references
-  const path = dir + '/manuscript.XML'
-  if (!fs.existsSync(path)) {
-    throw createHttpError(400, 'manuscript.XML is missing')
-  }
-  const doc = await parseXMLFile(path)
   const authorQueriesMap = markCommentsWithTokens(doc)
   const imageDirPath: string = dir + '/images'
   await fixImageReferences(imageDirPath, doc)

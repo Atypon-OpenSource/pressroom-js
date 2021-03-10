@@ -15,9 +15,13 @@
  */
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
+import fs from 'fs-extra'
+import createHttpError from 'http-errors'
 
 import { authentication } from '../lib/authentication'
 import { convertJATSArc } from '../lib/convert-jats-arc'
+import { logger } from '../lib/logger'
+import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
@@ -71,7 +75,28 @@ export const importJATSArc = Router().post(
     const dir = req.tempDir
     await unzip(req.file.stream, dir)
 
-    const archive = await convertJATSArc(dir, { addBundledData })
+    // TODO move this to middleware
+    const lookupName = ['/manuscript.XML', '/manuscript.xml']
+    let doc = undefined
+    for (const name of lookupName) {
+      const path = dir + name
+      if (fs.existsSync(path)) {
+        try {
+          doc = await parseXMLFile(path)
+        } catch (e) {
+          logger.debug(e)
+        }
+        break
+      }
+    }
+
+    if (!doc) {
+      throw createHttpError(
+        400,
+        'Cannot parse JATS file check if manuscript.XML exists in the archive'
+      )
+    }
+    const archive = await convertJATSArc(dir, doc, { addBundledData })
 
     sendArchive(res, archive, 'manuscript.manuproj')
   })
