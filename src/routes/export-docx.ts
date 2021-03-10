@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 import { Manuscript } from '@manuscripts/manuscripts-json-schema'
+import archiver from 'archiver'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 import path from 'path'
 
 import { authentication } from '../lib/authentication'
+import { convertDocxStyle } from '../lib/convert-docx-style'
 import { createArticle } from '../lib/create-article'
 import { createDocx } from '../lib/create-docx'
 import { createJATSXML } from '../lib/create-jats-xml'
@@ -28,7 +30,10 @@ import { findCSL } from '../lib/find-csl'
 import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
+import { addNumberingToSections } from '../lib/models'
+import { parseXMLFile } from '../lib/parse-xml-file'
 import { createRequestDirectory } from '../lib/temp-dir'
+import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
 import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
@@ -90,6 +95,7 @@ export const exportDocx = Router().post(
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
+    addNumberingToSections(data)
     const { article, modelMap } = createArticle(
       data,
       manuscriptID,
@@ -127,7 +133,24 @@ export const exportDocx = Router().post(
       throw new Error('Conversion failed when exporting to docx')
     }
 
-    // send the file as an attachment
-    res.download(dir + '/manuscript.docx')
+    const docxPath = dir + '/manuscript.docx'
+    const docx = fs.readFileSync(docxPath)
+    await unzip(docx, dir + '/wordMl')
+    const stylesPath = dir + '/wordMl/word/styles.xml'
+    const document = await parseXMLFile(stylesPath)
+    convertDocxStyle(document, data)
+
+    fs.writeFileSync(
+      stylesPath,
+      new XMLSerializer().serializeToString(document)
+    )
+
+    const archive = archiver('zip')
+
+    archive.directory(dir + '/wordMl', false)
+
+    res.attachment('manuscript.docx')
+    archive.pipe(res)
+    archive.finalize()
   })
 )

@@ -18,11 +18,15 @@ import getStream from 'get-stream'
 import stream from 'stream'
 
 export const unzip = async (
-  zip: stream.Readable,
+  zip: stream.Readable | Buffer,
   dir: string
 ): Promise<decompress.File[]> => {
-  const buffer = await getStream.buffer(zip)
-
+  let buffer
+  if (!Buffer.isBuffer(zip)) {
+    buffer = await getStream.buffer(zip)
+  } else {
+    buffer = zip
+  }
   return decompress(buffer, dir, {
     map: (file) => {
       if (file.type === 'file' && file.path.endsWith('/')) {
