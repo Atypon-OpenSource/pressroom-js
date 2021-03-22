@@ -146,14 +146,23 @@ export const exportPDF = Router().post(
 
       const options: {
         css?: string
+        js?: string
       } = {}
 
       if (theme) {
-        const cssPath = __dirname + `/../assets/themes/${theme}/print.css`
+        const themePath = __dirname + `/../assets/themes/${theme}/`
+        const cssPath = themePath + 'print.css'
         if (!fs.existsSync(cssPath)) {
           throw createHttpError(400, `${theme} theme not found`)
         }
         options.css = cssPath
+        const jsPath = themePath + 'print.js'
+        // ignore when there is no js file?
+        if (fs.existsSync(jsPath)) {
+          options.js = jsPath
+        } else {
+          logger.debug(`No JS file for ${theme}`)
+        }
       }
 
       await prince(dir, 'manuscript.html', 'manuscript.pdf', options)

@@ -24,8 +24,15 @@ export const prince = async (
   outputPath: string,
   options: {
     css?: string
+    js?: string
   } = {}
 ): Promise<void> => {
+  const args = []
+  if (options.js) {
+    args.push(`--script`)
+    args.push(options.js)
+  }
+
   const { stdout, stderr } = await promisify(execFile)(
     'prince',
     [

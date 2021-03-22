@@ -1308,7 +1308,22 @@
     eslint-config-prettier "^6.11.0"
     prettier "^2.1.1"
 
-"@manuscripts/manuscript-transform@0.40.4", "@manuscripts/manuscript-transform@^0.40.3":
+"@manuscripts/manuscript-transform@0.42.3":
+  version "0.42.3"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.42.3.tgz#6bfb933a79e5803f5d52f0c08cdb6b4e9afc49a1"
+  integrity sha512-FV3nzLPsRV7SVnMggY1ipFLz7iwLSJcXyitHQiza79lfzgndVENKiLYuRmpcaAv68SS7ex8M1bdjq5wf0eCE2w==
+  dependencies:
+    "@manuscripts/data" "^0.1.3"
+    "@manuscripts/manuscripts-json-schema" "^1.46.0"
+    debug "^4.1.1"
+    lodash.pickby "^4.6.0"
+    mathjax-full "^3.1.2"
+    mime "^2.4.6"
+    prosemirror-model "^1.11.0"
+    uuid "^8.2.0"
+    w3c-xmlserializer "^2.0.0"
+
+"@manuscripts/manuscript-transform@^0.40.3":
   version "0.40.4"
   resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.40.4.tgz#589babc978b9a50eb49f007ce689fdd02d8f9b09"
   integrity sha512-SSVt1hQ+xgfyEUCHhXhnDa4o9YXpNoiocY7OqpPPvV5/5+eBmMrxpC4iUebIB7FsOo0LpRhLiUbruOlG7Vfc/g==
@@ -1331,6 +1346,15 @@
   version "1.45.0"
   resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.45.0.tgz#5eca840919002b77610dc440b2a53760b1e5f877"
   integrity sha512-VNmd7rItCOXiIy1zcKMPvPbMVitTDzMSInIyK5HxcldKXbj9RRUOTflVsLjrF4sqC60z+BNfORc5TEiEoVFvSQ==
+  dependencies:
+    ajv "^6.10.0"
+    deepmerge "^3.2.0"
+    js-beautify "^1.9.0"
+
+"@manuscripts/manuscripts-json-schema@^1.46.0":
+  version "1.46.0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.46.0.tgz#e45906776a264efc1d6df875efaecf89da04d98c"
+  integrity sha512-NX9QaWCZPsa4v9M1NrMKZn5Jan+6gbgzyuwYQkP5Cib2ilpq24zI+xFRtWXZhODvTAmGhWNNgWWmpG/D3LMwzw==
   dependencies:
     ajv "^6.10.0"
     deepmerge "^3.2.0"
@@ -6088,6 +6112,11 @@ lodash.once@^4.0.0:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.once/-/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
   integrity sha1-DdOXEhPHxW34gJd9UEyI+0cal6w=
+
+lodash.pickby@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.pickby/-/lodash.pickby-4.6.0.tgz#7dea21d8c18d7703a27c704c15d3b84a67e33aff"
+  integrity sha1-feoh2MGNdwOifHBMFdO4SmfjOv8=
 
 lodash.set@^4.0.0:
   version "4.3.2"
