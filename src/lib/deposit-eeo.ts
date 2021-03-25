@@ -16,7 +16,7 @@
 
 import axios from 'axios'
 import FormData from 'form-data'
-import { Readable } from 'stream'
+import createHttpError from 'http-errors'
 
 import { config } from './config'
 
@@ -32,11 +32,12 @@ const client = axios.create({
 })
 
 interface Options {
+  async: boolean
   journalName: string
   manuscriptID: string
   notificationURL: string
-  pdf: Readable
-  xml: Readable
+  pdf: Buffer
+  xml: Buffer
 }
 
 export const depositEEO = async ({
@@ -45,40 +46,58 @@ export const depositEEO = async ({
   notificationURL,
   pdf,
   xml,
-}: Options): Promise<void> => {
+  async,
+}: Options): Promise<string> => {
   const { username, password } = config.literatum.eeo
 
-  const { data: token } = await client.post<Token>('/v1/api/oauth2/token', {
-    auth: { username, password },
-    params: {
-      grant_type: 'client_credentials',
-      scope: 'eeoDeposit',
-    },
-  })
+  const { data: token } = await client.post<Token>(
+    '/v1/api/oauth2/token',
+    null,
+    {
+      auth: { username, password },
+      params: {
+        grant_type: 'client_credentials',
+      },
+    }
+  )
 
   if (!token) {
     throw new Error('Could not authenticate')
   }
 
   const form = new FormData()
+  // endpoint fails when passing the files as a stream
   form.append('frontMatterJats', xml, 'manuscript.xml')
   form.append('submissionFile', pdf, 'manuscript.pdf')
   form.append('submissionId', manuscriptID)
   form.append('journalName', journalName)
   form.append('notificationCallbackUrl', notificationURL)
-  form.append('async', 'true')
+  // should be true for production
+  form.append('async', async.toString())
 
-  const { status } = await client.post<void>('/v1/api/eeo/deposit', form, {
+  const { status, data } = await client.post<{
+    errorMessage?: string
+    queued: string
+  }>('v1/api/eeo/deposit', form, {
     headers: {
       Authorization: `Bearer ${token.access_token}`,
+      ...form.getHeaders(),
+      'Content-Length': form.getLengthSync(),
     },
     params: {
-      grant_type: 'client_credentials',
       scope: 'eeoDeposit',
     },
   })
 
-  if (status !== 202) {
-    throw new Error('Deposit was not accepted')
+  if (status === 500) {
+    throw Error(data.errorMessage)
   }
+  if (data.errorMessage) {
+    throw createHttpError(400, data.errorMessage)
+  }
+  if (data.queued == 'true') {
+    return 'Submission queued'
+  }
+
+  return 'Submitted successfully'
 }

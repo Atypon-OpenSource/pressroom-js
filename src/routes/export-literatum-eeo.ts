@@ -55,6 +55,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  type: string
  *                allowMissingElements:
  *                  type: boolean
+ *                async:
+ *                  type: boolean
  *                doi:
  *                  type: string
  *                journalName:
@@ -92,6 +94,7 @@ export const exportLiteratumEEO = Router().post(
       manuscriptID: Joi.string().required(),
       notificationURL: Joi.string().required(),
       allowMissingElements: Joi.boolean().empty('').default(false),
+      async: Joi.boolean().empty('').default(true),
     },
   }),
   wrapAsync(async (req, res) => {
@@ -104,6 +107,7 @@ export const exportLiteratumEEO = Router().post(
       manuscriptID,
       notificationURL,
       allowMissingElements,
+      async,
     } = req.body as {
       deposit: boolean
       doi: string
@@ -112,6 +116,7 @@ export const exportLiteratumEEO = Router().post(
       manuscriptID: string
       notificationURL: string
       allowMissingElements: boolean
+      async: boolean
     }
 
     // unzip the input
@@ -131,7 +136,7 @@ export const exportLiteratumEEO = Router().post(
       frontMatterOnly,
     })
     await fs.writeFile(dir + '/manuscript.xml', removeCodeListing(jats))
-    const xmlStream = fs.createReadStream(dir + '/manuscript.xml')
+    const xmlStream = fs.readFileSync(dir + '/manuscript.xml')
     try {
       // create PDF
       await createPDF(
@@ -146,18 +151,20 @@ export const exportLiteratumEEO = Router().post(
       logger.error(e)
       throw new Error('Conversion failed when exporting to PDF (Literatum EEO)')
     }
-    const pdfStream = fs.createReadStream(dir + '/manuscript.pdf')
+    const pdfStream = fs.readFileSync(dir + '/manuscript.pdf')
 
     if (deposit) {
       logger.debug(`Depositing to Literatum EEO`)
 
-      await depositEEO({
+      const depositState = await depositEEO({
         journalName,
         manuscriptID,
         notificationURL,
         pdf: pdfStream,
         xml: xmlStream,
+        async,
       })
+      res.json(depositState)
     } else {
       const archive = archiver
         .create('zip')
