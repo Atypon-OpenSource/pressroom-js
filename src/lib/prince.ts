@@ -48,6 +48,7 @@ export const prince = async (
       // '--no-network',
       // '--javascript',
       // '--tagged-pdf',
+      ...args,
     ],
     { cwd }
   )
