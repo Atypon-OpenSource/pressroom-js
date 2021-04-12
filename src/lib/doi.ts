@@ -13,6 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const VALID_DOI_REGEX = /^10\..+\/.+/
+export const VALID_DOI_REGEX = /^10\..+\/.+/
 
 export const isValidDOI = (doi: string): boolean => VALID_DOI_REGEX.test(doi)

@@ -29,7 +29,7 @@ describe('export Literatum Bundle', () => {
   test('exports to Literatum Bundle', async () => {
     const response = await request(app)
       .post('/api/v2/export/literatum-bundle')
-      .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
+      .attach('file', __dirname + '/__fixtures__/external-files.manuproj')
       .field(
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
@@ -50,7 +50,9 @@ describe('export Literatum Bundle', () => {
     const zip = await new JSZip().loadAsync(response.body)
 
     const expectedFiles = [
-      'test/567/graphic/fig-2',
+      'test/567/graphic/figure 2.jpg',
+      'test/567/external/hon-20-0144-r1.docx',
+      'test/567/external/hon-20-0144.pdf',
       'test/567/567.xml',
       'test/567/567.pdf',
       'manifest.xml',
@@ -68,7 +70,6 @@ describe('export Literatum Bundle', () => {
       dtdvalid: true,
       nonet: true,
     })
-
     expect(doc.errors.length).toBe(0)
   })
 })

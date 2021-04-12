@@ -18,7 +18,6 @@ import { celebrate, Joi } from 'celebrate'
 import { format } from 'date-fns'
 import { Router } from 'express'
 import fs from 'fs-extra'
-import path from 'path'
 
 import { authentication } from '../lib/authentication'
 import { config } from '../lib/config'
@@ -26,9 +25,11 @@ import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { buildManifest } from '../lib/create-manifest'
 import { createPDF } from '../lib/create-pdf'
-import { processElements, XLINK_NAMESPACE } from '../lib/data'
+import { processElements } from '../lib/data'
 import { depositFTPS } from '../lib/deposit-ftps'
+import { VALID_DOI_REGEX } from '../lib/doi'
 import { emailAuthorization } from '../lib/email-authorization'
+import { importExternalFiles } from '../lib/external-files'
 import { convertJATSToWileyML } from '../lib/gaia'
 import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
@@ -99,9 +100,9 @@ export const exportLiteratumBundle = Router().post(
   celebrate({
     body: {
       deposit: Joi.boolean().empty(''),
-      doi: Joi.string().required(),
+      doi: Joi.string().pattern(VALID_DOI_REGEX).required(),
       frontMatterOnly: Joi.boolean().empty(''),
-      groupDOI: Joi.string().required(),
+      groupDOI: Joi.string().pattern(VALID_DOI_REGEX).required(),
       manuscriptID: Joi.string().required(),
       seriesCode: Joi.string().required(),
       xmlType: Joi.string().empty('').allow('jats', 'wileyml'),
@@ -149,46 +150,40 @@ export const exportLiteratumBundle = Router().post(
       doi,
       frontMatterOnly,
     })
-    const doc = new DOMParser().parseFromString(xml, 'application/xml')
 
     // create the output ZIP
     const archive = archiver.create('zip')
 
     const prefix = `${groupID}/${articleID}`
-
-    // fix image references
+    const parsedJATS = new DOMParser().parseFromString(xml, 'application/xml')
+    const doc = await importExternalFiles(parsedJATS, data)
+    // add images to archive
     if (await fs.pathExists(dir + '/Data')) {
-      const images = await fs.readdir(dir + '/Data')
+      const files = await fs.readdir(dir + '/Data')
       const graphicPath = dir + '/graphic'
+      // Rename directory from data to graphic to match JATS hrefs
       fs.renameSync(dir + '/Data', graphicPath)
-      for (const image of images) {
-        const { ext, name } = path.parse(image)
-
+      for (const file of files) {
+        const filePath = `${graphicPath}/${file}`
         await processElements(
           doc,
-          `//graphic[starts-with(@xlink:href,"graphic/${name}")]`,
+          `//*[@xlink:href="graphic/${file}"]`,
           async (element) => {
-            const parentFigure = element.closest('fig')
-
-            const parentFigureID = parentFigure
-              ? parentFigure.getAttribute('id')
-              : null
-
-            const newName = parentFigureID ? `${parentFigureID}${ext}` : image
-
-            const lowerCaseName = newName.toLowerCase()
-            const newImagePath = `${graphicPath}/${newName}`
-            fs.renameSync(`${graphicPath}/${image}`, newImagePath)
             const nodeName = element.nodeName.toLowerCase()
-
-            element.setAttributeNS(
-              XLINK_NAMESPACE,
-              'href',
-              `${nodeName}/${lowerCaseName}`
-            )
-            archive.append(fs.createReadStream(newImagePath), {
-              name: lowerCaseName,
+            archive.append(fs.createReadStream(filePath), {
+              name: file,
               prefix: `${prefix}/${nodeName}`,
+            })
+          }
+        )
+        // Add external files to archive
+        await processElements(
+          doc,
+          `//*[@href="external/${file}"]`,
+          async () => {
+            archive.append(fs.createReadStream(filePath), {
+              name: file,
+              prefix: `${prefix}/external`,
             })
           }
         )
