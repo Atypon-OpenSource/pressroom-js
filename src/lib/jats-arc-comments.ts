@@ -21,6 +21,7 @@ import {
   ContainedModel,
   HighlightableField,
   isHighlightableModel,
+  isManuscript,
 } from '@manuscripts/manuscript-transform'
 import { HighlightMarker } from '@manuscripts/manuscripts-json-schema'
 import randomstring from 'randomstring'
@@ -80,12 +81,15 @@ export const replaceTokensWithHighlights = (
             const commentAnnotation = buildComment(highlight._id, comment)
             createdModels.push(highlight)
             createdModels.push(commentAnnotation)
-            // Highlight comment location
-            model.highlightMarkers = createHighlightMarkers(
-              highlight._id,
-              startTokenIndex,
-              highlightableField
-            )
+            // MPManuscript dose not accept highlightMarkers!
+            if (!isManuscript(model)) {
+              // Highlight comment location
+              model.highlightMarkers = createHighlightMarkers(
+                highlight._id,
+                startTokenIndex,
+                highlightableField
+              )
+            }
           }
         }
         // Add the content after removing the tokens
