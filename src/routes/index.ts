@@ -17,6 +17,7 @@ import { Router } from 'express'
 import swaggerUi from 'swagger-ui-express'
 
 import { swaggerSpec } from '../lib/swagger-spec'
+import { buildInteractiveAssetDO } from './build-interactive-do'
 import { buildSubmissionBundle } from './build-submission-bundle'
 import { convertReferencesAnyStyle } from './convert-references-anystyle'
 import { convertReferencesEdifix } from './convert-references-edifix'
@@ -66,7 +67,7 @@ export const routes = Router()
   .use('/', extylesCreateJob, extylesImportResult)
 
   // builders
-  .use('/', buildSubmissionBundle)
+  .use('/', buildSubmissionBundle, buildInteractiveAssetDO)
 
   // converters
   .use('/', convertReferencesAnyStyle, convertReferencesEdifix)
