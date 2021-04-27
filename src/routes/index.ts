@@ -42,6 +42,7 @@ import { importWordArc } from './import-word-arc'
 import { importZip } from './import-zip'
 import { validateJATS } from './validate-jats'
 import { validateManuscript } from './validate-manuscript'
+import { convertWordToPdf } from './word-to-pdf'
 
 export const routes = Router()
   // importers
@@ -70,7 +71,12 @@ export const routes = Router()
   .use('/', buildSubmissionBundle, buildInteractiveAssetDO)
 
   // converters
-  .use('/', convertReferencesAnyStyle, convertReferencesEdifix)
+  .use(
+    '/',
+    convertReferencesAnyStyle,
+    convertReferencesEdifix,
+    convertWordToPdf
+  )
 
   // validators
   .use('/', validateManuscript, validateJATS)
