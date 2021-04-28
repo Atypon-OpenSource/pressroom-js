@@ -1308,13 +1308,13 @@
     eslint-config-prettier "^6.11.0"
     prettier "^2.1.1"
 
-"@manuscripts/manuscript-transform@0.42.7":
-  version "0.42.7"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.42.7.tgz#197cf873dedac9d286027024a8c3030288839813"
-  integrity sha512-B06WRSIWXATQoevhV5r7O1MKdQwIDcinFJQFDOA5Hg25Vfi7vb/Rpr46SS2C67ZsY27rchn3oTgyOuqjLEVdvw==
+"@manuscripts/manuscript-transform@0.42.10":
+  version "0.42.10"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.42.10.tgz#52d940ba2758f57ad56ef43b0cb093d5e3ac66e6"
+  integrity sha512-yna/CewMPDOUKXUCHao36PW2rcPI8+Os3FCQlA0i7NJAFYKHY8q5ABZ+gXcn8/1TH9aMYTVB4egMYxH1FTxP6A==
   dependencies:
     "@manuscripts/data" "^0.1.3"
-    "@manuscripts/manuscripts-json-schema" "^1.46.0"
+    "@manuscripts/manuscripts-json-schema" "^1.46.2"
     debug "^4.1.1"
     lodash.pickby "^4.6.0"
     mathjax-full "^3.1.2"
@@ -1355,6 +1355,15 @@
   version "1.46.0"
   resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.46.0.tgz#e45906776a264efc1d6df875efaecf89da04d98c"
   integrity sha512-NX9QaWCZPsa4v9M1NrMKZn5Jan+6gbgzyuwYQkP5Cib2ilpq24zI+xFRtWXZhODvTAmGhWNNgWWmpG/D3LMwzw==
+  dependencies:
+    ajv "^6.10.0"
+    deepmerge "^3.2.0"
+    js-beautify "^1.9.0"
+
+"@manuscripts/manuscripts-json-schema@^1.46.2":
+  version "1.46.3"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.46.3.tgz#9dbbea080b198a6b60239ddfccfece7b1fa5f2c2"
+  integrity sha512-ZTMAZ0JgW7CMRxDZHANll4oSmWGQiq/BBkRPggG2jU+0KWaQN2y/da1q3BYY7OyX5OdEAB1csmIQOmSY6wdB/A==
   dependencies:
     ajv "^6.10.0"
     deepmerge "^3.2.0"
