@@ -102,7 +102,11 @@ export const exportMarkdown = Router().post(
 
     // create JATS XML
     const jats = await createJATSXML(article.content, modelMap, {
-      mediaPathGenerator: createArchivePathGenerator(dir, archive),
+      mediaPathGenerator: createArchivePathGenerator(
+        dir,
+        archive,
+        allowMissingElements
+      ),
     })
 
     await fs.writeFile(dir + '/manuscript.xml', removeCodeListing(jats))

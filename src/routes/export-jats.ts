@@ -107,7 +107,11 @@ export const exportJats = Router().post(
     const jats = await createJATSXML(article.content, modelMap, {
       version,
       idGenerator: createIdGenerator(),
-      mediaPathGenerator: createArchivePathGenerator(dir, archive),
+      mediaPathGenerator: createArchivePathGenerator(
+        dir,
+        archive,
+        allowMissingElements
+      ),
     })
 
     archive.append(jats, { name: 'manuscript.xml' })

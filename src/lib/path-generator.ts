@@ -16,6 +16,7 @@
 import { MediaPathGenerator } from '@manuscripts/manuscript-transform'
 import { Archiver } from 'archiver'
 import fs from 'fs-extra'
+import createHttpError from 'http-errors'
 import path from 'path'
 
 import { XLINK_NAMESPACE } from './data'
@@ -23,6 +24,7 @@ import { XLINK_NAMESPACE } from './data'
 export const createArchivePathGenerator = (
   dir: string,
   archive: Archiver,
+  allowMissingImages = false,
   prefix = 'Data/'
 ): MediaPathGenerator => {
   const mediaPaths = new Map<string, string>()
@@ -42,21 +44,20 @@ export const createArchivePathGenerator = (
     if (mediaPaths.has(oldPath)) {
       return mediaPaths.get(oldPath) as string
     }
-
-    // make sure the file exists at the old path
-    if (!(await fs.pathExists(`${dir}/${oldPath}`))) {
-      throw new Error(`No data file found at ${oldPath} for ${parentID}`)
-    }
-
     // Rename file to match id if available
     const newPath = parentID ? `${prefix}${parentID}${ext}` : oldPath
-
-    archive.append(fs.createReadStream(`${dir}/${oldPath}`), {
-      name: newPath,
-    })
-
     mediaPaths.set(name, newPath)
-
+    // make sure the file exists at the old path
+    if (fs.existsSync(`${dir}/${oldPath}`)) {
+      archive.append(fs.createReadStream(`${dir}/${oldPath}`), {
+        name: newPath,
+      })
+    } else if (!allowMissingImages) {
+      throw createHttpError(
+        400,
+        `No data file found at ${oldPath} for ${parentID}`
+      )
+    }
     return newPath
   }
 }
