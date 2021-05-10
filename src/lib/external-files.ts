@@ -118,7 +118,7 @@ export const importExternalFiles = async (
                   supplementary.appendChild(objectID)
                 }
                 if (articleMeta) {
-                  articleMeta.appendChild(supplementary.cloneNode())
+                  articleMeta.appendChild(supplementary.cloneNode(true))
                 }
                 alternatives.appendChild(supplementary)
               }
