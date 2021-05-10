@@ -25,7 +25,8 @@ import { logger } from './logger'
 
 export const importExternalFiles = async (
   document: Document,
-  data: Array<ContainedModel>
+  data: Array<ContainedModel>,
+  doi: string
 ): Promise<Document> => {
   const externalFiles = data.filter(
     (el) => el.objectType == ObjectTypes.ExternalFile
@@ -34,6 +35,8 @@ export const importExternalFiles = async (
   for (const externalFile of externalFiles) {
     externalFilesMap.set(externalFile.publicUrl, externalFile)
   }
+  const objectIDGenerator = generateObjectID(doi)
+  const articleMeta = document.querySelector('article-meta')
 
   const figures = data.filter(
     (el) => el.objectType == ObjectTypes.Figure
@@ -43,8 +46,8 @@ export const importExternalFiles = async (
     await processElements(
       document,
       `//graphic[starts-with(@xlink:href,"graphic/${name}")]`,
-      async (element) => {
-        const parentFigure = element.closest('fig')
+      async (graphic) => {
+        const parentFigure = graphic.closest('fig')
         if (!parentFigure) {
           logger.error('graphic not wrapped inside a fig element')
           return
@@ -53,45 +56,131 @@ export const importExternalFiles = async (
           const staticImage = externalFilesMap.get(figure.originalURL)
           if (staticImage) {
             const imageName = staticImage.filename
-            const nodeName = element.nodeName.toLowerCase()
+            const nodeName = graphic.nodeName.toLowerCase()
 
-            element.setAttributeNS(
+            graphic.setAttributeNS(
               XLINK_NAMESPACE,
               'href',
               `${nodeName}/${imageName}`
             )
           }
         }
+
         if (figure.externalFileReferences) {
-          const inlineSupplementary = figure.externalFileReferences
+          const externalFileURLs = figure.externalFileReferences
             .filter((el) => el.url != figure.originalURL)
             .map((el) => el.url)
-          const caption = document.createElement('caption')
-          caption.setAttribute('content-type', 'supplementary-material')
-          inlineSupplementary.forEach((url) => {
+
+          const interactiveHtml: Array<string> = []
+          const downloadable: Array<string> = []
+          externalFileURLs.forEach((url) => {
             const externalFile = externalFilesMap.get(url)
-            if (externalFile) {
-              const supplementaryMaterial = document.createElement(
-                'inline-supplementary-material'
-              )
-              supplementaryMaterial.setAttribute('mimetype', externalFile.MIME)
-              supplementaryMaterial.setAttributeNS(
-                XLINK_NAMESPACE,
-                'href',
-                `external/${externalFile.filename}`
-              )
-              if (externalFile.description) {
-                supplementaryMaterial.textContent = externalFile.description
-              }
-              const paragraph = document.createElement('p')
-              paragraph.appendChild(supplementaryMaterial)
-              caption.appendChild(paragraph)
+            if (!externalFile) {
+              return
+            }
+
+            if (externalFile.designation === 'interactive-html') {
+              interactiveHtml.push(url)
+            } else {
+              downloadable.push(url)
             }
           })
-          parentFigure.insertBefore(caption, element)
+
+          if (downloadable.length > 0) {
+            const caption = document.createElement('caption')
+            caption.setAttribute('content-type', 'supplementary-material')
+            downloadable.forEach((url) => {
+              const externalFile = externalFilesMap.get(url)
+              if (externalFile) {
+                const inlineSupplementary = createInlineSupplementaryMaterial(
+                  externalFile,
+                  document
+                )
+                caption.appendChild(inlineSupplementary)
+              }
+              parentFigure.insertBefore(caption, graphic)
+            })
+          }
+
+          if (interactiveHtml.length > 0) {
+            const alternatives = document.createElement('alternatives')
+            const clone = graphic.cloneNode(true)
+            alternatives.appendChild(clone)
+            interactiveHtml.forEach((url) => {
+              const externalFile = externalFilesMap.get(url)
+              if (externalFile) {
+                const supplementary = createSupplementaryMaterial(
+                  externalFile,
+                  document
+                )
+                const objectID = objectIDGenerator.next().value
+                if (objectID) {
+                  supplementary.appendChild(objectID)
+                }
+                if (articleMeta) {
+                  articleMeta.appendChild(supplementary.cloneNode())
+                }
+                alternatives.appendChild(supplementary)
+              }
+            })
+            graphic.replaceWith(alternatives)
+          }
         }
       }
     )
   }
   return document
+}
+
+function* generateObjectID(doi: string, index = 1) {
+  while (true) {
+    const objectID = new DOMParser().parseFromString(
+      '<object-id pub-id-type="doi" specific-use="metadata"></object-id>',
+      'application/xml'
+    ).firstElementChild
+    if (objectID) {
+      objectID.textContent = `${doi}suppl${index++}`
+    }
+    yield objectID
+  }
+}
+
+const createInlineSupplementaryMaterial = (
+  externalFile: ExternalFile,
+  document: Document
+): Element => {
+  const supplementaryMaterial = document.createElement(
+    'inline-supplementary-material'
+  )
+  setSupplementaryMaterialAttributes(supplementaryMaterial, externalFile)
+  const rootParagraph = document.createElement('p')
+
+  rootParagraph.appendChild(supplementaryMaterial)
+  return rootParagraph
+}
+
+const createSupplementaryMaterial = (
+  externalFile: ExternalFile,
+  document: Document
+): Element => {
+  const supplementaryMaterial = document.createElement('supplementary-material')
+
+  setSupplementaryMaterialAttributes(supplementaryMaterial, externalFile)
+  return supplementaryMaterial
+}
+
+const setSupplementaryMaterialAttributes = (
+  supplementaryMaterial: Element,
+  externalFile: ExternalFile
+) => {
+  supplementaryMaterial.setAttribute('mimetype', externalFile.MIME)
+  supplementaryMaterial.setAttributeNS(
+    XLINK_NAMESPACE,
+    'href',
+    `external/${externalFile.filename}`
+  )
+  supplementaryMaterial.setAttribute('content-type', externalFile.designation)
+  if (externalFile.description) {
+    supplementaryMaterial.textContent = externalFile.description
+  }
 }

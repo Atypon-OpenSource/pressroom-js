@@ -130,7 +130,6 @@ export const exportLiteratumBundle = Router().post(
       xmlType: XmlType
       allowMissingElements: boolean
     }
-
     const [, articleID] = doi.split('/', 2) // TODO: only article ID?
     const [, groupID] = groupDOI.split('/', 2) // TODO: only group ID?
 
@@ -156,7 +155,7 @@ export const exportLiteratumBundle = Router().post(
 
     const prefix = `${groupID}/${articleID}`
     const parsedJATS = new DOMParser().parseFromString(xml, 'application/xml')
-    const doc = await importExternalFiles(parsedJATS, data)
+    const doc = await importExternalFiles(parsedJATS, data, doi)
     // add images to archive
     if (await fs.pathExists(dir + '/Data')) {
       const files = await fs.readdir(dir + '/Data')
