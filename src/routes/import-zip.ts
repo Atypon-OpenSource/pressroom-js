@@ -40,7 +40,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *
  * /import/zip:
  *   post:
- *     description: Convert manuscript in ZIP file to Manuscripts data
+ *     description: Convert manuscript (latex, jats, html, markdown) in ZIP file to Manuscripts data
  *     security:
  *       - BearerAuth: []
  *       - ApiKeyAuth: []
