@@ -1308,13 +1308,13 @@
     eslint-config-prettier "^6.11.0"
     prettier "^2.1.1"
 
-"@manuscripts/manuscript-transform@0.42.10":
-  version "0.42.10"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.42.10.tgz#52d940ba2758f57ad56ef43b0cb093d5e3ac66e6"
-  integrity sha512-yna/CewMPDOUKXUCHao36PW2rcPI8+Os3FCQlA0i7NJAFYKHY8q5ABZ+gXcn8/1TH9aMYTVB4egMYxH1FTxP6A==
+"@manuscripts/manuscript-transform@0.42.13":
+  version "0.42.13"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.42.13.tgz#8d196ee5149bd3d6bf7dda0a4e718ccfdb7f9c35"
+  integrity sha512-WTtBEccdR5+BSKe87Ze6bHk4Hkolz2BpHyVbvli6qC+E/ar6T4oBZGFzWOFawZsGyKviBwnvnjpPLlOE5U6b3g==
   dependencies:
     "@manuscripts/data" "^0.1.3"
-    "@manuscripts/manuscripts-json-schema" "^1.46.2"
+    "@manuscripts/manuscripts-json-schema" "^1.46.7"
     debug "^4.1.1"
     lodash.pickby "^4.6.0"
     mathjax-full "^3.1.2"
@@ -1351,19 +1351,10 @@
     deepmerge "^3.2.0"
     js-beautify "^1.9.0"
 
-"@manuscripts/manuscripts-json-schema@^1.46.0":
-  version "1.46.0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.46.0.tgz#e45906776a264efc1d6df875efaecf89da04d98c"
-  integrity sha512-NX9QaWCZPsa4v9M1NrMKZn5Jan+6gbgzyuwYQkP5Cib2ilpq24zI+xFRtWXZhODvTAmGhWNNgWWmpG/D3LMwzw==
-  dependencies:
-    ajv "^6.10.0"
-    deepmerge "^3.2.0"
-    js-beautify "^1.9.0"
-
-"@manuscripts/manuscripts-json-schema@^1.46.2":
-  version "1.46.3"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.46.3.tgz#9dbbea080b198a6b60239ddfccfece7b1fa5f2c2"
-  integrity sha512-ZTMAZ0JgW7CMRxDZHANll4oSmWGQiq/BBkRPggG2jU+0KWaQN2y/da1q3BYY7OyX5OdEAB1csmIQOmSY6wdB/A==
+"@manuscripts/manuscripts-json-schema@^1.46.7":
+  version "1.46.8"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.46.8.tgz#78de11200a6b36a06fb2fd81a60b03d20fe1d4fa"
+  integrity sha512-5UVZnMZjCq2zexK8fY+IiHaSNQfQnoTebLuaVACd6XMMh0A/r1fPlaFBTYaUFd8a4uU9+IzU/RxfSNpDwnvENw==
   dependencies:
     ajv "^6.10.0"
     deepmerge "^3.2.0"
