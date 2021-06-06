@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import compose from 'compose-function'
+
 export const removeCodeListing = (jats: string): string => {
   const doc = new DOMParser().parseFromString(jats, 'application/xml')
   const codeListing = doc.querySelectorAll('fig[specific-use="source"]')
@@ -22,3 +24,12 @@ export const removeCodeListing = (jats: string): string => {
   })
   return new XMLSerializer().serializeToString(doc)
 }
+
+export const removeNonPrintableChars = (jats: string): string =>
+  //eslint-disable-next-line no-control-regex
+  jats.replace(/[\u0000-\u0008,\u000A-\u001F,\u007F-\u00A0]+/g, '')
+
+export const filterJATSResult = compose(
+  removeCodeListing,
+  removeNonPrintableChars
+)

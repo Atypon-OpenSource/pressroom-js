@@ -28,7 +28,7 @@ import { createPDF, PDFEngine } from '../lib/create-pdf'
 import { XLINK_NAMESPACE } from '../lib/data'
 import { emailAuthorization } from '../lib/email-authorization'
 import { findCSL } from '../lib/find-csl'
-import { removeCodeListing } from '../lib/jats-utils'
+import { filterJATSResult } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { prince } from '../lib/prince'
@@ -178,7 +178,7 @@ export const exportPDF = Router().post(
         },
       })
 
-      await fs.writeFile(dir + '/manuscript.xml', removeCodeListing(jats))
+      await fs.writeFile(dir + '/manuscript.xml', filterJATSResult(jats))
 
       const manuscript = modelMap.get(manuscriptID) as Manuscript
 
