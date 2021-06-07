@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import fs from 'fs-extra'
+import createHttpError from 'http-errors'
 import path from 'path'
 
 const manuscriptExtensionToPandocFormatMap = new Map<string, string>([
@@ -41,5 +42,5 @@ export const findManuscriptFile = async (
     }
   }
 
-  throw new Error('Manuscript file not found')
+  throw createHttpError(400, 'Manuscript file not found')
 }
