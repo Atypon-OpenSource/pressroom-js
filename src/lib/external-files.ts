@@ -19,6 +19,7 @@ import {
   Figure,
   ObjectTypes,
 } from '@manuscripts/manuscripts-json-schema'
+import createHttpError from 'http-errors'
 
 import { processElements, XLINK_NAMESPACE } from './data'
 import { logger } from './logger'
@@ -26,7 +27,7 @@ import { logger } from './logger'
 export const importExternalFiles = async (
   document: Document,
   data: Array<ContainedModel>,
-  doi: string
+  supplementaryDOI: Map<string, string>
 ): Promise<Document> => {
   const externalFiles = data.filter(
     (el) => el.objectType == ObjectTypes.ExternalFile
@@ -35,7 +36,6 @@ export const importExternalFiles = async (
   for (const externalFile of externalFiles) {
     externalFilesMap.set(externalFile.publicUrl, externalFile)
   }
-  const objectIDGenerator = generateObjectID(doi)
   const articleMeta = document.querySelector('article-meta')
 
   const figures = data.filter(
@@ -113,9 +113,12 @@ export const importExternalFiles = async (
                   externalFile,
                   document
                 )
-                const objectID = objectIDGenerator.next().value
+                const objectID = supplementaryDOI.get(url)
                 if (objectID) {
-                  supplementary.appendChild(objectID)
+                  const objectIDNode = buildObjectID(objectID)
+                  supplementary.appendChild(objectIDNode)
+                } else {
+                  throw createHttpError(400, `DOI for ${url} not found`)
                 }
                 if (articleMeta) {
                   articleMeta.appendChild(supplementary.cloneNode(true))
@@ -132,17 +135,16 @@ export const importExternalFiles = async (
   return document
 }
 
-function* generateObjectID(doi: string, index = 1) {
-  while (true) {
-    const objectID = new DOMParser().parseFromString(
-      '<object-id pub-id-type="doi" specific-use="metadata"></object-id>',
-      'application/xml'
-    ).firstElementChild
-    if (objectID) {
-      objectID.textContent = `${doi}suppl${index++}`
-    }
-    yield objectID
+function buildObjectID(doi: string) {
+  const objectID = new DOMParser().parseFromString(
+    '<object-id pub-id-type="doi" specific-use="metadata"></object-id>',
+    'application/xml'
+  ).firstElementChild
+  if (objectID) {
+    objectID.textContent = doi
+    return objectID
   }
+  throw new Error('Unable to create object id for ' + doi)
 }
 
 const createInlineSupplementaryMaterial = (

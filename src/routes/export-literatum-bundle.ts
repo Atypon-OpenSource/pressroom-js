@@ -34,6 +34,7 @@ import { convertJATSToWileyML } from '../lib/gaia'
 import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
+import { parseSupplementaryDOIs } from '../lib/parseSupplementaryDOIs'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -74,6 +75,9 @@ type XmlType = 'jats' | 'wileyml'
  *                  type: string
  *                seriesCode:
  *                  type: string
+ *                supplementaryMaterialDOIs:
+ *                  type: string
+ *                  example: '[{"url":"path/to","doi":"10.1000/xyz123"}]'
  *                xmlType:
  *                  type: string
  *                  enum: ['jats', 'wileyml']
@@ -97,6 +101,7 @@ export const exportLiteratumBundle = Router().post(
   createRequestDirectory,
   decompressManuscript,
   chooseManuscriptID,
+  parseSupplementaryDOIs,
   celebrate({
     body: {
       deposit: Joi.boolean().empty(''),
@@ -107,6 +112,12 @@ export const exportLiteratumBundle = Router().post(
       seriesCode: Joi.string().required(),
       xmlType: Joi.string().empty('').allow('jats', 'wileyml'),
       allowMissingElements: Joi.boolean().empty('').default(false),
+      supplementaryMaterialDOIs: Joi.array()
+        .items({
+          url: Joi.string().required(),
+          doi: Joi.string().pattern(VALID_DOI_REGEX).required(),
+        })
+        .required(),
     },
   }),
   wrapAsync(async (req, res) => {
@@ -120,6 +131,7 @@ export const exportLiteratumBundle = Router().post(
       seriesCode,
       xmlType = 'jats',
       allowMissingElements,
+      supplementaryMaterialDOIs,
     } = req.body as {
       deposit: boolean
       doi: string
@@ -129,6 +141,7 @@ export const exportLiteratumBundle = Router().post(
       seriesCode: string
       xmlType: XmlType
       allowMissingElements: boolean
+      supplementaryMaterialDOIs: Array<{ url: string; doi: string }>
     }
     const [, articleID] = doi.split('/', 2) // TODO: only article ID?
     const [, groupID] = groupDOI.split('/', 2) // TODO: only group ID?
@@ -155,7 +168,11 @@ export const exportLiteratumBundle = Router().post(
 
     const prefix = `${groupID}/${articleID}`
     const parsedJATS = new DOMParser().parseFromString(xml, 'application/xml')
-    const doc = await importExternalFiles(parsedJATS, data, doi)
+
+    const supplementaryDOI = new Map<string, string>(
+      supplementaryMaterialDOIs.map((el) => [el.url, el.doi])
+    )
+    const doc = await importExternalFiles(parsedJATS, data, supplementaryDOI)
     // add images to archive
     if (await fs.pathExists(dir + '/Data')) {
       const files = await fs.readdir(dir + '/Data')

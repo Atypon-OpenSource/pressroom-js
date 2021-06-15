@@ -39,6 +39,16 @@ describe('export Literatum Bundle', () => {
       .field('groupDOI', '10.0000/test')
       .field('seriesCode', '10.0000/test')
       .field('frontMatterOnly', false)
+      .field(
+        'supplementaryMaterialDOIs',
+        JSON.stringify([
+          {
+            url:
+              'https://siam-x5432.ciplit.com/action/leanworkflowDownloadAttachment?id=6db76bde-4cde-4579-b012-24dead961adb&name=html-asset.zip',
+            doi: '10.1000/xyz123',
+          },
+        ])
+      )
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -53,6 +63,7 @@ describe('export Literatum Bundle', () => {
       'test/567/graphic/figure 2.jpg',
       'test/567/external/hon-20-0144-r1.docx',
       'test/567/external/hon-20-0144.pdf',
+      'test/567/external/html-asset.zip',
       'test/567/567.xml',
       'test/567/567.pdf',
       'manifest.xml',
@@ -71,5 +82,7 @@ describe('export Literatum Bundle', () => {
       nonet: true,
     })
     expect(doc.errors.length).toBe(0)
+
+    expect(xml).toMatchSnapshot()
   })
 })
