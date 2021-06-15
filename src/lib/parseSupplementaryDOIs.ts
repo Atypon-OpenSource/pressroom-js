@@ -22,17 +22,18 @@ export const parseSupplementaryDOIs: RequestHandler = async (
   next
 ): Promise<void> => {
   const { supplementaryMaterialDOIs } = req.body
-
-  try {
-    req.body['supplementaryMaterialDOIs'] = JSON.parse(
-      supplementaryMaterialDOIs
-    )
-  } catch (e) {
-    throw createHttpError(
-      400,
-      `Invalid supplementaryMaterialDOIs format: ${e})`
-    )
+  if (supplementaryMaterialDOIs) {
+    try {
+      req.body['supplementaryMaterialDOIs'] = JSON.parse(
+        supplementaryMaterialDOIs
+      )
+    } catch (e) {
+      next(
+        createHttpError(400, `Invalid supplementaryMaterialDOIs format: ${e})`)
+      )
+    }
+  } else {
+    req.body['supplementaryMaterialDOIs'] = []
   }
-
   next()
 }
