@@ -1332,10 +1332,10 @@
     citeproc "^2.4.48"
     fontoxpath "^3.17.2"
 
-"@manuscripts/manuscript-transform@0.43.5":
-  version "0.43.5"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.43.5.tgz#76d1a51c62521beed14698a7e7461fc3aed02ffd"
-  integrity sha512-LeHjdFzikJNLm6OASq7khYHJO9o21TgKCeBGdeOCi3rIz8tMUt5LEeWiBpe6RotO9SgN6YDQVzaMTWQYmtYyEg==
+"@manuscripts/manuscript-transform@0.43.6":
+  version "0.43.6"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.43.6.tgz#73324b9fd9e97d8d966add7e575c0e244830dfdc"
+  integrity sha512-d/6kKCsdT9YZjmIg2YkHIL+tX6eP/+nAxYM3npx77zuvDdqeTekTRAZmq13qJILVSmVFXIJjTMriYtxrDzxUhQ==
   dependencies:
     "@manuscripts/data" "^0.1.3"
     "@manuscripts/library" "^0.6.2"
