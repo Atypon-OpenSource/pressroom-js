@@ -27,7 +27,8 @@ import { logger } from './logger'
 export const importExternalFiles = async (
   document: Document,
   data: Array<ContainedModel>,
-  supplementaryDOI: Map<string, string>
+  supplementaryDOI: Map<string, string>,
+  docType: 'xml' | 'html'
 ): Promise<Document> => {
   const externalFiles = data.filter(
     (el) => el.objectType == ObjectTypes.ExternalFile
@@ -43,94 +44,111 @@ export const importExternalFiles = async (
   ) as Array<Figure>
   for (const figure of figures) {
     const name = figure._id.replace(':', '_')
-    await processElements(
-      document,
-      `//graphic[starts-with(@xlink:href,"graphic/${name}")]`,
-      async (graphic) => {
-        const parentFigure = graphic.closest('fig')
-        if (!parentFigure) {
-          logger.error('graphic not wrapped inside a fig element')
-          return
-        }
-        if (figure.originalURL) {
-          const staticImage = externalFilesMap.get(figure.originalURL)
-          if (staticImage) {
-            const imageName = staticImage.filename
-            const nodeName = graphic.nodeName.toLowerCase()
-
-            graphic.setAttributeNS(
-              XLINK_NAMESPACE,
-              'href',
-              `${nodeName}/${imageName}`
-            )
+    if (docType === 'xml') {
+      await processElements(
+        document,
+        `//graphic[starts-with(@xlink:href,"graphic/${name}")]`,
+        async (graphic) => {
+          const parentFigure = graphic.closest('fig')
+          if (!parentFigure) {
+            logger.error('graphic not wrapped inside a fig element')
+            return
           }
-        }
+          if (figure.originalURL) {
+            const staticImage = externalFilesMap.get(figure.originalURL)
+            if (staticImage) {
+              const imageName = staticImage.filename
+              const nodeName = graphic.nodeName.toLowerCase()
 
-        if (figure.externalFileReferences) {
-          const externalFileURLs = figure.externalFileReferences
-            .filter((el) => el.url != figure.originalURL)
-            .map((el) => el.url)
-
-          const interactiveHtml: Array<string> = []
-          const downloadable: Array<string> = []
-          externalFileURLs.forEach((url) => {
-            const externalFile = externalFilesMap.get(url)
-            if (!externalFile) {
-              return
+              graphic.setAttributeNS(
+                XLINK_NAMESPACE,
+                'href',
+                `${nodeName}/${imageName}`
+              )
             }
+          }
 
-            if (externalFile.designation === 'interactive-html') {
-              interactiveHtml.push(url)
-            } else {
-              downloadable.push(url)
-            }
-          })
+          if (figure.externalFileReferences) {
+            const externalFileURLs = figure.externalFileReferences
+              .filter((el) => el.url != figure.originalURL)
+              .map((el) => el.url)
 
-          if (downloadable.length > 0) {
-            const caption = document.createElement('caption')
-            caption.setAttribute('content-type', 'supplementary-material')
-            downloadable.forEach((url) => {
+            const interactiveHtml: Array<string> = []
+            const downloadable: Array<string> = []
+            externalFileURLs.forEach((url) => {
               const externalFile = externalFilesMap.get(url)
-              if (externalFile) {
-                const inlineSupplementary = createInlineSupplementaryMaterial(
-                  externalFile,
-                  document
-                )
-                caption.appendChild(inlineSupplementary)
+              if (!externalFile) {
+                return
               }
-              parentFigure.insertBefore(caption, graphic)
-            })
-          }
 
-          if (interactiveHtml.length > 0) {
-            const alternatives = document.createElement('alternatives')
-            const clone = graphic.cloneNode(true)
-            alternatives.appendChild(clone)
-            interactiveHtml.forEach((url) => {
-              const externalFile = externalFilesMap.get(url)
-              if (externalFile) {
-                const supplementary = createSupplementaryMaterial(
-                  externalFile,
-                  document
-                )
-                const objectID = supplementaryDOI.get(url)
-                if (objectID) {
-                  const objectIDNode = buildObjectID(objectID)
-                  supplementary.appendChild(objectIDNode)
-                } else {
-                  throw createHttpError(400, `DOI for ${url} not found`)
-                }
-                if (articleMeta) {
-                  articleMeta.appendChild(supplementary.cloneNode(true))
-                }
-                alternatives.appendChild(supplementary)
+              if (externalFile.designation === 'interactive-html') {
+                interactiveHtml.push(url)
+              } else {
+                downloadable.push(url)
               }
             })
-            graphic.replaceWith(alternatives)
+
+            if (downloadable.length > 0) {
+              const caption = document.createElement('caption')
+              caption.setAttribute('content-type', 'supplementary-material')
+              downloadable.forEach((url) => {
+                const externalFile = externalFilesMap.get(url)
+                if (externalFile) {
+                  const inlineSupplementary = createInlineSupplementaryMaterial(
+                    externalFile,
+                    document
+                  )
+                  caption.appendChild(inlineSupplementary)
+                }
+                parentFigure.insertBefore(caption, graphic)
+              })
+            }
+
+            if (interactiveHtml.length > 0) {
+              const alternatives = document.createElement('alternatives')
+              const clone = graphic.cloneNode(true)
+              alternatives.appendChild(clone)
+              interactiveHtml.forEach((url) => {
+                const externalFile = externalFilesMap.get(url)
+                if (externalFile) {
+                  const supplementary = createSupplementaryMaterial(
+                    externalFile,
+                    document
+                  )
+                  const objectID = supplementaryDOI.get(url)
+                  if (objectID) {
+                    const objectIDNode = buildObjectID(objectID)
+                    supplementary.appendChild(objectIDNode)
+                  } else {
+                    throw createHttpError(400, `DOI for ${url} not found`)
+                  }
+                  if (articleMeta) {
+                    articleMeta.appendChild(supplementary.cloneNode(true))
+                  }
+                  alternatives.appendChild(supplementary)
+                }
+              })
+              graphic.replaceWith(alternatives)
+            }
           }
         }
-      }
-    )
+      )
+    } else if (docType === 'html') {
+      await processElements(
+        document,
+        `//img[starts-with(@src,"graphic/${name}")]`,
+        async (graphic: Element) => {
+          if (figure.originalURL) {
+            const staticImage = externalFilesMap.get(figure.originalURL)
+            if (staticImage) {
+              const imageName = staticImage.filename
+
+              graphic.setAttribute('src', `graphic/${imageName}`)
+            }
+          }
+        }
+      )
+    }
   }
   return document
 }

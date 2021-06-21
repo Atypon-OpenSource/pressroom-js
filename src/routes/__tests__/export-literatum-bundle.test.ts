@@ -85,4 +85,63 @@ describe('export Literatum Bundle', () => {
 
     expect(xml).toMatchSnapshot()
   })
+
+  test('exports to Literatum Bundle with theme', async () => {
+    const response = await request(app)
+      .post('/api/v2/export/literatum-bundle')
+      .attach('file', __dirname + '/__fixtures__/external-files.manuproj')
+      .field(
+        'manuscriptID',
+        'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
+      )
+      .field('deposit', false)
+      .field('doi', '10.1234/567')
+      .field('groupDOI', '10.0000/test')
+      .field('seriesCode', '10.0000/test')
+      .field('frontMatterOnly', false)
+      .field('theme', 'plos-one')
+      .field(
+        'supplementaryMaterialDOIs',
+        JSON.stringify([
+          {
+            url:
+              'https://siam-x5432.ciplit.com/action/leanworkflowDownloadAttachment?id=6db76bde-4cde-4579-b012-24dead961adb&name=html-asset.zip',
+            doi: '10.1000/xyz123',
+          },
+        ])
+      )
+      .responseType('blob')
+
+    expect(response.status).toBe(200)
+    expect(response.get('Content-Type')).toBe('application/zip')
+    expect(response.get('Content-Disposition')).toBe(
+      'attachment; filename="manuscript.zip"'
+    )
+
+    const zip = await new JSZip().loadAsync(response.body)
+
+    const expectedFiles = [
+      'test/567/graphic/figure 2.jpg',
+      'test/567/external/hon-20-0144-r1.docx',
+      'test/567/external/hon-20-0144.pdf',
+      'test/567/external/html-asset.zip',
+      'test/567/567.xml',
+      'test/567/567.pdf',
+      'manifest.xml',
+    ]
+    const zipFiles: Array<string> = []
+    zip.forEach((path) => {
+      zipFiles.push(path)
+    })
+
+    expect(zipFiles).toStrictEqual(expectedFiles)
+    const xml = await zip.files['test/567/567.xml'].async('text')
+
+    const doc = parseXml(xml, {
+      dtdload: true,
+      dtdvalid: true,
+      nonet: true,
+    })
+    expect(doc.errors.length).toBe(0)
+  })
 })

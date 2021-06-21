@@ -18,10 +18,13 @@ import { celebrate, Joi } from 'celebrate'
 import { format } from 'date-fns'
 import { Router } from 'express'
 import fs from 'fs-extra'
+import createHttpError from 'http-errors'
+import path from 'path'
 
 import { authentication } from '../lib/authentication'
 import { config } from '../lib/config'
 import { createArticle } from '../lib/create-article'
+import { createHTML } from '../lib/create-html'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { buildManifest } from '../lib/create-manifest'
 import { createPDF } from '../lib/create-pdf'
@@ -35,6 +38,7 @@ import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseSupplementaryDOIs } from '../lib/parseSupplementaryDOIs'
+import { prince } from '../lib/prince'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -75,6 +79,8 @@ type XmlType = 'jats' | 'wileyml'
  *                  type: string
  *                seriesCode:
  *                  type: string
+ *                theme:
+ *                  type: string
  *                supplementaryMaterialDOIs:
  *                  type: string
  *                  example: '[{"url":"path/to","doi":"10.1000/xyz123"}]'
@@ -111,6 +117,7 @@ export const exportLiteratumBundle = Router().post(
       manuscriptID: Joi.string().required(),
       seriesCode: Joi.string().required(),
       xmlType: Joi.string().empty('').allow('jats', 'wileyml'),
+      theme: Joi.string().empty(''),
       allowMissingElements: Joi.boolean().empty('').default(false),
       supplementaryMaterialDOIs: Joi.array()
         .items({
@@ -130,6 +137,7 @@ export const exportLiteratumBundle = Router().post(
       manuscriptID,
       seriesCode,
       xmlType = 'jats',
+      theme,
       allowMissingElements,
       supplementaryMaterialDOIs,
     } = req.body as {
@@ -140,6 +148,7 @@ export const exportLiteratumBundle = Router().post(
       manuscriptID: string
       seriesCode: string
       xmlType: XmlType
+      theme?: string
       allowMissingElements: boolean
       supplementaryMaterialDOIs: Array<{ url: string; doi: string }>
     }
@@ -172,7 +181,12 @@ export const exportLiteratumBundle = Router().post(
     const supplementaryDOI = new Map<string, string>(
       supplementaryMaterialDOIs.map((el) => [el.url, el.doi])
     )
-    const doc = await importExternalFiles(parsedJATS, data, supplementaryDOI)
+    const doc = await importExternalFiles(
+      parsedJATS,
+      data,
+      supplementaryDOI,
+      'xml'
+    )
     // add images to archive
     if (await fs.pathExists(dir + '/Data')) {
       const files = await fs.readdir(dir + '/Data')
@@ -217,21 +231,69 @@ export const exportLiteratumBundle = Router().post(
       // write JATS XML file
       archive.append(jats, { name: `${articleID}.xml`, prefix })
     }
-    try {
-      // write PDF file
-      await createPDF(
-        dir,
-        'manuscript.xml',
-        'manuscript.pdf',
-        'xelatex',
-        {},
-        (childProcess) => res.on('close', () => childProcess.kill())
+
+    if (theme) {
+      let html = await createHTML(article, modelMap, {
+        mediaPathGenerator: async (element) => {
+          const src = element.getAttribute('src')
+
+          const { name } = path.parse(src as string)
+
+          return `graphic/${name}`
+        },
+      })
+
+      const parsedHTML = new DOMParser().parseFromString(
+        html,
+        'application/xhtml+xml'
       )
-    } catch (e) {
-      logger.error(e)
-      throw new Error(
-        'Conversion failed when exporting to PDF (Literatum bundle)'
+      const HTMLDoc = await importExternalFiles(
+        parsedHTML,
+        data,
+        supplementaryDOI,
+        'html'
       )
+      html = new XMLSerializer().serializeToString(HTMLDoc)
+
+      await fs.writeFile(dir + '/manuscript.html', html)
+
+      const options: {
+        css?: string
+        js?: string
+      } = {}
+
+      const themePath = __dirname + `/../assets/themes/${theme}/`
+      const cssPath = themePath + 'print.css'
+      if (!fs.existsSync(cssPath)) {
+        throw createHttpError(400, `${theme} theme not found`)
+      }
+      options.css = cssPath
+      const jsPath = themePath + 'print.js'
+      // ignore when there is no js file?
+      if (fs.existsSync(jsPath)) {
+        options.js = jsPath
+      } else {
+        logger.debug(`No JS file for ${theme}`)
+      }
+
+      await prince(dir, 'manuscript.html', 'manuscript.pdf', options)
+    } else {
+      try {
+        // write PDF file
+        await createPDF(
+          dir,
+          'manuscript.xml',
+          'manuscript.pdf',
+          'xelatex',
+          {},
+          (childProcess) => res.on('close', () => childProcess.kill())
+        )
+      } catch (e) {
+        logger.error(e)
+        throw new Error(
+          'Conversion failed when exporting to PDF (Literatum bundle)'
+        )
+      }
     }
     archive.append(fs.createReadStream(dir + '/manuscript.pdf'), {
       name: `${articleID}.pdf`,
