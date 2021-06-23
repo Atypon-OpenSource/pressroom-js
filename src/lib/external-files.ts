@@ -24,12 +24,10 @@ import createHttpError from 'http-errors'
 import { processElements, XLINK_NAMESPACE } from './data'
 import { logger } from './logger'
 
-export const importExternalFiles = async (
+export const generateFiguresWithExternalFiles = (
   document: Document,
-  data: Array<ContainedModel>,
-  supplementaryDOI: Map<string, string>,
-  docType: 'xml' | 'html'
-): Promise<Document> => {
+  data: Array<ContainedModel>
+): { figures: Array<Figure>; externalFilesMap: Map<string, ExternalFile> } => {
   const externalFiles = data.filter(
     (el) => el.objectType == ObjectTypes.ExternalFile
   ) as Array<ExternalFile>
@@ -37,118 +35,135 @@ export const importExternalFiles = async (
   for (const externalFile of externalFiles) {
     externalFilesMap.set(externalFile.publicUrl, externalFile)
   }
-  const articleMeta = document.querySelector('article-meta')
-
   const figures = data.filter(
     (el) => el.objectType == ObjectTypes.Figure
   ) as Array<Figure>
+
+  return { figures, externalFilesMap }
+}
+
+export const exportExternalFiles = async (
+  document: Document,
+  figures: Array<Figure>,
+  externalFilesMap: Map<string, ExternalFile>,
+  supplementaryDOI: Map<string, string>
+): Promise<Document> => {
+  const articleMeta = document.querySelector('article-meta')
   for (const figure of figures) {
     const name = figure._id.replace(':', '_')
-    if (docType === 'xml') {
-      await processElements(
-        document,
-        `//graphic[starts-with(@xlink:href,"graphic/${name}")]`,
-        async (graphic) => {
-          const parentFigure = graphic.closest('fig')
-          if (!parentFigure) {
-            logger.error('graphic not wrapped inside a fig element')
-            return
-          }
-          if (figure.originalURL) {
-            const staticImage = externalFilesMap.get(figure.originalURL)
-            if (staticImage) {
-              const imageName = staticImage.filename
-              const nodeName = graphic.nodeName.toLowerCase()
+    await processElements(
+      document,
+      `//graphic[starts-with(@xlink:href,"graphic/${name}")]`,
+      async (graphic) => {
+        const parentFigure = graphic.closest('fig')
+        if (!parentFigure) {
+          logger.error('graphic not wrapped inside a fig element')
+          return
+        }
+        if (figure.originalURL) {
+          const staticImage = externalFilesMap.get(figure.originalURL)
+          if (staticImage) {
+            const imageName = staticImage.filename
+            const nodeName = graphic.nodeName.toLowerCase()
 
-              graphic.setAttributeNS(
-                XLINK_NAMESPACE,
-                'href',
-                `${nodeName}/${imageName}`
-              )
+            graphic.setAttributeNS(
+              XLINK_NAMESPACE,
+              'href',
+              `${nodeName}/${imageName}`
+            )
+          }
+        }
+
+        if (figure.externalFileReferences) {
+          const externalFileURLs = figure.externalFileReferences
+            .filter((el) => el.url != figure.originalURL)
+            .map((el) => el.url)
+
+          const interactiveHtml: Array<string> = []
+          const downloadable: Array<string> = []
+          externalFileURLs.forEach((url) => {
+            const externalFile = externalFilesMap.get(url)
+            if (!externalFile) {
+              return
             }
+
+            if (externalFile.designation === 'interactive-html') {
+              interactiveHtml.push(url)
+            } else {
+              downloadable.push(url)
+            }
+          })
+
+          if (downloadable.length > 0) {
+            const caption = document.createElement('caption')
+            caption.setAttribute('content-type', 'supplementary-material')
+            downloadable.forEach((url) => {
+              const externalFile = externalFilesMap.get(url)
+              if (externalFile) {
+                const inlineSupplementary = createInlineSupplementaryMaterial(
+                  externalFile,
+                  document
+                )
+                caption.appendChild(inlineSupplementary)
+              }
+              parentFigure.insertBefore(caption, graphic)
+            })
           }
 
-          if (figure.externalFileReferences) {
-            const externalFileURLs = figure.externalFileReferences
-              .filter((el) => el.url != figure.originalURL)
-              .map((el) => el.url)
-
-            const interactiveHtml: Array<string> = []
-            const downloadable: Array<string> = []
-            externalFileURLs.forEach((url) => {
+          if (interactiveHtml.length > 0) {
+            const alternatives = document.createElement('alternatives')
+            const clone = graphic.cloneNode(true)
+            alternatives.appendChild(clone)
+            interactiveHtml.forEach((url) => {
               const externalFile = externalFilesMap.get(url)
-              if (!externalFile) {
-                return
-              }
-
-              if (externalFile.designation === 'interactive-html') {
-                interactiveHtml.push(url)
-              } else {
-                downloadable.push(url)
+              if (externalFile) {
+                const supplementary = createSupplementaryMaterial(
+                  externalFile,
+                  document
+                )
+                const objectID = supplementaryDOI.get(url)
+                if (objectID) {
+                  const objectIDNode = buildObjectID(objectID)
+                  supplementary.appendChild(objectIDNode)
+                } else {
+                  throw createHttpError(400, `DOI for ${url} not found`)
+                }
+                if (articleMeta) {
+                  articleMeta.appendChild(supplementary.cloneNode(true))
+                }
+                alternatives.appendChild(supplementary)
               }
             })
-
-            if (downloadable.length > 0) {
-              const caption = document.createElement('caption')
-              caption.setAttribute('content-type', 'supplementary-material')
-              downloadable.forEach((url) => {
-                const externalFile = externalFilesMap.get(url)
-                if (externalFile) {
-                  const inlineSupplementary = createInlineSupplementaryMaterial(
-                    externalFile,
-                    document
-                  )
-                  caption.appendChild(inlineSupplementary)
-                }
-                parentFigure.insertBefore(caption, graphic)
-              })
-            }
-
-            if (interactiveHtml.length > 0) {
-              const alternatives = document.createElement('alternatives')
-              const clone = graphic.cloneNode(true)
-              alternatives.appendChild(clone)
-              interactiveHtml.forEach((url) => {
-                const externalFile = externalFilesMap.get(url)
-                if (externalFile) {
-                  const supplementary = createSupplementaryMaterial(
-                    externalFile,
-                    document
-                  )
-                  const objectID = supplementaryDOI.get(url)
-                  if (objectID) {
-                    const objectIDNode = buildObjectID(objectID)
-                    supplementary.appendChild(objectIDNode)
-                  } else {
-                    throw createHttpError(400, `DOI for ${url} not found`)
-                  }
-                  if (articleMeta) {
-                    articleMeta.appendChild(supplementary.cloneNode(true))
-                  }
-                  alternatives.appendChild(supplementary)
-                }
-              })
-              graphic.replaceWith(alternatives)
-            }
+            graphic.replaceWith(alternatives)
           }
         }
-      )
-    } else if (docType === 'html') {
-      await processElements(
-        document,
-        `//img[starts-with(@src,"graphic/${name}")]`,
-        async (graphic: Element) => {
-          if (figure.originalURL) {
-            const staticImage = externalFilesMap.get(figure.originalURL)
-            if (staticImage) {
-              const imageName = staticImage.filename
+      }
+    )
+  }
+  return document
+}
 
-              graphic.setAttribute('src', `graphic/${imageName}`)
-            }
+export const replaceHTMLImgReferences = async (
+  document: Document,
+  figures: Array<Figure>,
+  externalFilesMap: Map<string, ExternalFile>
+): Promise<Document> => {
+  for (const figure of figures) {
+    const name = figure._id.replace(':', '_')
+    await processElements(
+      document,
+      `//img[starts-with(@src,"graphic/${name}")]`,
+      async (graphic: Element) => {
+        if (figure.originalURL) {
+          const staticImage = externalFilesMap.get(figure.originalURL)
+          if (staticImage) {
+            const imageName = staticImage.filename
+
+            graphic.setAttribute('src', `graphic/${imageName}`)
           }
         }
-      )
-    }
+      }
+    )
   }
   return document
 }

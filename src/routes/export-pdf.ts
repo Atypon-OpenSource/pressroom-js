@@ -17,7 +17,6 @@ import { Manuscript } from '@manuscripts/manuscripts-json-schema'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
-import createHttpError from 'http-errors'
 import path from 'path'
 
 import { authentication } from '../lib/authentication'
@@ -31,7 +30,7 @@ import { findCSL } from '../lib/find-csl'
 import { filterJATSResult } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
-import { prince } from '../lib/prince'
+import { creatPrincePDF } from '../lib/prince-html'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { decompressManuscript } from '../lib/validate-manuscript-archive'
@@ -141,31 +140,7 @@ export const exportPDF = Router().post(
           return `Data/${name}`
         },
       })
-
-      await fs.writeFile(dir + '/manuscript.html', html)
-
-      const options: {
-        css?: string
-        js?: string
-      } = {}
-
-      if (theme) {
-        const themePath = __dirname + `/../assets/themes/${theme}/`
-        const cssPath = themePath + 'print.css'
-        if (!fs.existsSync(cssPath)) {
-          throw createHttpError(400, `${theme} theme not found`)
-        }
-        options.css = cssPath
-        const jsPath = themePath + 'print.js'
-        // ignore when there is no js file?
-        if (fs.existsSync(jsPath)) {
-          options.js = jsPath
-        } else {
-          logger.debug(`No JS file for ${theme}`)
-        }
-      }
-
-      await prince(dir, 'manuscript.html', 'manuscript.pdf', options)
+      await creatPrincePDF(dir, html, theme)
     } else {
       // create XML
       const jats = await createJATSXML(article.content, modelMap, {

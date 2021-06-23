@@ -18,7 +18,6 @@ import { celebrate, Joi } from 'celebrate'
 import { format } from 'date-fns'
 import { Router } from 'express'
 import fs from 'fs-extra'
-import createHttpError from 'http-errors'
 import path from 'path'
 
 import { authentication } from '../lib/authentication'
@@ -27,18 +26,21 @@ import { createArticle } from '../lib/create-article'
 import { createHTML } from '../lib/create-html'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { buildManifest } from '../lib/create-manifest'
-import { createPDF } from '../lib/create-pdf'
 import { processElements } from '../lib/data'
 import { depositFTPS } from '../lib/deposit-ftps'
 import { VALID_DOI_REGEX } from '../lib/doi'
 import { emailAuthorization } from '../lib/email-authorization'
-import { importExternalFiles } from '../lib/external-files'
+import {
+  exportExternalFiles,
+  generateFiguresWithExternalFiles,
+  replaceHTMLImgReferences,
+} from '../lib/external-files'
 import { convertJATSToWileyML } from '../lib/gaia'
 import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseSupplementaryDOIs } from '../lib/parseSupplementaryDOIs'
-import { prince } from '../lib/prince'
+import { creatPrincePDF } from '../lib/prince-html'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -181,11 +183,15 @@ export const exportLiteratumBundle = Router().post(
     const supplementaryDOI = new Map<string, string>(
       supplementaryMaterialDOIs.map((el) => [el.url, el.doi])
     )
-    const doc = await importExternalFiles(
+    const { figures, externalFilesMap } = generateFiguresWithExternalFiles(
       parsedJATS,
-      data,
-      supplementaryDOI,
-      'xml'
+      data
+    )
+    const doc = await exportExternalFiles(
+      parsedJATS,
+      figures,
+      externalFilesMap,
+      supplementaryDOI
     )
     // add images to archive
     if (await fs.pathExists(dir + '/Data')) {
@@ -232,70 +238,30 @@ export const exportLiteratumBundle = Router().post(
       archive.append(jats, { name: `${articleID}.xml`, prefix })
     }
 
-    if (theme) {
-      let html = await createHTML(article, modelMap, {
-        mediaPathGenerator: async (element) => {
-          const src = element.getAttribute('src')
+    let html = await createHTML(article, modelMap, {
+      mediaPathGenerator: async (element) => {
+        const src = element.getAttribute('src')
 
-          const { name } = path.parse(src as string)
+        const { name } = path.parse(src as string)
 
-          return `graphic/${name}`
-        },
-      })
+        return `graphic/${name}`
+      },
+    })
 
-      const parsedHTML = new DOMParser().parseFromString(
-        html,
-        'application/xhtml+xml'
-      )
-      const HTMLDoc = await importExternalFiles(
-        parsedHTML,
-        data,
-        supplementaryDOI,
-        'html'
-      )
-      html = new XMLSerializer().serializeToString(HTMLDoc)
+    const parsedHTML = new DOMParser().parseFromString(
+      html,
+      'application/xhtml+xml'
+    )
+    const HTMLDoc = await replaceHTMLImgReferences(
+      parsedHTML,
+      figures,
+      externalFilesMap
+    )
+    html = new XMLSerializer().serializeToString(HTMLDoc)
 
-      await fs.writeFile(dir + '/manuscript.html', html)
+    const pdfFile = await creatPrincePDF(dir, html, theme)
 
-      const options: {
-        css?: string
-        js?: string
-      } = {}
-
-      const themePath = __dirname + `/../assets/themes/${theme}/`
-      const cssPath = themePath + 'print.css'
-      if (!fs.existsSync(cssPath)) {
-        throw createHttpError(400, `${theme} theme not found`)
-      }
-      options.css = cssPath
-      const jsPath = themePath + 'print.js'
-      // ignore when there is no js file?
-      if (fs.existsSync(jsPath)) {
-        options.js = jsPath
-      } else {
-        logger.debug(`No JS file for ${theme}`)
-      }
-
-      await prince(dir, 'manuscript.html', 'manuscript.pdf', options)
-    } else {
-      try {
-        // write PDF file
-        await createPDF(
-          dir,
-          'manuscript.xml',
-          'manuscript.pdf',
-          'xelatex',
-          {},
-          (childProcess) => res.on('close', () => childProcess.kill())
-        )
-      } catch (e) {
-        logger.error(e)
-        throw new Error(
-          'Conversion failed when exporting to PDF (Literatum bundle)'
-        )
-      }
-    }
-    archive.append(fs.createReadStream(dir + '/manuscript.pdf'), {
+    archive.append(fs.createReadStream(pdfFile), {
       name: `${articleID}.pdf`,
       prefix,
     })
