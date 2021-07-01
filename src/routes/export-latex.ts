@@ -101,7 +101,7 @@ export const exportLatex = Router().post(
     const archive = archiver.create('zip')
 
     // create JATS XML
-    const jats = await createJATSXML(article.content, modelMap, {
+    const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
       mediaPathGenerator: createArchivePathGenerator(
         dir,
         archive,

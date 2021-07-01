@@ -131,7 +131,7 @@ export const exportLiteratumEEO = Router().post(
     )
 
     // create XML
-    const jats = await createJATSXML(article.content, modelMap, {
+    const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
       doi,
       frontMatterOnly,
     })

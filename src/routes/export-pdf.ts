@@ -143,15 +143,20 @@ export const exportPDF = Router().post(
       await creatPrincePDF(dir, html, theme)
     } else {
       // create XML
-      const jats = await createJATSXML(article.content, modelMap, {
-        mediaPathGenerator: async (element) => {
-          const href = element.getAttributeNS(XLINK_NAMESPACE, 'href')
+      const jats = await createJATSXML(
+        article.content,
+        modelMap,
+        manuscriptID,
+        {
+          mediaPathGenerator: async (element) => {
+            const href = element.getAttributeNS(XLINK_NAMESPACE, 'href')
 
-          const { name } = path.parse(href as string)
+            const { name } = path.parse(href as string)
 
-          return `Data/${name}`
-        },
-      })
+            return `Data/${name}`
+          },
+        }
+      )
 
       await fs.writeFile(dir + '/manuscript.xml', filterJATSResult(jats))
 

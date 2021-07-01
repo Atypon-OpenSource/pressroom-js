@@ -169,7 +169,7 @@ export const exportLiteratumBundle = Router().post(
     )
 
     // create JATS XML
-    const xml = await createJATSXML(article.content, modelMap, {
+    const xml = await createJATSXML(article.content, modelMap, manuscriptID, {
       doi,
       frontMatterOnly,
     })
