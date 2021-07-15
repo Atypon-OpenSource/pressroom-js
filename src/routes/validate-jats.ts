@@ -15,6 +15,7 @@
  */
 import {
   ContainedModel,
+  InvalidInput,
   isFigure,
   parseJATSArticle,
 } from '@manuscripts/manuscript-transform'
@@ -31,6 +32,7 @@ import { parseXMLFile } from '../lib/parse-xml-file'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
+import { promiseHandler } from '../lib/utils'
 import { wrapAsync } from '../lib/wrap-async'
 
 /**
@@ -93,7 +95,13 @@ export const validateJATS = Router().post(
     await fixImageReferences(dir + '/images', doc)
 
     // convert the JATS XML to Manuscripts data
-    const manuscriptModels = (await parseJATSArticle(doc)) as ContainedModel[]
+    const [data, error] = await promiseHandler(parseJATSArticle(doc))
+    if (error instanceof InvalidInput) {
+      throw createHttpError(400, error)
+    } else if (error) {
+      throw new Error(error)
+    }
+    const manuscriptModels = data as ContainedModel[]
     // find manuscript ID
     const manuscriptObject = manuscriptModels.find(
       (item) => item.objectType === ObjectTypes.Manuscript

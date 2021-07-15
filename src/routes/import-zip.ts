@@ -15,12 +15,14 @@
  */
 import {
   ContainedModel,
+  InvalidInput,
   isFigure,
   parseJATSArticle,
 } from '@manuscripts/manuscript-transform'
 import archiver from 'archiver'
 import { Router } from 'express'
 import fs from 'fs-extra'
+import createHttpError from 'http-errors'
 
 import { authentication } from '../lib/authentication'
 import { convertFileToJATS } from '../lib/convert-file-to-jats'
@@ -33,6 +35,7 @@ import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { unzip } from '../lib/unzip'
 import { upload } from '../lib/upload'
+import { promiseHandler } from '../lib/utils'
 import { wrapAsync } from '../lib/wrap-async'
 
 /**
@@ -117,7 +120,13 @@ export const importZip = Router().post(
     const doc = await parseXMLFile(dir + '/manuscript.xml')
 
     // convert the JATS XML to Manuscripts data
-    const manuscriptModels = (await parseJATSArticle(doc)) as ContainedModel[]
+    const [data, error] = await promiseHandler(parseJATSArticle(doc))
+    if (error instanceof InvalidInput) {
+      throw createHttpError(400, error)
+    } else if (error) {
+      throw new Error(error)
+    }
+    const manuscriptModels = data as ContainedModel[]
 
     // prepare the output ZIP
     const archive = archiver.create('zip')

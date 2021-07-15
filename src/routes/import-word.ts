@@ -15,6 +15,7 @@
  */
 import {
   ContainedModel,
+  InvalidInput,
   isFigure,
   parseJATSArticle,
 } from '@manuscripts/manuscript-transform'
@@ -23,6 +24,7 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 import getStream from 'get-stream'
+import createHttpError from 'http-errors'
 
 import { authentication } from '../lib/authentication'
 import { convertFileToJATS } from '../lib/convert-file-to-jats'
@@ -35,6 +37,7 @@ import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
+import { promiseHandler } from '../lib/utils'
 import { wrapAsync } from '../lib/wrap-async'
 
 /**
@@ -130,7 +133,13 @@ export const importWord = Router().post(
       enrichMetadata(metadataXML, doc)
     }
     // convert the JATS XML to Manuscripts data
-    const manuscriptModels = (await parseJATSArticle(doc)) as ContainedModel[]
+    const [data, error] = await promiseHandler(parseJATSArticle(doc))
+    if (error instanceof InvalidInput) {
+      throw createHttpError(400, error)
+    } else if (error) {
+      throw new Error(error)
+    }
+    const manuscriptModels = data as ContainedModel[]
 
     // output JSON
     archive.append(createJSON(manuscriptModels), {

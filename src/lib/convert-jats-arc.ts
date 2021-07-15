@@ -16,12 +16,14 @@
 import {
   ContainedModel,
   fromPrototype,
+  InvalidInput,
   isFigure,
   loadBundledDependencies,
   parseJATSArticle,
 } from '@manuscripts/manuscript-transform'
 import archiver, { Archiver } from 'archiver'
 import fs from 'fs-extra'
+import createHttpError from 'http-errors'
 
 import { createJSON } from './create-json'
 import { fixImageReferences } from './fix-jats-references'
@@ -30,6 +32,7 @@ import {
   replaceTokensWithHighlights,
 } from './jats-arc-comments'
 import { logger } from './logger'
+import { promiseHandler } from './utils'
 
 interface Options {
   addBundledData?: boolean
@@ -49,7 +52,13 @@ export const convertJATSArc = async (
   await fixImageReferences(imageDirPath, doc)
 
   // convert JATS XML to Manuscripts data
-  const manuscriptModels = (await parseJATSArticle(doc)) as ContainedModel[]
+  const [data, error] = await promiseHandler(parseJATSArticle(doc))
+  if (error instanceof InvalidInput) {
+    throw createHttpError(400, error)
+  } else if (error) {
+    throw new Error(error)
+  }
+  const manuscriptModels = data as ContainedModel[]
   replaceTokensWithHighlights(authorQueriesMap, manuscriptModels)
 
   // add bundled data if needed
