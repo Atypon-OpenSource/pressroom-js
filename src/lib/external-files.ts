@@ -60,34 +60,24 @@ export const exportExternalFiles = async (
           logger.error('graphic not wrapped inside a fig element')
           return
         }
-        if (figure.originalURL) {
-          const staticImage = externalFilesMap.get(figure.originalURL)
-          if (staticImage) {
-            const imageName = staticImage.filename
-            const nodeName = graphic.nodeName.toLowerCase()
-
-            graphic.setAttributeNS(
-              XLINK_NAMESPACE,
-              'href',
-              `${nodeName}/${imageName}`
-            )
-          }
-        }
 
         if (figure.externalFileReferences) {
-          const externalFileURLs = figure.externalFileReferences
-            .filter((el) => el.url != figure.originalURL)
-            .map((el) => el.url)
-
           const interactiveHtml: Array<string> = []
           const downloadable: Array<string> = []
-          externalFileURLs.forEach((url) => {
+          figure.externalFileReferences.forEach(({ kind, url }) => {
             const externalFile = externalFilesMap.get(url)
             if (!externalFile) {
               return
             }
-
-            if (externalFile.designation === 'interactive-html') {
+            if (kind === 'imageRepresentation') {
+              const imageName = externalFile.filename
+              const nodeName = graphic.nodeName.toLowerCase()
+              graphic.setAttributeNS(
+                XLINK_NAMESPACE,
+                'href',
+                `${nodeName}/${imageName}`
+              )
+            } else if (externalFile.designation === 'interactive-html') {
               interactiveHtml.push(url)
             } else {
               downloadable.push(url)
@@ -154,12 +144,17 @@ export const replaceHTMLImgReferences = async (
       document,
       `//img[starts-with(@src,"graphic/${name}")]`,
       async (graphic: Element) => {
-        if (figure.originalURL) {
-          const staticImage = externalFilesMap.get(figure.originalURL)
-          if (staticImage) {
-            const imageName = staticImage.filename
+        if (figure.externalFileReferences) {
+          const externalReference = figure.externalFileReferences.find(
+            (el) => el.kind === 'imageRepresentation'
+          )
+          if (externalReference) {
+            const staticImage = externalFilesMap.get(externalReference.url)
+            if (staticImage) {
+              const imageName = staticImage.filename
 
-            graphic.setAttribute('src', `graphic/${imageName}`)
+              graphic.setAttribute('src', `graphic/${imageName}`)
+            }
           }
         }
       }
