@@ -20,10 +20,12 @@ import createHttpError from 'http-errors'
 import path from 'path'
 
 import { XLINK_NAMESPACE } from './data'
+import { ExternalFilesData, findImageRepresentation } from './external-files'
 
 export const createArchivePathGenerator = (
   dir: string,
   archive: Archiver,
+  externals: ExternalFilesData,
   allowMissingImages = false,
   prefix = 'Data/'
 ): MediaPathGenerator => {
@@ -31,26 +33,36 @@ export const createArchivePathGenerator = (
 
   return async (element, parentID) => {
     const href = element.getAttributeNS(XLINK_NAMESPACE, 'href')
-
     if (!href) {
       throw new Error('Media element has no href value')
     }
 
     const { name, ext } = path.parse(href)
 
-    const oldPath = `Data/${name}`
+    // external files
+    const figure = externals.figuresMap.get(name.replace('_', ':'))
+    const url = findImageRepresentation(figure)
+    const externalFileName =
+      url && externals.externalFilesMap.get(url)?.filename
 
     // already handled
-    if (mediaPaths.has(oldPath)) {
-      return mediaPaths.get(oldPath) as string
+    if (mediaPaths.has(name)) {
+      return mediaPaths.get(name) as string
     }
+    const oldPath = externalFileName
+      ? `Data/${externalFileName}`
+      : `Data/${name}`
     // Rename file to match id if available
     const newPath = parentID ? `${prefix}${parentID}${ext}` : oldPath
     mediaPaths.set(name, newPath)
+    if (externalFileName) {
+      mediaPaths.set(name, `graphic/${externalFileName}`)
+    }
+
     // make sure the file exists at the old path
     if (fs.existsSync(`${dir}/${oldPath}`)) {
       archive.append(fs.createReadStream(`${dir}/${oldPath}`), {
-        name: newPath,
+        name: externalFileName ? `graphic/${externalFileName}` : newPath,
       })
     } else if (!allowMissingImages) {
       throw createHttpError(

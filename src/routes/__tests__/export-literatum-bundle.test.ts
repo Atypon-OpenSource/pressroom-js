@@ -60,7 +60,7 @@ describe('export Literatum Bundle', () => {
     const zip = await new JSZip().loadAsync(response.body)
 
     const expectedFiles = [
-      'test/567/graphic/figure 2.jpg',
+      'test/567/figure 2.jpg',
       'test/567/external/hon-20-0144-r1.docx',
       'test/567/external/hon-20-0144.pdf',
       'test/567/external/html-asset.zip',
@@ -121,7 +121,7 @@ describe('export Literatum Bundle', () => {
     const zip = await new JSZip().loadAsync(response.body)
 
     const expectedFiles = [
-      'test/567/graphic/figure 2.jpg',
+      'test/567/figure 2.jpg',
       'test/567/external/hon-20-0144-r1.docx',
       'test/567/external/hon-20-0144.pdf',
       'test/567/external/html-asset.zip',

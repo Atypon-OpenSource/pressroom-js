@@ -77,7 +77,7 @@ export const extylesImportResult = Router().post(
     const token = await login(req.user.arc)
 
     const isFinished = await isFinishedJob(job_id, token)
-    console.log(isFinished)
+
     if (!isFinished) {
       res.json({ message: 'Job not finished yet' })
     } else {

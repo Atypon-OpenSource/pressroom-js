@@ -23,6 +23,7 @@ import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createLatex } from '../lib/create-latex'
+import { generateFiguresWithExternalFiles } from '../lib/external-files'
 import { findCSL } from '../lib/find-csl'
 import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
@@ -99,12 +100,13 @@ export const exportLatex = Router().post(
 
     // prepare the output archive
     const archive = archiver.create('zip')
-
+    const externals = generateFiguresWithExternalFiles(data)
     // create JATS XML
     const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
       mediaPathGenerator: createArchivePathGenerator(
         dir,
         archive,
+        externals,
         allowMissingElements
       ),
     })

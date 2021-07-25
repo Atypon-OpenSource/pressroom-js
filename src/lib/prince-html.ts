@@ -13,17 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ContainedModel } from '@manuscripts/manuscript-transform'
 import fs from 'fs-extra'
 import createHttpError from 'http-errors'
 
+import {
+  generateFiguresWithExternalFiles,
+  replaceHTMLImgReferences,
+} from './external-files'
 import { logger } from './logger'
 import { prince } from './prince'
 
 export const creatPrincePDF = async (
   dir: string,
   html: string,
+  data: Array<ContainedModel>,
   theme?: string
 ): Promise<string> => {
+  const parsedHTML = new DOMParser().parseFromString(
+    html,
+    'application/xhtml+xml'
+  )
+  const { figuresMap, externalFilesMap } = generateFiguresWithExternalFiles(
+    data
+  )
+  const HTMLDoc = await replaceHTMLImgReferences(
+    parsedHTML,
+    figuresMap,
+    externalFilesMap
+  )
+  html = new XMLSerializer().serializeToString(HTMLDoc)
+
   await fs.writeFile(dir + '/manuscript.html', html)
 
   const options: {

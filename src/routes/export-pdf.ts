@@ -35,7 +35,6 @@ import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
-
 /**
  * @swagger
  *
@@ -140,7 +139,7 @@ export const exportPDF = Router().post(
           return `Data/${name}`
         },
       })
-      await creatPrincePDF(dir, html, theme)
+      await creatPrincePDF(dir, html, data, theme)
     } else {
       // create XML
       const jats = await createJATSXML(

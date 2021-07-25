@@ -22,6 +22,7 @@ import fs from 'fs-extra'
 import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
+import { generateFiguresWithExternalFiles } from '../lib/external-files'
 import { createIdGenerator } from '../lib/id-generator'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createArchivePathGenerator } from '../lib/path-generator'
@@ -102,7 +103,7 @@ export const exportJats = Router().post(
 
     // prepare the output archive
     const archive = archiver.create('zip')
-
+    const externalFiles = generateFiguresWithExternalFiles(data)
     // create JATS XML
     const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
       version,
@@ -110,6 +111,7 @@ export const exportJats = Router().post(
       mediaPathGenerator: createArchivePathGenerator(
         dir,
         archive,
+        externalFiles,
         allowMissingElements
       ),
     })

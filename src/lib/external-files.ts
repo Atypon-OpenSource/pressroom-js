@@ -24,10 +24,14 @@ import createHttpError from 'http-errors'
 import { processElements, XLINK_NAMESPACE } from './data'
 import { logger } from './logger'
 
+export type ExternalFilesData = {
+  figuresMap: Map<string, Figure>
+  externalFilesMap: Map<string, ExternalFile>
+}
+
 export const generateFiguresWithExternalFiles = (
-  document: Document,
   data: Array<ContainedModel>
-): { figures: Array<Figure>; externalFilesMap: Map<string, ExternalFile> } => {
+): ExternalFilesData => {
   const externalFiles = data.filter(
     (el) => el.objectType == ObjectTypes.ExternalFile
   ) as Array<ExternalFile>
@@ -38,18 +42,21 @@ export const generateFiguresWithExternalFiles = (
   const figures = data.filter(
     (el) => el.objectType == ObjectTypes.Figure
   ) as Array<Figure>
-
-  return { figures, externalFilesMap }
+  const figuresMap = new Map<string, Figure>()
+  for (const figure of figures) {
+    figuresMap.set(figure._id, figure)
+  }
+  return { figuresMap, externalFilesMap }
 }
 
 export const exportExternalFiles = async (
   document: Document,
-  figures: Array<Figure>,
+  figures: Map<string, Figure>,
   externalFilesMap: Map<string, ExternalFile>,
   supplementaryDOI: Map<string, string>
 ): Promise<Document> => {
   const articleMeta = document.querySelector('article-meta')
-  for (const figure of figures) {
+  for (const [, figure] of figures) {
     const name = figure._id.replace(':', '_')
     await processElements(
       document,
@@ -135,14 +142,14 @@ export const exportExternalFiles = async (
 
 export const replaceHTMLImgReferences = async (
   document: Document,
-  figures: Array<Figure>,
+  figures: Map<string, Figure>,
   externalFilesMap: Map<string, ExternalFile>
 ): Promise<Document> => {
-  for (const figure of figures) {
+  for (const [, figure] of figures) {
     const name = figure._id.replace(':', '_')
     await processElements(
       document,
-      `//img[starts-with(@src,"graphic/${name}")]`,
+      `//img[contains(@src,"${name}")]`,
       async (graphic: Element) => {
         if (figure.externalFileReferences) {
           const externalReference = figure.externalFileReferences.find(
@@ -152,8 +159,10 @@ export const replaceHTMLImgReferences = async (
             const staticImage = externalFilesMap.get(externalReference.url)
             if (staticImage) {
               const imageName = staticImage.filename
-
-              graphic.setAttribute('src', `graphic/${imageName}`)
+              const path = graphic.getAttribute('src')?.replace(name, imageName)
+              if (path) {
+                graphic.setAttribute('src', path)
+              }
             }
           }
         }
@@ -214,3 +223,12 @@ const setSupplementaryMaterialAttributes = (
     supplementaryMaterial.textContent = externalFile.description
   }
 }
+
+export const findImageRepresentation = (
+  figure: Figure | undefined
+): string | undefined =>
+  figure && figure.externalFileReferences
+    ? figure.externalFileReferences.find(
+        (el) => el.kind === 'imageRepresentation'
+      )?.url
+    : undefined

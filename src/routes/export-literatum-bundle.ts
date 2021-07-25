@@ -33,7 +33,6 @@ import { emailAuthorization } from '../lib/email-authorization'
 import {
   exportExternalFiles,
   generateFiguresWithExternalFiles,
-  replaceHTMLImgReferences,
 } from '../lib/external-files'
 import { convertJATSToWileyML } from '../lib/gaia'
 import { removeCodeListing } from '../lib/jats-utils'
@@ -183,13 +182,12 @@ export const exportLiteratumBundle = Router().post(
     const supplementaryDOI = new Map<string, string>(
       supplementaryMaterialDOIs.map((el) => [el.url, el.doi])
     )
-    const { figures, externalFilesMap } = generateFiguresWithExternalFiles(
-      parsedJATS,
+    const { figuresMap, externalFilesMap } = generateFiguresWithExternalFiles(
       data
     )
     const doc = await exportExternalFiles(
       parsedJATS,
-      figures,
+      figuresMap,
       externalFilesMap,
       supplementaryDOI
     )
@@ -204,11 +202,10 @@ export const exportLiteratumBundle = Router().post(
         await processElements(
           doc,
           `//*[@xlink:href="graphic/${file}"]`,
-          async (element) => {
-            const nodeName = element.nodeName.toLowerCase()
+          async () => {
             archive.append(fs.createReadStream(filePath), {
               name: file,
-              prefix: `${prefix}/${nodeName}`,
+              prefix: `${prefix}`,
             })
           }
         )
@@ -238,7 +235,7 @@ export const exportLiteratumBundle = Router().post(
       archive.append(jats, { name: `${articleID}.xml`, prefix })
     }
 
-    let html = await createHTML(article, modelMap, {
+    const html = await createHTML(article, modelMap, {
       mediaPathGenerator: async (element) => {
         const src = element.getAttribute('src')
 
@@ -248,18 +245,7 @@ export const exportLiteratumBundle = Router().post(
       },
     })
 
-    const parsedHTML = new DOMParser().parseFromString(
-      html,
-      'application/xhtml+xml'
-    )
-    const HTMLDoc = await replaceHTMLImgReferences(
-      parsedHTML,
-      figures,
-      externalFilesMap
-    )
-    html = new XMLSerializer().serializeToString(HTMLDoc)
-
-    const pdfFile = await creatPrincePDF(dir, html, theme)
+    const pdfFile = await creatPrincePDF(dir, html, data, theme)
 
     archive.append(fs.createReadStream(pdfFile), {
       name: `${articleID}.pdf`,
