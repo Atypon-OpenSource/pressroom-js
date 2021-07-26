@@ -79,10 +79,6 @@ export const replaceTokensWithHighlights = (
             const comment = `<div><p>${query}</p></div>`
             const highlight = buildHighlight()
             const commentAnnotation = buildComment(highlight._id, comment)
-            commentAnnotation.selector = {
-              from: startTokenIndex,
-              to: startTokenIndex,
-            }
             createdModels.push(highlight)
             createdModels.push(commentAnnotation)
             // MPManuscript dose not accept highlightMarkers!
