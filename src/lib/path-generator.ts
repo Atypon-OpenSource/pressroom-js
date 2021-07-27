@@ -53,16 +53,15 @@ export const createArchivePathGenerator = (
       ? `Data/${externalFileName}`
       : `Data/${name}`
     // Rename file to match id if available
-    const newPath = parentID ? `${prefix}${parentID}${ext}` : oldPath
-    mediaPaths.set(name, newPath)
+    let newPath = parentID ? `${prefix}${parentID}${ext}` : oldPath
     if (externalFileName) {
-      mediaPaths.set(name, `graphic/${externalFileName}`)
+      newPath = `graphic/${externalFileName}`
     }
-
+    mediaPaths.set(name, newPath)
     // make sure the file exists at the old path
     if (fs.existsSync(`${dir}/${oldPath}`)) {
       archive.append(fs.createReadStream(`${dir}/${oldPath}`), {
-        name: externalFileName ? `graphic/${externalFileName}` : newPath,
+        name: newPath,
       })
     } else if (!allowMissingImages) {
       throw createHttpError(
