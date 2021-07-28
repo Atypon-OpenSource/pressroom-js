@@ -202,11 +202,12 @@ export const exportLiteratumBundle = Router().post(
         await processElements(
           doc,
           `//*[@xlink:href="graphic/${file}"]`,
-          async () => {
+          async (element) => {
             archive.append(fs.createReadStream(filePath), {
               name: file,
-              prefix: `${prefix}`,
+              prefix: `${prefix}/graphic`,
             })
+            element.setAttribute('xlink:href', file)
           }
         )
         // Add external files to archive
