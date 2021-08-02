@@ -78,12 +78,7 @@ export const exportExternalFiles = async (
             }
             if (kind === 'imageRepresentation') {
               const imageName = externalFile.filename
-              const nodeName = graphic.nodeName.toLowerCase()
-              graphic.setAttributeNS(
-                XLINK_NAMESPACE,
-                'href',
-                `${nodeName}/${imageName}`
-              )
+              graphic.setAttributeNS(XLINK_NAMESPACE, 'href', imageName)
             } else if (externalFile.designation === 'interactive-html') {
               interactiveHtml.push(url)
             } else {

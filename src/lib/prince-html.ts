@@ -16,7 +16,10 @@
 import { ContainedModel } from '@manuscripts/manuscript-transform'
 import fs from 'fs-extra'
 import createHttpError from 'http-errors'
+import path from 'path'
 
+import { createArticle } from './create-article'
+import { createHTML } from './create-html'
 import {
   generateFiguresWithExternalFiles,
   replaceHTMLImgReferences,
@@ -26,10 +29,23 @@ import { prince } from './prince'
 
 export const creatPrincePDF = async (
   dir: string,
-  html: string,
   data: Array<ContainedModel>,
+  manuscriptID: string,
+  imageDir = 'graphic',
   theme?: string
 ): Promise<string> => {
+  const { article, modelMap } = createArticle(data, manuscriptID)
+
+  const html = await createHTML(article, modelMap, {
+    mediaPathGenerator: async (element) => {
+      const src = element.getAttribute('src')
+
+      const { name } = path.parse(src as string)
+
+      return `${imageDir}/${name}`
+    },
+  })
+
   const parsedHTML = new DOMParser().parseFromString(
     html,
     'application/xhtml+xml'
@@ -42,9 +58,11 @@ export const creatPrincePDF = async (
     figuresMap,
     externalFilesMap
   )
-  html = new XMLSerializer().serializeToString(HTMLDoc)
 
-  await fs.writeFile(dir + '/manuscript.html', html)
+  await fs.writeFile(
+    dir + '/manuscript.html',
+    new XMLSerializer().serializeToString(HTMLDoc)
+  )
 
   const options: {
     css?: string

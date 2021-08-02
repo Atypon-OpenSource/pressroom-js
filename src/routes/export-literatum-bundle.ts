@@ -18,22 +18,15 @@ import { celebrate, Joi } from 'celebrate'
 import { format } from 'date-fns'
 import { Router } from 'express'
 import fs from 'fs-extra'
-import path from 'path'
 
 import { authentication } from '../lib/authentication'
 import { config } from '../lib/config'
-import { createArticle } from '../lib/create-article'
-import { createHTML } from '../lib/create-html'
-import { createJATSXML } from '../lib/create-jats-xml'
+import { createLiteratumJats } from '../lib/create-literatum-jats'
 import { buildManifest } from '../lib/create-manifest'
 import { processElements } from '../lib/data'
 import { depositFTPS } from '../lib/deposit-ftps'
 import { VALID_DOI_REGEX } from '../lib/doi'
 import { emailAuthorization } from '../lib/email-authorization'
-import {
-  exportExternalFiles,
-  generateFiguresWithExternalFiles,
-} from '../lib/external-files'
 import { convertJATSToWileyML } from '../lib/gaia'
 import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
@@ -68,8 +61,6 @@ type XmlType = 'jats' | 'wileyml'
  *                  format: binary
  *                manuscriptID:
  *                  type: string
- *                allowMissingElements:
- *                  type: boolean
  *                deposit:
  *                  type: boolean
  *                doi:
@@ -119,6 +110,7 @@ export const exportLiteratumBundle = Router().post(
       seriesCode: Joi.string().required(),
       xmlType: Joi.string().empty('').allow('jats', 'wileyml'),
       theme: Joi.string().empty(''),
+      // TODO: change the naming to allow missing images and make that optional
       allowMissingElements: Joi.boolean().empty('').default(false),
       supplementaryMaterialDOIs: Joi.array()
         .items({
@@ -139,7 +131,6 @@ export const exportLiteratumBundle = Router().post(
       seriesCode,
       xmlType = 'jats',
       theme,
-      allowMissingElements,
       supplementaryMaterialDOIs,
     } = req.body as {
       deposit: boolean
@@ -150,7 +141,6 @@ export const exportLiteratumBundle = Router().post(
       seriesCode: string
       xmlType: XmlType
       theme?: string
-      allowMissingElements: boolean
       supplementaryMaterialDOIs: Array<{ url: string; doi: string }>
     }
     const [, articleID] = doi.split('/', 2) // TODO: only article ID?
@@ -161,36 +151,20 @@ export const exportLiteratumBundle = Router().post(
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const { article, modelMap } = createArticle(
-      data,
-      manuscriptID,
-      allowMissingElements
-    )
-
-    // create JATS XML
-    const xml = await createJATSXML(article.content, modelMap, manuscriptID, {
-      doi,
-      frontMatterOnly,
-    })
 
     // create the output ZIP
     const archive = archiver.create('zip')
 
-    const prefix = `${groupID}/${articleID}`
-    const parsedJATS = new DOMParser().parseFromString(xml, 'application/xml')
+    const doc = await createLiteratumJats(
+      manuscriptID,
+      data,
+      doi,
+      supplementaryMaterialDOIs,
+      frontMatterOnly
+    )
 
-    const supplementaryDOI = new Map<string, string>(
-      supplementaryMaterialDOIs.map((el) => [el.url, el.doi])
-    )
-    const { figuresMap, externalFilesMap } = generateFiguresWithExternalFiles(
-      data
-    )
-    const doc = await exportExternalFiles(
-      parsedJATS,
-      figuresMap,
-      externalFilesMap,
-      supplementaryDOI
-    )
+    const prefix = `${groupID}/${articleID}`
+
     // add images to archive
     if (await fs.pathExists(dir + '/Data')) {
       const files = await fs.readdir(dir + '/Data')
@@ -199,17 +173,12 @@ export const exportLiteratumBundle = Router().post(
       fs.renameSync(dir + '/Data', graphicPath)
       for (const file of files) {
         const filePath = `${graphicPath}/${file}`
-        await processElements(
-          doc,
-          `//*[@xlink:href="graphic/${file}"]`,
-          async (element) => {
-            archive.append(fs.createReadStream(filePath), {
-              name: file,
-              prefix: `${prefix}/graphic`,
-            })
-            element.setAttribute('xlink:href', file)
-          }
-        )
+        await processElements(doc, `//*[@xlink:href="${file}"]`, async () => {
+          archive.append(fs.createReadStream(filePath), {
+            name: file,
+            prefix: `${prefix}/graphic`,
+          })
+        })
         // Add external files to archive
         await processElements(
           doc,
@@ -236,17 +205,7 @@ export const exportLiteratumBundle = Router().post(
       archive.append(jats, { name: `${articleID}.xml`, prefix })
     }
 
-    const html = await createHTML(article, modelMap, {
-      mediaPathGenerator: async (element) => {
-        const src = element.getAttribute('src')
-
-        const { name } = path.parse(src as string)
-
-        return `graphic/${name}`
-      },
-    })
-
-    const pdfFile = await creatPrincePDF(dir, html, data, theme)
+    const pdfFile = await creatPrincePDF(dir, data, manuscriptID, theme)
 
     archive.append(fs.createReadStream(pdfFile), {
       name: `${articleID}.pdf`,

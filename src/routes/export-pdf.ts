@@ -21,7 +21,6 @@ import path from 'path'
 
 import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
-import { createHTML } from '../lib/create-html'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createPDF, PDFEngine } from '../lib/create-pdf'
 import { XLINK_NAMESPACE } from '../lib/data'
@@ -130,16 +129,7 @@ export const exportPDF = Router().post(
     )
 
     if (engine === 'prince-html') {
-      const html = await createHTML(article, modelMap, {
-        mediaPathGenerator: async (element) => {
-          const src = element.getAttribute('src')
-
-          const { name } = path.parse(src as string)
-
-          return `Data/${name}`
-        },
-      })
-      await creatPrincePDF(dir, html, data, theme)
+      await creatPrincePDF(dir, data, manuscriptID, 'Data', theme)
     } else {
       // create XML
       const jats = await createJATSXML(
