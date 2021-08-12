@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import archiver from 'archiver'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
@@ -25,7 +24,6 @@ import { emailAuthorization } from '../lib/email-authorization'
 import { removeCodeListing } from '../lib/jats-utils'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseSupplementaryDOIs } from '../lib/parseSupplementaryDOIs'
-import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { decompressManuscript } from '../lib/validate-manuscript-archive'
@@ -61,6 +59,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *              required:
  *                - file
  *                - manuscriptID
+ *                - doi
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -120,16 +119,8 @@ export const exportLiteratumJats = Router().post(
       frontMatterOnly
     )
 
-    // prepare the output archive
-    const archive = archiver.create('zip')
-
     const jats = new XMLSerializer().serializeToString(doc)
-    archive.append(removeCodeListing(jats), {
-      name: 'manuscript.xml',
-    })
 
-    archive.finalize()
-
-    sendArchive(res, archive)
+    return res.type('application/xml').send(removeCodeListing(jats))
   })
 )

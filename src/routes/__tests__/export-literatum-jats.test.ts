@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { RequestHandler } from 'express'
-import JSZip from 'jszip'
 import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
@@ -49,28 +48,14 @@ describe('export literatum JATS', () => {
       .responseType('blob')
 
     expect(response.status).toBe(200)
-    expect(response.get('Content-Type')).toBe('application/zip')
-    expect(response.get('Content-Disposition')).toBe(
-      'attachment; filename="manuscript.zip"'
-    )
+    expect(response.get('Content-Type')).toBe('application/xml; charset=utf-8')
 
-    const zip = await new JSZip().loadAsync(response.body)
-
-    const xml = await zip.files['manuscript.xml'].async('text')
-
+    const xml = response.body.toString()
     const doc = parseXml(xml, {
       dtdload: true,
       dtdvalid: true,
       nonet: true,
     })
-
-    const expectedFiles = ['manuscript.xml']
-    const zipFiles: Array<string> = []
-    zip.forEach((path) => {
-      zipFiles.push(path)
-    })
-
-    expect(zipFiles).toStrictEqual(expectedFiles)
 
     expect(doc.errors.length).toBe(0)
 
