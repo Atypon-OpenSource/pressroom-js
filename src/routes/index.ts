@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import swaggerUi from 'swagger-ui-express'
 
+import { isStatusCoded } from '../lib/errors'
 import { swaggerSpec } from '../lib/swagger-spec'
 import { buildInteractiveAssetDO } from './build-interactive-do'
 import { buildSubmissionBundle } from './build-submission-bundle'
@@ -89,3 +90,13 @@ export const routes = Router()
 
   // OpenAPI description for machines
   .get('/docs.json', (req, res) => res.json(swaggerSpec))
+
+  // middleware for errors to wrap status coded errors
+  .use((error: Error, _req: Request, res: Response, next: NextFunction) => {
+    if (isStatusCoded(error)) {
+      res
+        .status(error.statusCode)
+        .json({ error: JSON.stringify(error), message: error.message })
+    }
+    next(error)
+  })

@@ -48,4 +48,28 @@ describe('export HTML', () => {
 
     // TODO: validate the HTML?
   })
+
+  test('Failure in auto-generation of HTML preview', async () => {
+    const { app } = await import('../../app')
+    const htmlHelpers = await import('../../lib/create-html')
+
+    const createHTMLMock = jest.spyOn(htmlHelpers, 'createHTML')
+    createHTMLMock.mockImplementation(() => {
+      throw new Error()
+    })
+
+    const response = await request(app)
+      .post('/api/v2/export/html')
+      .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
+      .field(
+        'manuscriptID',
+        'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
+      )
+      .set('pressroom-api-key', config.api_key)
+
+    expect(response.status).toBe(500)
+    expect(JSON.parse(response.body.error).internalErrorCode).toBe(
+      'PREVIEW_HTML_GENERATION_FAILED'
+    )
+  })
 })

@@ -39,4 +39,28 @@ describe('export EPUB', () => {
 
     // expect(response.get('Content-Length')).toBe('10132')
   })
+
+  test('Failure in auto-generation of ePub preview', async () => {
+    const { app } = await import('../../app')
+    const EpubHelpers = await import('../../lib/create-epub')
+
+    const createHTMLMock = jest.spyOn(EpubHelpers, 'createEpub')
+    createHTMLMock.mockImplementation(() => {
+      throw new Error()
+    })
+
+    const response = await request(app)
+      .post('/api/v2/export/epub')
+      .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
+      .field(
+        'manuscriptID',
+        'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
+      )
+      .set('pressroom-api-key', config.api_key)
+
+    expect(response.status).toBe(500)
+    expect(JSON.parse(response.body.error).internalErrorCode).toBe(
+      'PREVIEW_EPUB_GENERATION_FAILED'
+    )
+  })
 })

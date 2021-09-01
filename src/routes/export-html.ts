@@ -21,6 +21,7 @@ import fs from 'fs-extra'
 import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createHTML } from '../lib/create-html'
+import { HTMLPreviewError } from '../lib/errors'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createHTMLArchivePathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
@@ -95,14 +96,18 @@ export const exportHtml = Router().post(
     // prepare the output archive
     const archive = archiver.create('zip')
 
-    // create HTML
-    const html = await createHTML(article.content, modelMap, {
-      mediaPathGenerator: createHTMLArchivePathGenerator(dir, archive),
-    })
+    try {
+      // create HTML
+      const html = await createHTML(article.content, modelMap, {
+        mediaPathGenerator: createHTMLArchivePathGenerator(dir, archive),
+      })
 
-    archive.append(html, { name: 'manuscript.html' })
+      archive.append(html, { name: 'manuscript.html' })
 
-    archive.finalize()
+      archive.finalize()
+    } catch (e) {
+      throw new HTMLPreviewError('HTML generation failed')
+    }
 
     sendArchive(res, archive)
   })

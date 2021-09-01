@@ -20,6 +20,7 @@ import fs from 'fs-extra'
 import createHttpError from 'http-errors'
 
 import { authentication } from '../lib/authentication'
+import { ManuscriptValidateError } from '../lib/errors'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -107,7 +108,9 @@ export const validateManuscript = Router().post(
       if (e instanceof InputError) {
         throw createHttpError(400, e.message)
       } else {
-        throw e
+        throw new ManuscriptValidateError(
+          `Failed to generate quality report: ${e}.`
+        )
       }
     }
   })

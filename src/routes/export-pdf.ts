@@ -25,6 +25,7 @@ import { createJATSXML } from '../lib/create-jats-xml'
 import { createPDF, PDFEngine } from '../lib/create-pdf'
 import { XLINK_NAMESPACE } from '../lib/data'
 import { emailAuthorization } from '../lib/email-authorization'
+import { PDFPreviewError } from '../lib/errors'
 import { findCSL } from '../lib/find-csl'
 import { filterJATSResult } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
@@ -165,7 +166,7 @@ export const exportPDF = Router().post(
         )
       } catch (e) {
         logger.error(e)
-        throw new Error('Conversion failed when exporting to PDF')
+        throw new PDFPreviewError('Conversion failed when exporting to PDF')
       }
     }
 

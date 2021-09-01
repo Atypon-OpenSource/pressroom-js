@@ -13,24 +13,81 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export class CustomError extends Error {
-  __proto__: Error
-  status?: number
-  errorCode?: number
 
-  constructor(message?: string, status?: number, errorCode?: number) {
-    //see https://github.com/Microsoft/TypeScript/issues/13965
-    const protoChain = new.target.prototype
+/** An error-like object that has a code. Used amongst error types to describe those error types that have their own natural HTTP status code. */
+export interface StatusCoded {
+  readonly statusCode: number
+  readonly name: string
+  readonly message: string
+  readonly internalErrorCode: InternalErrorCode
+}
+
+export function isStatusCoded(err: Error): err is StatusCoded {
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  const statusCode = (err as any).statusCode
+  if (typeof statusCode !== 'number') {
+    return false
+  }
+
+  // we could be stricter, but let's assume
+  // 4xx and 5xx are HTTP status code -like enough.
+  return statusCode >= 400 && statusCode <= 599
+}
+
+export class HTMLPreviewError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.HTMLPreviewError
+  readonly statusCode = 500
+  constructor(message: string) {
     super(message)
-    this.status = status
-    this.errorCode = errorCode
-
-    this.__proto__ = protoChain
+    this.name = 'HTMLPreviewError'
+    Object.setPrototypeOf(this, new.target.prototype)
   }
 }
 
-export class BadRequestError extends CustomError {
-  constructor(message?: string) {
-    super(message, 400)
+export class PDFPreviewError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.PDFPreviewError
+  readonly statusCode = 500
+  constructor(message: string) {
+    super(message)
+    this.name = 'PDFPreviewError'
+    Object.setPrototypeOf(this, new.target.prototype)
   }
+}
+
+export class PDFTemplateMissingError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.PDFTemplateMissingError
+  readonly statusCode = 500
+  constructor(message: string) {
+    super(message)
+    this.name = 'PDFTemplateMissingError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
+export class EPubPreviewError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.EPubPreviewError
+  readonly statusCode = 500
+  constructor(message: string) {
+    super(message)
+    this.name = 'EPubPreviewError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
+export class ManuscriptValidateError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.ManuscriptValidateError
+  readonly statusCode = 500
+  constructor(message: string) {
+    super(message)
+    this.name = 'ManuscriptValidateError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
+enum InternalErrorCode {
+  HTMLPreviewError = 'PREVIEW_HTML_GENERATION_FAILED',
+  PDFPreviewError = 'PREVIEW_PDF_GENERATION_FAILED',
+  PDFTemplateMissingError = 'PREVIEW_PDF_TEMPLATE_MISSING',
+  EPubPreviewError = 'PREVIEW_EPUB_GENERATION_FAILED',
+  ManuscriptValidateError = 'MANUSCRIPT_CONTENT_PARSING_FAILED',
 }

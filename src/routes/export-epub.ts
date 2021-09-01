@@ -24,6 +24,7 @@ import { createArticle } from '../lib/create-article'
 import { createEpub } from '../lib/create-epub'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { XLINK_NAMESPACE } from '../lib/data'
+import { EPubPreviewError } from '../lib/errors'
 import { findCSL } from '../lib/find-csl'
 import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
@@ -123,7 +124,7 @@ export const exportEpub = Router().post(
       )
     } catch (e) {
       logger.error(e)
-      throw new Error('Conversion failed when exporting to EPUB')
+      throw new EPubPreviewError('Conversion failed when exporting to EPUB')
     }
 
     // send the file as an attachment
