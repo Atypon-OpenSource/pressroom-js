@@ -30,7 +30,7 @@ import { findCSL } from '../lib/find-csl'
 import { filterJATSResult } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
-import { creatPrincePDF } from '../lib/prince-html'
+import { createPrincePDF } from '../lib/prince-html'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { decompressManuscript } from '../lib/validate-manuscript-archive'
@@ -130,7 +130,7 @@ export const exportPDF = Router().post(
     )
 
     if (engine === 'prince-html') {
-      await creatPrincePDF(dir, data, manuscriptID, 'Data', theme)
+      await createPrincePDF(dir, data, manuscriptID, 'Data', theme)
     } else {
       // create XML
       const jats = await createJATSXML(

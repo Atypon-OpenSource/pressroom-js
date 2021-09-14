@@ -32,7 +32,7 @@ import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseSupplementaryDOIs } from '../lib/parseSupplementaryDOIs'
-import { creatPrincePDF } from '../lib/prince-html'
+import { createPrincePDF } from '../lib/prince-html'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -205,7 +205,13 @@ export const exportLiteratumBundle = Router().post(
       archive.append(jats, { name: `${articleID}.xml`, prefix })
     }
 
-    const pdfFile = await creatPrincePDF(dir, data, manuscriptID, theme)
+    const pdfFile = await createPrincePDF(
+      dir,
+      data,
+      manuscriptID,
+      undefined,
+      theme
+    )
 
     archive.append(fs.createReadStream(pdfFile), {
       name: `${articleID}.pdf`,

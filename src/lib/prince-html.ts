@@ -27,7 +27,7 @@ import {
 import { logger } from './logger'
 import { prince } from './prince'
 
-export const creatPrincePDF = async (
+export const createPrincePDF = async (
   dir: string,
   data: Array<ContainedModel>,
   manuscriptID: string,
