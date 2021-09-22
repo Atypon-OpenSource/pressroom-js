@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { RequestHandler } from 'express'
-import { parseXml } from 'libxmljs2'
+import libXML, { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
 jest.mock('express-jwt', () => (): RequestHandler => (req, res, next) => {
@@ -67,5 +67,43 @@ describe('export literatum JATS', () => {
         'http://jats.nlm.nih.gov/archiving/1.2/JATS-archive-oasis-article1-mathml3.dtd',
     })
     expect(xml).toMatchSnapshot()
+  })
+
+  test('DTD validation', async () => {
+    const parseXMLMock = jest.spyOn(libXML, 'parseXml')
+    // @ts-ignore
+    parseXMLMock.mockImplementation(() => {
+      return { errors: ['Invalid DTD'] }
+    })
+
+    const { app } = await import('../../app')
+
+    const response = await request(app)
+      .post('/api/v2/export/literatum-jats')
+      .attach('file', __dirname + '/__fixtures__/external-files.manuproj')
+      .field(
+        'manuscriptID',
+        'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
+      )
+      .field('doi', '10.1234/567')
+      .field('frontMatterOnly', false)
+      .field(
+        'supplementaryMaterialDOIs',
+        JSON.stringify([
+          {
+            url:
+              'https://siam-x5432.ciplit.com/action/leanworkflowDownloadAttachment?id=6db76bde-4cde-4579-b012-24dead961adb&name=html-asset.zip',
+            doi: '10.1000/xyz123',
+          },
+        ])
+      )
+      .responseType('blob')
+
+    parseXMLMock.mockRestore()
+
+    expect(response.status).toBe(500)
+    expect(JSON.parse(response.body.toString()).message).toStrictEqual(
+      'Invalid DTD'
+    )
   })
 })

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import { ContainedModel } from '@manuscripts/manuscript-transform'
+import createHttpError from 'http-errors'
+import { parseXml } from 'libxmljs2'
 
 import { createArticle } from './create-article'
 import { createJATSXML } from './create-jats-xml'
@@ -45,10 +47,23 @@ export const createLiteratumJats = async (
     data
   )
 
-  return await exportExternalFiles(
+  const jats = await exportExternalFiles(
     parsedJATS,
     figuresMap,
     externalFilesMap,
     supplementaryDOI
   )
+
+  // Validate against JATS DTD for early error detection
+  const { errors } = parseXml(new XMLSerializer().serializeToString(jats), {
+    dtdload: true,
+    dtdvalid: true,
+    nonet: true,
+  })
+
+  if (errors.length) {
+    throw createHttpError(500, errors.toString())
+  }
+
+  return jats
 }
