@@ -27,6 +27,21 @@ import {
 import { logger } from './logger'
 import { prince } from './prince'
 
+const insertFootnotesInline = (doc: Document) => {
+  const inlineFootnotes = doc.querySelectorAll('span.footnote')
+  inlineFootnotes.forEach((fn) => {
+    const rid = fn.getAttribute('data-reference-id')
+    const footnote = doc.getElementById('#' + rid)
+    if (footnote) {
+      const inlineContent = document.createElement('span')
+      inlineContent.classList.add('fn')
+      inlineContent.innerHTML = footnote.innerHTML
+      fn.replaceWith(inlineContent)
+    }
+  })
+  return doc
+}
+
 export const createPrincePDF = async (
   dir: string,
   data: Array<ContainedModel>,
@@ -59,9 +74,11 @@ export const createPrincePDF = async (
     externalFilesMap
   )
 
+  const HTMLDocWithFootnotes = insertFootnotesInline(HTMLDoc)
+
   await fs.writeFile(
     dir + '/manuscript.html',
-    new XMLSerializer().serializeToString(HTMLDoc)
+    new XMLSerializer().serializeToString(HTMLDocWithFootnotes)
   )
 
   const options: {
