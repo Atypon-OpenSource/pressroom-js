@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import path from 'path'
 import builder from 'xmlbuilder'
 
-const replaceReferences = (
+export const replaceReferences = (
   doc: Document,
   files: Map<string, string>
 ): string => {
@@ -52,43 +51,28 @@ interface FileGroup {
   'mets:file': FileItem[]
 }
 
-const buildFileGroups = (
-  files: Map<string, string>,
-  featuredImageID?: string
-): FileGroup[] => {
+export const buildFileGroups = (): FileGroup[] => {
   const fileGroups: { [key: string]: FileGroup } = {
-    media: {
-      '@ID': 'body-group',
-      'mets:file': [],
-    },
-    featureImage: {
-      '@ID': 'featureImage-group',
+    embedHTML: {
+      '@ID': 'embedHTML-group',
       'mets:file': [],
     },
   }
 
-  for (const [id, src] of files.entries()) {
-    const item: FileItem = {
-      '@ID': path.parse(id).name,
-      'mets:FLocat': {
-        '@LOCTYPE': 'URL',
-        '@xlink:href': `file://${src}`,
-      },
-    }
-
-    if (featuredImageID && id === featuredImageID) {
-      fileGroups.featureImage['mets:file'].push(item)
-    } else {
-      fileGroups.media['mets:file'].push(item)
-    }
+  const item: FileItem = {
+    '@ID': 'embedHTML-interactive.zip',
+    'mets:FLocat': {
+      '@LOCTYPE': 'URL',
+      '@xlink:href': `file://interactive.zip`,
+    },
   }
+
+  fileGroups.embedHTML['mets:file'].push(item)
 
   return Object.values(fileGroups)
 }
 
 export const buildContainer = ({
-  content,
-  files,
   doType,
   baseDoi,
   doi,
@@ -96,8 +80,6 @@ export const buildContainer = ({
   embedWidth,
   embedHeight,
 }: {
-  content: Document
-  files: Map<string, string>
   doType: string
   baseDoi: string
   doi: string
@@ -105,8 +87,6 @@ export const buildContainer = ({
   embedWidth: string
   embedHeight: string
 }): string => {
-  const html = replaceReferences(content, files)
-
   // eslint-disable-next-line @typescript-eslint/ban-types
   const mods: { [key: string]: string | object | undefined } = {
     '@xmlns:mods': 'http://www.loc.gov/mods/v3',
@@ -127,7 +107,7 @@ export const buildContainer = ({
         '@xmlns:atpn': 'http://www.atypon.com/digital-objects',
         '@xsi:schemaLocation':
           'http://www.atypon.com/digital-objects http://www.atypon.com/digital-objects/digital-objects.xsd',
-        'atpn:embedHTML': { '#cdata': html },
+        // 'atpn:embedHTML': { '#cdata': html },
         'atpn:baseDoi': baseDoi,
         'atpn:embedWidth': embedWidth,
         'atpn:embedHeight': embedHeight,
@@ -156,7 +136,7 @@ export const buildContainer = ({
       },
       'mets:fileSec': {
         '@xmlns:mets': 'http://www.loc.gov/METS/',
-        'mets:fileGrp': buildFileGroups(files),
+        'mets:fileGrp': buildFileGroups(),
       },
       'mets:structMap': {
         'mets:div': {},

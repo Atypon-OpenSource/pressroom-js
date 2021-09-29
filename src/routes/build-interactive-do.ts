@@ -21,7 +21,7 @@ import createHttpError from 'http-errors'
 import path from 'path'
 
 import { authentication } from '../lib/authentication'
-import { buildContainer } from '../lib/create-html-mets'
+import { buildContainer, replaceReferences } from '../lib/create-html-mets'
 import { processElements } from '../lib/data'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
@@ -109,7 +109,7 @@ export const buildInteractiveAssetDO = Router().post(
 
     // prepare the output archive
     const archive = archiver.create('zip')
-
+    const interactiveArchive = archiver.create('zip')
     const files = new Map<string, string>()
 
     const appendExternalResources = async (element: Element) => {
@@ -121,22 +121,32 @@ export const buildInteractiveAssetDO = Router().post(
           logger.debug(`Missing file ${src}`)
           return
         }
-        archive.append(fs.createReadStream(filePath), {
-          name: parts.base,
-          prefix: `${id}/Data/`, // different dir?
-        })
 
-        files.set(src, `${id}/Data/${parts.base}`)
+        interactiveArchive.append(fs.createReadStream(filePath), {
+          name: parts.base,
+        })
+        files.set(src, `${id}/${parts.base}`)
       }
     }
     await processElements(content, `//img`, appendExternalResources)
     await processElements(content, `//link`, appendExternalResources)
     await processElements(content, `//script`, appendExternalResources)
 
+    const html = replaceReferences(content, files)
+    fs.writeFileSync(dir + '/index.html', html)
+    interactiveArchive.append(fs.createReadStream(dir + '/index.html'), {
+      name: 'index.html',
+    })
+
+    interactiveArchive.finalize()
+
+    archive.append(interactiveArchive, {
+      name: 'interactive.zip',
+      prefix: `${id}/`,
+    })
+
     // output METS XML (containing MODS metadata, content HTML and file map) in meta folder
     const mets = buildContainer({
-      content,
-      files,
       baseDoi,
       embedWidth,
       embedHeight,

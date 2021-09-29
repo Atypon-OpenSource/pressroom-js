@@ -40,13 +40,8 @@ describe('build interactive asset DO', () => {
     )
 
     const zip = await new JSZip().loadAsync(response.body)
-    expect(Object.keys(zip.files).length).toBe(4)
-    const expectedFiles = [
-      '567/Data/manuscript-Image001.jpg',
-      '567/Data/test.css',
-      '567/Data/test.js',
-      '567/meta/567.xml',
-    ]
+    expect(Object.keys(zip.files).length).toBe(2)
+    const expectedFiles = ['567/interactive.zip', '567/meta/567.xml']
     const zipFiles: Array<string> = []
     zip.forEach((path) => {
       zipFiles.push(path)
