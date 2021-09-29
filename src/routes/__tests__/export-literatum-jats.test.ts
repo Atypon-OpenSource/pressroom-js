@@ -72,8 +72,11 @@ describe('export literatum JATS', () => {
   test('DTD validation', async () => {
     const parseXMLMock = jest.spyOn(libXML, 'parseXml')
     // @ts-ignore
-    parseXMLMock.mockImplementation(() => {
-      return { errors: ['Invalid DTD'] }
+    parseXMLMock.mockImplementation((document: string, options) => {
+      const result = parseXml(document, options)
+      // @ts-ignore
+      result.errors = ['Invalid DTD']
+      return result
     })
 
     const { app } = await import('../../app')
