@@ -1352,14 +1352,14 @@
     uuid "^8.2.0"
     w3c-xmlserializer "^2.0.0"
 
-"@manuscripts/manuscript-transform@^0.47.6":
-  version "0.47.6"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.47.6.tgz#5ec172fbbb89a536941226f64f243c09d3455569"
-  integrity sha512-nE3GZ+QvecS7UQ9OefHq3eZkzfTLLLTtXiGAklA2AbpOqhucV64fxxBfKCC+Vg9yLEN7yExMw8q1QoSpQUxm9w==
+"@manuscripts/manuscript-transform@^0.48.0":
+  version "0.48.0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.48.0.tgz#7851f39ad4ac4b7e8ef71b542729218454ab4c8f"
+  integrity sha512-PjLzwavW4C2uIsAhLQKcnJ9G55sQ+hTsDGIO4xOWC5f6GcW0lroqTsWwXrekrwHrHYE5EfUd6C7tvkb60/CGBA==
   dependencies:
     "@manuscripts/data" "^0.1.3"
     "@manuscripts/library" "^0.6.2"
-    "@manuscripts/manuscripts-json-schema" "^1.48.2"
+    "@manuscripts/manuscripts-json-schema" "^1.48.8"
     debug "^4.1.1"
     lodash.pickby "^4.6.0"
     mathjax-full "^3.1.2"
@@ -1391,19 +1391,19 @@
     deepmerge "^3.2.0"
     js-beautify "^1.9.0"
 
-"@manuscripts/manuscripts-json-schema@^1.48.2":
-  version "1.48.8"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.48.8.tgz#12b2196c32eeaa8af674b06fc758180539c6cd67"
-  integrity sha512-vzR157D3Y3rLeQvuhN64Etz+YiJCyH3kxcf4EUZl3o6byYl91oi+OpTVyB8QjCG0wkndZjuGpXHFF7luJGn3nw==
+"@manuscripts/manuscripts-json-schema@^1.48.6":
+  version "1.48.6"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.48.6.tgz#0cd9e8c133a9c2b19dc7a1d967a1d365ab727a99"
+  integrity sha512-HhyFS3+s717r0Uq6namehVgDKL+h5Vs0DgA7KbBUEpW307dnhyNR0jHFurYODIYci1wqdvP7XvGfO2TB7AJrsA==
   dependencies:
     ajv "^6.10.0"
     deepmerge "^3.2.0"
     js-beautify "^1.9.0"
 
-"@manuscripts/manuscripts-json-schema@^1.48.6":
-  version "1.48.6"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.48.6.tgz#0cd9e8c133a9c2b19dc7a1d967a1d365ab727a99"
-  integrity sha512-HhyFS3+s717r0Uq6namehVgDKL+h5Vs0DgA7KbBUEpW307dnhyNR0jHFurYODIYci1wqdvP7XvGfO2TB7AJrsA==
+"@manuscripts/manuscripts-json-schema@^1.48.8":
+  version "1.48.16"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.48.16.tgz#f5a2882281638b1aeb313c7dc636d8da2405aaf6"
+  integrity sha512-QlG/buIWuYJcAepacd1IOIqfWF6bcACQJ5S0xnnNnCdjv6AvrClf9EW7+yDhui9iRGzyO4vWhS/a/hvM845c8g==
   dependencies:
     ajv "^6.10.0"
     deepmerge "^3.2.0"
