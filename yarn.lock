@@ -1352,10 +1352,10 @@
     uuid "^8.2.0"
     w3c-xmlserializer "^2.0.0"
 
-"@manuscripts/manuscript-transform@^0.48.3":
-  version "0.48.3"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.48.3.tgz#7f65491c41bebe2a1700a310c3d682e635694f1a"
-  integrity sha512-56eh4CpOdhYB9zM2Mjq8aXdKjeWS6pwjZBMllrBf4gIFHr0hxdjkf48IbNf3ayLhazxcCJSUZCwTF6PG9yWbXQ==
+"@manuscripts/manuscript-transform@^0.48.4":
+  version "0.48.4"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.48.4.tgz#85a69ba5c0453a77d9a940de638abfe5f07dc0d7"
+  integrity sha512-5Am4+P3Z1UaCIkraHJgQjV/qWK1lmeLZfxTjGv9ufAc9tDQofCqXIWLtf2LRM/z3WzLPU++9/3kXyCtBKwVE8A==
   dependencies:
     "@manuscripts/data" "^0.1.3"
     "@manuscripts/library" "^0.6.2"

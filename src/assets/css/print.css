@@ -17,27 +17,27 @@
 }
 
 h1 {
-  prince-bookmark-level: 1
+  prince-bookmark-level: 1;
 }
 
 h2 {
-  prince-bookmark-level: 2
+  prince-bookmark-level: 2;
 }
 
 h3 {
-  prince-bookmark-level: 3
+  prince-bookmark-level: 3;
 }
 
 h4 {
-  prince-bookmark-level: 4
+  prince-bookmark-level: 4;
 }
 
 h5 {
-  prince-bookmark-level: 5
+  prince-bookmark-level: 5;
 }
 
 h6 {
-  prince-bookmark-level: 6
+  prince-bookmark-level: 6;
 }
 
 html {
@@ -47,7 +47,7 @@ html {
 }
 
 body {
-  font-family: "Helvetica Neue", "Helvetica", sans-serif;
+  font-family: 'Helvetica Neue', 'Helvetica', sans-serif;
   font-size: 10pt !important;
   background: none;
   line-height: 1.1;
@@ -116,7 +116,6 @@ section > section > section > section > section > section > h1 {
   font-size: 1em;
 }
 
-
 p {
   orphans: 3;
   widows: 3;
@@ -131,11 +130,12 @@ a[href]:after {
   content: none !important;
 }
 
-sup, sub {
+sup,
+sub {
   line-height: 0;
 }
 
-[position="float"] {
+[position='float'] {
   clear: none;
 }
 
@@ -166,15 +166,15 @@ figure .figure-title {
   display: inline;
 }
 
-
 figcaption {
   text-align: left;
   padding: 1em 0;
   font-size: 90%;
 }
 
-figcaption p, caption p {
-  font-family: "Helvetica Neue", "Helvetica", sans-serif;
+figcaption p,
+caption p {
+  font-family: 'Helvetica Neue', 'Helvetica', sans-serif;
 }
 
 caption {
@@ -191,7 +191,7 @@ table {
   margin-top: 10pt;
 }
 
-figure[data-size-fraction="2"] table {
+figure[data-size-fraction='2'] table {
   margin-left: -110pt !important;
 }
 
@@ -211,31 +211,32 @@ tbody tr:last-of-type td {
   border-bottom: 1px solid #000;
 }
 
-td, th {
+td,
+th {
   padding: 2px 5px;
 }
 
 table {
   page-break-inside: auto;
-  page-break-after: auto
+  page-break-after: auto;
 }
 
 tr {
   page-break-inside: avoid;
-  page-break-after: auto
+  page-break-after: auto;
 }
 
 td {
   page-break-inside: avoid;
-  page-break-after: auto
+  page-break-after: auto;
 }
 
 thead {
-  display: table-header-group
+  display: table-header-group;
 }
 
 tfoot {
-  display: table-footer-group
+  display: table-footer-group;
 }
 
 .label {
@@ -268,7 +269,7 @@ tfoot {
 }
 
 .contrib-group > span:not(:last-of-type):after {
-  content: ", "
+  content: ', ';
 }
 
 .affiliations-list {
@@ -307,3 +308,17 @@ tfoot {
   text-align: left;
 }
 
+.footnote {
+  float: footnote;
+}
+
+p {
+  prince-footnote-policy: keep-with-line;
+}
+
+@page {
+  @footnotes {
+    border-top: solid black thin;
+    padding-top: 8pt;
+  }
+}

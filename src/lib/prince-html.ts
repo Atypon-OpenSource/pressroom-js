@@ -31,12 +31,12 @@ const insertFootnotesInline = (doc: Document) => {
   const inlineFootnotes = doc.querySelectorAll('span.footnote')
   inlineFootnotes.forEach((fn) => {
     const rid = fn.getAttribute('data-reference-id')
-    const footnote = doc.getElementById('#' + rid)
-    if (footnote) {
-      const inlineContent = document.createElement('span')
-      inlineContent.classList.add('fn')
-      inlineContent.innerHTML = footnote.innerHTML
-      fn.replaceWith(inlineContent)
+    if (rid) {
+      const footnote = doc.getElementById(rid)
+      if (footnote) {
+        footnote.classList.add('footnote')
+        fn.replaceWith(footnote)
+      }
     }
   })
   return doc
