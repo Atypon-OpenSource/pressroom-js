@@ -1415,11 +1415,6 @@
     image-size "^0.9.1"
     uuid "^8.3.0"
 
-"@manuscripts/themes@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@manuscripts/themes/-/themes-0.1.3.tgz#e1fc3503a6fd34d6dfc8d69ad3c388d0b3f503ea"
-  integrity sha512-WyDF1nRdC4txXgTLNzX0azWRLcd7IrJmuYOD4yV/IwrrG9CaYIAopE30WKlWDl+JSArR8hOdZw+o70hg83HFyw==
-
 "@mapbox/node-pre-gyp@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@mapbox/node-pre-gyp/-/node-pre-gyp-1.0.5.tgz#2a0b32fcb416fb3f2250fd24cb2a81421a4f5950"

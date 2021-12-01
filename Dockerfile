@@ -16,7 +16,6 @@ WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/node_modules ./node_modules
-RUN cp -r node_modules/@manuscripts/themes/themes dist/assets/
 
 
 EXPOSE 5000
