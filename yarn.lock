@@ -1352,14 +1352,14 @@
     uuid "^8.2.0"
     w3c-xmlserializer "^2.0.0"
 
-"@manuscripts/manuscript-transform@^0.48.9":
-  version "0.48.9"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.48.9.tgz#1db65e7899a7f1080d9399f62d327ffe5e2e2946"
-  integrity sha512-NF2pZMDLui+BOQhjtDUz1ohQBxDG2DZD3pfomsw6VVTZkGK108B7IYZAsaj9c4U+35JGiYOfZSCYVXgQjys1Uw==
+"@manuscripts/manuscript-transform@^0.48.10":
+  version "0.48.10"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.48.10.tgz#30bb135c6ce3d55b712a0e7a7198ff72b909d999"
+  integrity sha512-kRiIBSsL9eWSXUR/Aixag5AyyPPPBhu+LvNjGC5RNT3nW6UztMCmjDn0/PusyCkmmvbkJmbZQbamRrDU+aLCKQ==
   dependencies:
     "@manuscripts/data" "^0.1.3"
     "@manuscripts/library" "^0.6.2"
-    "@manuscripts/manuscripts-json-schema" "^1.49.4"
+    "@manuscripts/manuscripts-json-schema" "^1.49.5"
     debug "^4.1.1"
     mathjax-full "^3.1.2"
     mime "^2.4.6"
@@ -1367,10 +1367,10 @@
     uuid "^8.2.0"
     w3c-xmlserializer "^2.0.0"
 
-"@manuscripts/manuscripts-json-schema-utils@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema-utils/-/manuscripts-json-schema-utils-0.0.3.tgz#a74c8752a5606c98f7722657efe6526d2aeac945"
-  integrity sha512-5raPRw5Wc/n6SvvraIXs/HN2V7jydivGm0mpQbubmvpgkc0fBkA3nJMkS7+n22aLBq/QGPcjntssTSZxylLGcQ==
+"@manuscripts/manuscripts-json-schema-utils@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema-utils/-/manuscripts-json-schema-utils-0.2.5.tgz#7c8c59ae3100e5fcd8f6a29eabf1f687878c5b5b"
+  integrity sha512-5XVYiJjWMGwyjmi/q3+fMc5+l2KpzRjyOLF/D+t21g+vXo9LWNmlgjuvW/vV++I8gR9YgoBBnm33VaY/fd76Tg==
 
 "@manuscripts/manuscripts-json-schema@^1.46.7":
   version "1.46.8"
@@ -1390,10 +1390,10 @@
     deepmerge "^3.2.0"
     js-beautify "^1.9.0"
 
-"@manuscripts/manuscripts-json-schema@^1.49.4":
-  version "1.49.4"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.49.4.tgz#be16ce2ddf0d84311c5b099115f5416f2a17e9b3"
-  integrity sha512-Upau9kpGqV4IgXHHpLVxncNRJxRUXK7LUyuuIbr9mwKTr2URE1rRTecjyKwy5w/Nvdw4indEzk875W0dWa5Kuw==
+"@manuscripts/manuscripts-json-schema@^1.49.5":
+  version "1.49.5"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema/-/manuscripts-json-schema-1.49.5.tgz#7f709e828976c777857c0ea203653f9e17ff4215"
+  integrity sha512-nTsoinb22rashxoGiaESbNepvfpvcXJSl6TS7SEAitoNTvBTfZ0OaSvl0rrMdh16TwLxJ6YJc5oDhs3lPt44tg==
   dependencies:
     ajv "^6.10.0"
     deepmerge "^3.2.0"

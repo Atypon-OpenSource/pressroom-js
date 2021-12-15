@@ -40,7 +40,7 @@ describe('import jats arc', () => {
     const json = await zip.files['index.manuscript-json'].async('text')
     const { data } = JSON.parse(json)
 
-    expect(data).toHaveLength(32)
+    expect(data).toHaveLength(33)
   })
 
   test('imports JATS output from eXtyles Arc with bundled data', async () => {
@@ -65,6 +65,6 @@ describe('import jats arc', () => {
     const json = await zip.files['index.manuscript-json'].async('text')
     const { data } = JSON.parse(json)
 
-    expect(data).toHaveLength(97)
+    expect(data).toHaveLength(98)
   })
 })
