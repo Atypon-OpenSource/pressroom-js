@@ -33,9 +33,12 @@ const insertFootnotesInline = (doc: Document) => {
     const rid = fn.getAttribute('data-reference-id')
     if (rid) {
       const footnote = doc.getElementById(rid)
+      const inlineFootnote = doc.createElement('span')
+
       if (footnote) {
-        footnote.classList.add('footnote')
-        fn.replaceWith(footnote)
+        inlineFootnote.classList.add('footnote')
+        inlineFootnote.textContent = footnote.textContent
+        fn.replaceWith(inlineFootnote)
       }
     }
   })
