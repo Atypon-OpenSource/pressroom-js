@@ -86,20 +86,25 @@ export const exportJats = Router().post(
     },
   }),
   wrapAsync(async (req, res) => {
-    const { manuscriptID, version, allowMissingElements } = req.body as {
+    const {
+      manuscriptID,
+      version,
+      allowMissingElements,
+      generateSectionLabels,
+    } = req.body as {
       manuscriptID: string
       version?: Version
       allowMissingElements: boolean
+      generateSectionLabels: boolean
     }
 
     const dir = req.tempDir
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const { article, modelMap } = createArticle(
-      data,
-      manuscriptID,
-      allowMissingElements
-    )
+    const { article, modelMap } = createArticle(data, manuscriptID, {
+      allowMissingElements,
+      generateSectionLabels,
+    })
 
     // prepare the output archive
     const archive = archiver.create('zip')

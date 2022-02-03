@@ -108,6 +108,7 @@ export const exportLiteratumEEO = Router().post(
       notificationURL,
       allowMissingElements,
       async,
+      generateSectionLabels,
     } = req.body as {
       deposit: boolean
       doi: string
@@ -117,6 +118,7 @@ export const exportLiteratumEEO = Router().post(
       notificationURL: string
       allowMissingElements: boolean
       async: boolean
+      generateSectionLabels: boolean
     }
 
     // unzip the input
@@ -124,11 +126,10 @@ export const exportLiteratumEEO = Router().post(
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const { article, modelMap } = createArticle(
-      data,
-      manuscriptID,
-      allowMissingElements
-    )
+    const { article, modelMap } = createArticle(data, manuscriptID, {
+      allowMissingElements,
+      generateSectionLabels,
+    })
 
     // create XML
     const jats = await createJATSXML(article.content, modelMap, manuscriptID, {

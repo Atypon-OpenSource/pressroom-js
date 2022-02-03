@@ -16,15 +16,20 @@
 import {
   ContainedModel,
   Decoder,
+  hasObjectType,
   ManuscriptNode,
   MissingElement,
 } from '@manuscripts/manuscript-transform'
+import { ObjectTypes, Section } from '@manuscripts/manuscripts-json-schema'
 import createHttpError from 'http-errors'
 
 export const createArticle = (
   data: ContainedModel[],
   manuscriptID: string,
-  allowMissingElements = false
+  options: {
+    allowMissingElements: boolean
+    generateSectionLabels: boolean
+  } = { allowMissingElements: false, generateSectionLabels: true }
 ): {
   article: ManuscriptNode
   decoder: Decoder
@@ -39,8 +44,15 @@ export const createArticle = (
   const modelMap = new Map<string, ContainedModel>(
     manuscriptModels.map((model) => [model._id, model])
   )
+  /* set generatedLabel for all sections to generateSectionLabels,
+   * if generateSectionLabels is not preset it will default to true */
+  data
+    .filter(hasObjectType<Section>(ObjectTypes.Section))
+    .forEach((section: Section) => {
+      section.generatedLabel = options.generateSectionLabels
+    })
 
-  const decoder = new Decoder(modelMap, allowMissingElements)
+  const decoder = new Decoder(modelMap, options.allowMissingElements)
   try {
     const article = decoder.createArticleNode(manuscriptID)
     return { article, decoder, modelMap, manuscriptModels }

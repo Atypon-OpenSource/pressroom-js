@@ -103,12 +103,14 @@ export const exportLiteratumDO = Router().post(
       doType,
       manuscriptID,
       allowMissingElements,
+      generateSectionLabels,
     } = req.body as {
       deposit?: boolean
       doType: string
       doi: string
       manuscriptID: string
       allowMissingElements: boolean
+      generateSectionLabels: boolean
     }
 
     const [, id] = doi.split('/', 2)
@@ -118,11 +120,10 @@ export const exportLiteratumDO = Router().post(
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const { article, modelMap } = createArticle(
-      data,
-      manuscriptID,
-      allowMissingElements
-    )
+    const { article, modelMap } = createArticle(data, manuscriptID, {
+      allowMissingElements,
+      generateSectionLabels,
+    })
 
     // prepare the output archive
     const archive = archiver.create('zip')

@@ -86,9 +86,14 @@ export const exportDocx = Router().post(
     },
   }),
   wrapAsync(async (req, res) => {
-    const { manuscriptID, allowMissingElements } = req.body as {
+    const {
+      manuscriptID,
+      allowMissingElements,
+      generateSectionLabels,
+    } = req.body as {
       manuscriptID: string
       allowMissingElements: boolean
+      generateSectionLabels: boolean
     }
 
     const dir = req.tempDir
@@ -96,11 +101,10 @@ export const exportDocx = Router().post(
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
     addNumberingToSections(data)
-    const { article, modelMap } = createArticle(
-      data,
-      manuscriptID,
-      allowMissingElements
-    )
+    const { article, modelMap } = createArticle(data, manuscriptID, {
+      allowMissingElements,
+      generateSectionLabels,
+    })
 
     // create XML
     const jats = await createJATSXML(article.content, modelMap, manuscriptID, {

@@ -96,11 +96,18 @@ export const exportPDF = Router().post(
     },
   }),
   wrapAsync(async (req, res) => {
-    const { manuscriptID, engine, theme, allowMissingElements } = req.body as {
+    const {
+      manuscriptID,
+      engine,
+      theme,
+      allowMissingElements,
+      generateSectionLabels,
+    } = req.body as {
       manuscriptID: string
       engine: PDFEngine | 'prince-html'
       theme?: string
       allowMissingElements: boolean
+      generateSectionLabels: boolean
     }
 
     // restrict access to Prince by email address
@@ -123,11 +130,10 @@ export const exportPDF = Router().post(
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const { article, modelMap } = createArticle(
-      data,
-      manuscriptID,
-      allowMissingElements
-    )
+    const { article, modelMap } = createArticle(data, manuscriptID, {
+      allowMissingElements,
+      generateSectionLabels,
+    })
 
     if (engine === 'prince-html') {
       await createPrincePDF(dir, data, manuscriptID, 'Data', theme)
