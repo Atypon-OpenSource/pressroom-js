@@ -52,6 +52,11 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  type: string
  *                allowMissingElements:
  *                  type: boolean
+ *                generateSectionLabels:
+ *                  type: boolean
+ *              required:
+ *                - file
+ *                - manuscriptID
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -75,6 +80,7 @@ export const exportHtml = Router().post(
     body: {
       manuscriptID: Joi.string().required(),
       allowMissingElements: Joi.boolean().empty('').default(false),
+      generateSectionLabels: Joi.boolean().empty(''),
     },
   }),
   wrapAsync(async (req, res) => {

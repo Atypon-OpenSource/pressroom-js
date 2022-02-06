@@ -62,6 +62,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  enum: ['prince-html', 'prince', 'weasyprint', 'xelatex', 'tectonic']
  *                theme:
  *                  type: string
+ *                generateSectionLabels:
+ *                  type: boolean
  *              required:
  *                - file
  *                - manuscriptID
@@ -93,6 +95,7 @@ export const exportPDF = Router().post(
         .default('xelatex'),
       theme: Joi.string().empty(''),
       allowMissingElements: Joi.boolean().empty('').default(false),
+      generateSectionLabels: Joi.boolean().empty(''),
     },
   }),
   wrapAsync(async (req, res) => {

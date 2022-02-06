@@ -67,6 +67,13 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  type: boolean
  *                deposit:
  *                  type: boolean
+ *                generateSectionLabels:
+ *                  type: boolean
+ *              required:
+ *                - file
+ *                - manuscriptID
+ *                - doType
+ *                - doi
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -94,6 +101,7 @@ export const exportLiteratumDO = Router().post(
       doi: Joi.string().required(),
       manuscriptID: Joi.string().required(),
       allowMissingElements: Joi.boolean().empty('').default(false),
+      generateSectionLabels: Joi.boolean().empty(''),
     },
   }),
   wrapAsync(async (req, res) => {

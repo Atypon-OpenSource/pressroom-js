@@ -56,6 +56,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  type: boolean
  *                version:
  *                  type: string
+ *                generateSectionLabels:
+ *                  type: boolean
  *              required:
  *                - file
  *                - manuscriptID
@@ -83,6 +85,7 @@ export const exportJats = Router().post(
       manuscriptID: Joi.string().required(),
       allowMissingElements: Joi.boolean().empty('').default(false),
       version: Joi.string().empty(''),
+      generateSectionLabels: Joi.boolean().empty(''),
     },
   }),
   wrapAsync(async (req, res) => {
