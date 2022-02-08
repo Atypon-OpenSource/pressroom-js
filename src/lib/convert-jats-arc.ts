@@ -27,10 +27,6 @@ import createHttpError from 'http-errors'
 
 import { createJSON } from './create-json'
 import { fixImageReferences } from './fix-jats-references'
-import {
-  markCommentsWithTokens,
-  replaceTokensWithHighlights,
-} from './jats-arc-comments'
 import { logger } from './logger'
 import { promiseHandler } from './utils'
 
@@ -47,7 +43,6 @@ export const convertJATSArc = async (
 
   const archive = archiver.create('zip')
   // parse the JATS XML and fix data references
-  const authorQueriesMap = markCommentsWithTokens(doc)
   const imageDirPath: string = dir + '/images'
   await fixImageReferences(imageDirPath, doc)
 
@@ -59,7 +54,6 @@ export const convertJATSArc = async (
     throw new Error(error)
   }
   const manuscriptModels = data as ContainedModel[]
-  replaceTokensWithHighlights(authorQueriesMap, manuscriptModels)
 
   // add bundled data if needed
   if (options.addBundledData) {
