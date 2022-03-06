@@ -22,8 +22,8 @@
   "dependencies": {
     "@iarna/word-count": "^1.1.2",
     "@manuscripts/data": "^0.1.2",
-    "@manuscripts/manuscript-transform": "^0.48.16",
-    "@manuscripts/manuscripts-json-schema": "^1.49.5",
+    "@manuscripts/manuscript-transform": "^0.48.17",
+    "@manuscripts/manuscripts-json-schema": "^1.49.6",
     "@manuscripts/manuscripts-json-schema-utils": "0.2.5",
     "@manuscripts/requirements": "^0.4.6",
     "@types/compose-function": "^0.0.30",
