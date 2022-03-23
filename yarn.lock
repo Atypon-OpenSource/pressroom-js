@@ -1352,10 +1352,10 @@
     uuid "^8.2.0"
     w3c-xmlserializer "^2.0.0"
 
-"@manuscripts/manuscript-transform@^0.48.19":
-  version "0.48.19"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.48.19.tgz#89b29e35d7d54d06376f143990abfea48f54867f"
-  integrity sha512-cEUfaSEuAnYPsMmE+cWk9UvytToSoOu25aHIf0qGzdhQBDbnyBOzKbgwvG1ohNG4heUKQJ/5Y2E7vajnNDsq6g==
+"@manuscripts/manuscript-transform@^0.48.20":
+  version "0.48.20"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscript-transform/-/manuscript-transform-0.48.20.tgz#382bc338a22dad998ab8233a4788d06a9252db1f"
+  integrity sha512-wyq/O+ja6fZIJOAWvuiXtm/gbeyCnmPfnCSTrlZ58OFKH6iZPIn8jatH4XZ8uRMAmsUd96o+Fl2I2GYV3/z9Ww==
   dependencies:
     "@manuscripts/data" "^0.1.3"
     "@manuscripts/library" "^0.6.2"
@@ -1367,10 +1367,10 @@
     uuid "^8.2.0"
     w3c-xmlserializer "^2.0.0"
 
-"@manuscripts/manuscripts-json-schema-utils@0.2.7":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema-utils/-/manuscripts-json-schema-utils-0.2.7.tgz#666a613c15758239720bdafc8a5d61215776b0d4"
-  integrity sha512-6T9u6ivPGanVi6uB2QSOc6V6G16Wxu0M+n33YhaUYSZ8UOvngfpxLO8IUCKtZ+3u1oxuYf4sD5Jpv67kosHU3A==
+"@manuscripts/manuscripts-json-schema-utils@0.2.8":
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@manuscripts/manuscripts-json-schema-utils/-/manuscripts-json-schema-utils-0.2.8.tgz#1161914497af0c257f54a3ab28b7d30ab189940c"
+  integrity sha512-yUyOk6O5gzEQbsGtkiCIJGAa6tiN7e7w3sXLPs+YBu+XdVlYEwiZxicdBtygnCOD2+tvS96TPFQJ8+smdGJHeQ==
 
 "@manuscripts/manuscripts-json-schema@^1.46.7":
   version "1.46.8"
