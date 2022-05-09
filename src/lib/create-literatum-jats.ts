@@ -20,13 +20,16 @@ import { parseXml } from 'libxmljs2'
 import { createArticle } from './create-article'
 import { createJATSXML } from './create-jats-xml'
 import {
-  exportExternalFiles,
-  generateFiguresWithExternalFiles,
+  AttachmentData,
+  exportAttachments,
+  generateAttachmentsMap,
+  generateFiguresMap,
 } from './external-files'
 
 export const createLiteratumJats = async (
   manuscriptID: string,
   data: Array<ContainedModel>,
+  attachments: Array<AttachmentData>,
   doi: string,
   supplementaryMaterialDOIs: Array<{ url: string; doi: string }>,
   frontMatterOnly: boolean
@@ -43,14 +46,13 @@ export const createLiteratumJats = async (
   const supplementaryDOI = new Map<string, string>(
     supplementaryMaterialDOIs.map((el) => [el.url, el.doi])
   )
-  const { figuresMap, externalFilesMap } = generateFiguresWithExternalFiles(
-    data
-  )
+  const figuresMap = generateFiguresMap(data)
+  const attachmentsMap = generateAttachmentsMap(attachments)
 
-  const jats = await exportExternalFiles(
+  const jats = await exportAttachments(
     parsedJATS,
     figuresMap,
-    externalFilesMap,
+    attachmentsMap,
     supplementaryDOI
   )
 

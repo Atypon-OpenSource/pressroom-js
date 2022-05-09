@@ -29,6 +29,23 @@ export type ExternalFilesData = {
   externalFilesMap: Map<string, ExternalFile>
 }
 
+export interface BasicAttachmentData {
+  url: string
+  name: string
+}
+
+export interface AttachmentData {
+  url: string
+  name: string
+  designation: string
+  description: string
+  MIME: string
+}
+
+export type FiguresAndAttachmentsData = {
+  figuresMap: Map<string, Figure>
+}
+
 export const generateFiguresWithExternalFiles = (
   data: Array<ContainedModel>
 ): ExternalFilesData => {
@@ -49,10 +66,34 @@ export const generateFiguresWithExternalFiles = (
   return { figuresMap, externalFilesMap }
 }
 
-export const exportExternalFiles = async (
+export const generateFiguresMap = (
+  data: Array<ContainedModel>
+): Map<string, Figure> => {
+  const figures = data.filter(
+    (el) => el.objectType == ObjectTypes.Figure
+  ) as Array<Figure>
+  const figuresMap = new Map<string, Figure>()
+  for (const figure of figures) {
+    figuresMap.set(figure._id, figure)
+  }
+  return figuresMap
+}
+
+export const generateAttachmentsMap = (
+  attachments: Array<AttachmentData>
+): Map<string, AttachmentData> => {
+  const attachmentsMap = new Map<string, AttachmentData>()
+  for (const attachment of attachments) {
+    attachmentsMap.set(attachment.url, attachment)
+  }
+
+  return attachmentsMap
+}
+
+export const exportAttachments = async (
   document: Document,
   figures: Map<string, Figure>,
-  externalFilesMap: Map<string, ExternalFile>,
+  attachmentsMap: Map<string, AttachmentData>,
   supplementaryDOI: Map<string, string>
 ): Promise<Document> => {
   const articleMeta = document.querySelector('article-meta')
@@ -72,14 +113,14 @@ export const exportExternalFiles = async (
           const interactiveHtml: Array<string> = []
           const downloadable: Array<string> = []
           figure.externalFileReferences.forEach(({ kind, url }) => {
-            const externalFile = externalFilesMap.get(url)
-            if (!externalFile) {
+            const attachment = attachmentsMap.get(url)
+            if (!attachment) {
               return
             }
             if (kind === 'imageRepresentation') {
-              const imageName = externalFile.filename
+              const imageName = attachment.name
               graphic.setAttributeNS(XLINK_NAMESPACE, 'href', imageName)
-            } else if (externalFile.designation === 'interactive-html') {
+            } else if (attachment.designation === 'interactive-html') {
               interactiveHtml.push(url)
             } else {
               downloadable.push(url)
@@ -90,10 +131,10 @@ export const exportExternalFiles = async (
             const caption = document.createElement('caption')
             caption.setAttribute('content-type', 'supplementary-material')
             downloadable.forEach((url) => {
-              const externalFile = externalFilesMap.get(url)
-              if (externalFile) {
+              const attachment = attachmentsMap.get(url)
+              if (attachment) {
                 const inlineSupplementary = createInlineSupplementaryMaterial(
-                  externalFile,
+                  attachment,
                   document
                 )
                 caption.appendChild(inlineSupplementary)
@@ -107,7 +148,7 @@ export const exportExternalFiles = async (
             const clone = graphic.cloneNode(true)
             alternatives.appendChild(clone)
             interactiveHtml.forEach((url) => {
-              const externalFile = externalFilesMap.get(url)
+              const externalFile = attachmentsMap.get(url)
               if (externalFile) {
                 const supplementary = createSupplementaryMaterial(
                   externalFile,
@@ -138,7 +179,7 @@ export const exportExternalFiles = async (
 export const replaceHTMLImgReferences = async (
   document: Document,
   figures: Map<string, Figure>,
-  externalFilesMap: Map<string, ExternalFile>
+  attachmentsMap: Map<string, AttachmentData>
 ): Promise<Document> => {
   for (const [, figure] of figures) {
     const name = figure._id.replace(':', '_')
@@ -151,9 +192,9 @@ export const replaceHTMLImgReferences = async (
             (el) => el.kind === 'imageRepresentation'
           )
           if (externalReference) {
-            const staticImage = externalFilesMap.get(externalReference.url)
+            const staticImage = attachmentsMap.get(externalReference.url)
             if (staticImage) {
-              const imageName = staticImage.filename
+              const imageName = staticImage.name
               const path = graphic.getAttribute('src')?.replace(name, imageName)
               if (path) {
                 graphic.setAttribute('src', path)
@@ -180,13 +221,13 @@ function buildObjectID(doi: string) {
 }
 
 const createInlineSupplementaryMaterial = (
-  externalFile: ExternalFile,
+  attachment: AttachmentData,
   document: Document
 ): Element => {
   const supplementaryMaterial = document.createElement(
     'inline-supplementary-material'
   )
-  setSupplementaryMaterialAttributes(supplementaryMaterial, externalFile)
+  setSupplementaryMaterialAttributes(supplementaryMaterial, attachment)
   const rootParagraph = document.createElement('p')
 
   rootParagraph.appendChild(supplementaryMaterial)
@@ -194,28 +235,28 @@ const createInlineSupplementaryMaterial = (
 }
 
 const createSupplementaryMaterial = (
-  externalFile: ExternalFile,
+  attachment: AttachmentData,
   document: Document
 ): Element => {
   const supplementaryMaterial = document.createElement('supplementary-material')
 
-  setSupplementaryMaterialAttributes(supplementaryMaterial, externalFile)
+  setSupplementaryMaterialAttributes(supplementaryMaterial, attachment)
   return supplementaryMaterial
 }
 
 const setSupplementaryMaterialAttributes = (
   supplementaryMaterial: Element,
-  externalFile: ExternalFile
+  attachment: AttachmentData
 ) => {
-  supplementaryMaterial.setAttribute('mimetype', externalFile.MIME)
+  supplementaryMaterial.setAttribute('mimetype', attachment.MIME)
   supplementaryMaterial.setAttributeNS(
     XLINK_NAMESPACE,
     'href',
-    `external/${externalFile.filename}`
+    `external/${attachment.name}`
   )
-  supplementaryMaterial.setAttribute('content-type', externalFile.designation)
-  if (externalFile.description) {
-    supplementaryMaterial.textContent = externalFile.description
+  supplementaryMaterial.setAttribute('content-type', attachment.designation)
+  if (attachment.description) {
+    supplementaryMaterial.textContent = attachment.description
   }
 }
 

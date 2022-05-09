@@ -21,7 +21,9 @@ import path from 'path'
 import { createArticle } from './create-article'
 import { createHTML } from './create-html'
 import {
-  generateFiguresWithExternalFiles,
+  AttachmentData,
+  generateAttachmentsMap,
+  generateFiguresMap,
   replaceHTMLImgReferences,
 } from './external-files'
 import { logger } from './logger'
@@ -50,6 +52,7 @@ export const createPrincePDF = async (
   data: Array<ContainedModel>,
   manuscriptID: string,
   imageDir = 'graphic',
+  attachments: Array<AttachmentData>,
   theme?: string
 ): Promise<string> => {
   const { article, modelMap } = createArticle(data, manuscriptID)
@@ -68,13 +71,12 @@ export const createPrincePDF = async (
     html,
     'application/xhtml+xml'
   )
-  const { figuresMap, externalFilesMap } = generateFiguresWithExternalFiles(
-    data
-  )
+  const figuresMap = generateFiguresMap(data)
+  const attachmentsMap = generateAttachmentsMap(attachments)
   const HTMLDoc = await replaceHTMLImgReferences(
     parsedHTML,
     figuresMap,
-    externalFilesMap
+    attachmentsMap
   )
 
   const HTMLDocWithFootnotes = insertFootnotesInline(HTMLDoc)

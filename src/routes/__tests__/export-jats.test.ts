@@ -26,10 +26,19 @@ describe('export JATS', () => {
 
     const response = await request(app)
       .post('/api/v2/export/jats')
-      .attach('file', __dirname + '/__fixtures__/external-files.manuproj')
+      .attach('file', __dirname + '/__fixtures__/attachment-ids.manuproj')
       .field(
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
+      )
+      .field(
+        'attachments',
+        JSON.stringify([
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961add',
+            name: 'figure 2.jpg',
+          },
+        ])
       )
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
@@ -81,6 +90,7 @@ describe('export JATS', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .field('attachments', JSON.stringify([]))
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
@@ -130,6 +140,7 @@ describe('export JATS', () => {
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
       .field('version', '1.1')
+      .field('attachments', JSON.stringify([]))
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
@@ -169,6 +180,7 @@ describe('export JATS', () => {
       .post('/api/v2/export/jats')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
       .field('manuscriptID', 'auto')
+      .field('attachments', JSON.stringify([]))
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 

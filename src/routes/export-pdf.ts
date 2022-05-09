@@ -26,10 +26,12 @@ import { createPDF, PDFEngine } from '../lib/create-pdf'
 import { XLINK_NAMESPACE } from '../lib/data'
 import { emailAuthorization } from '../lib/email-authorization'
 import { PDFPreviewError } from '../lib/errors'
+import { AttachmentData } from '../lib/external-files'
 import { findCSL } from '../lib/find-csl'
 import { filterJATSResult } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
+import { parseBodyProperty } from '../lib/parseBodyParams'
 import { createPrincePDF } from '../lib/prince-html'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -85,6 +87,7 @@ export const exportPDF = Router().post(
   upload.single('file'),
   createRequestDirectory,
   decompressManuscript,
+  parseBodyProperty('attachments'),
   chooseManuscriptID,
   celebrate({
     body: {
@@ -96,6 +99,15 @@ export const exportPDF = Router().post(
       theme: Joi.string().empty(''),
       allowMissingElements: Joi.boolean().empty('').default(false),
       generateSectionLabels: Joi.boolean().empty(''),
+      attachments: Joi.array()
+        .items({
+          designation: Joi.string().required(),
+          name: Joi.string().required(),
+          url: Joi.string().required(),
+          MIME: Joi.string().required(),
+          description: Joi.string(),
+        })
+        .required(),
     },
   }),
   wrapAsync(async (req, res) => {
@@ -105,12 +117,14 @@ export const exportPDF = Router().post(
       theme,
       allowMissingElements,
       generateSectionLabels,
+      attachments,
     } = req.body as {
       manuscriptID: string
       engine: PDFEngine | 'prince-html'
       theme?: string
       allowMissingElements: boolean
       generateSectionLabels: boolean
+      attachments: Array<AttachmentData>
     }
 
     // restrict access to Prince by email address
@@ -139,7 +153,7 @@ export const exportPDF = Router().post(
     })
 
     if (engine === 'prince-html') {
-      await createPrincePDF(dir, data, manuscriptID, 'Data', theme)
+      await createPrincePDF(dir, data, manuscriptID, 'Data', attachments, theme)
     } else {
       // create XML
       const jats = await createJATSXML(

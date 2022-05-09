@@ -22,10 +22,11 @@ import fs from 'fs-extra'
 import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
-import { generateFiguresWithExternalFiles } from '../lib/external-files'
+import { BasicAttachmentData, generateFiguresMap } from '../lib/external-files'
 import { createIdGenerator } from '../lib/id-generator'
 import { chooseManuscriptID } from '../lib/manuscript-id'
-import { createArchivePathGenerator } from '../lib/path-generator'
+import { parseBodyProperty } from '../lib/parseBodyParams'
+import { createAttachmentPathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -80,12 +81,19 @@ export const exportJats = Router().post(
   createRequestDirectory,
   decompressManuscript,
   chooseManuscriptID,
+  parseBodyProperty('attachments'),
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
       allowMissingElements: Joi.boolean().empty('').default(false),
       version: Joi.string().empty(''),
       generateSectionLabels: Joi.boolean().empty(''),
+      attachments: Joi.array()
+        .items({
+          name: Joi.string().required(),
+          url: Joi.string().required(),
+        })
+        .required(),
     },
   }),
   wrapAsync(async (req, res) => {
@@ -94,11 +102,13 @@ export const exportJats = Router().post(
       version,
       allowMissingElements,
       generateSectionLabels,
+      attachments,
     } = req.body as {
       manuscriptID: string
       version?: Version
       allowMissingElements: boolean
       generateSectionLabels: boolean
+      attachments: Array<BasicAttachmentData>
     }
 
     const dir = req.tempDir
@@ -111,15 +121,18 @@ export const exportJats = Router().post(
 
     // prepare the output archive
     const archive = archiver.create('zip')
-    const externalFiles = generateFiguresWithExternalFiles(data)
+    const figuresMap = generateFiguresMap(data)
+    const attachmentsMap = new Map<string, BasicAttachmentData>()
+    attachments.forEach((a) => attachmentsMap.set(a.url, a))
     // create JATS XML
     const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
       version,
       idGenerator: createIdGenerator(),
-      mediaPathGenerator: createArchivePathGenerator(
+      mediaPathGenerator: createAttachmentPathGenerator(
         dir,
         archive,
-        externalFiles,
+        figuresMap,
+        attachmentsMap,
         allowMissingElements
       ),
     })

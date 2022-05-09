@@ -27,11 +27,12 @@ import { processElements } from '../lib/data'
 import { depositFTPS } from '../lib/deposit-ftps'
 import { VALID_DOI_REGEX } from '../lib/doi'
 import { emailAuthorization } from '../lib/email-authorization'
+import { AttachmentData } from '../lib/external-files'
 import { convertJATSToWileyML } from '../lib/gaia'
 import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
-import { parseSupplementaryDOIs } from '../lib/parseSupplementaryDOIs'
+import { parseBodyProperty } from '../lib/parseBodyParams'
 import { createPrincePDF } from '../lib/prince-html'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -99,7 +100,8 @@ export const exportLiteratumBundle = Router().post(
   createRequestDirectory,
   decompressManuscript,
   chooseManuscriptID,
-  parseSupplementaryDOIs,
+  parseBodyProperty('supplementaryMaterialDOIs'),
+  parseBodyProperty('attachments'),
   celebrate({
     body: {
       deposit: Joi.boolean().empty(''),
@@ -118,6 +120,15 @@ export const exportLiteratumBundle = Router().post(
           doi: Joi.string().pattern(VALID_DOI_REGEX).required(),
         })
         .required(),
+      attachments: Joi.array()
+        .items({
+          designation: Joi.string().required(),
+          name: Joi.string().required(),
+          url: Joi.string().required(),
+          MIME: Joi.string().required(),
+          description: Joi.string(),
+        })
+        .required(),
     },
   }),
   wrapAsync(async (req, res) => {
@@ -132,6 +143,7 @@ export const exportLiteratumBundle = Router().post(
       xmlType = 'jats',
       theme,
       supplementaryMaterialDOIs,
+      attachments,
     } = req.body as {
       deposit: boolean
       doi: string
@@ -142,6 +154,7 @@ export const exportLiteratumBundle = Router().post(
       xmlType: XmlType
       theme?: string
       supplementaryMaterialDOIs: Array<{ url: string; doi: string }>
+      attachments: Array<AttachmentData>
     }
     const [, articleID] = doi.split('/', 2) // TODO: only article ID?
     const [, groupID] = groupDOI.split('/', 2) // TODO: only group ID?
@@ -158,6 +171,7 @@ export const exportLiteratumBundle = Router().post(
     const doc = await createLiteratumJats(
       manuscriptID,
       data,
+      attachments,
       doi,
       supplementaryMaterialDOIs,
       frontMatterOnly
@@ -210,6 +224,7 @@ export const exportLiteratumBundle = Router().post(
       data,
       manuscriptID,
       undefined,
+      attachments,
       theme
     )
 

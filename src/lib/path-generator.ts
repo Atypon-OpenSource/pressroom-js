@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 import { MediaPathGenerator } from '@manuscripts/manuscript-transform'
+import { Figure } from '@manuscripts/manuscripts-json-schema'
 import { Archiver } from 'archiver'
 import fs from 'fs-extra'
 import createHttpError from 'http-errors'
 import path from 'path'
 
 import { XLINK_NAMESPACE } from './data'
-import { ExternalFilesData, findImageRepresentation } from './external-files'
+import {
+  BasicAttachmentData,
+  ExternalFilesData,
+  findImageRepresentation,
+} from './external-files'
 
 export const createArchivePathGenerator = (
   dir: string,
@@ -70,6 +75,54 @@ export const createArchivePathGenerator = (
       )
     }
     return newPath
+  }
+}
+
+export const createAttachmentPathGenerator = (
+  dir: string,
+  archive: Archiver,
+  figuresMap: Map<string, Figure>,
+  attachmentsMap: Map<string, BasicAttachmentData>,
+  allowMissingImages = false,
+  prefix = 'Data/'
+): MediaPathGenerator => {
+  const mediaPaths = new Map<string, string>()
+  return async (element, parentID) => {
+    const href = element.getAttributeNS(XLINK_NAMESPACE, 'href')
+    if (!href) {
+      throw new Error('Media element has no href value')
+    }
+
+    const { name, ext } = path.parse(href)
+
+    const figure = figuresMap.get(name.replace('_', ':'))
+    const url = findImageRepresentation(figure)
+    const attachmentName = url && attachmentsMap.get(url)?.name
+
+    // already handled
+    if (mediaPaths.has(name)) {
+      return mediaPaths.get(name) as string
+    }
+    const oldPath = attachmentName ? `Data/${attachmentName}` : `Data/${name}`
+    // Rename file to match id if available
+    let newPath = parentID ? `${prefix}${parentID}${ext}` : oldPath
+    if (attachmentName) {
+      newPath = `graphic/${attachmentName}`
+    }
+    mediaPaths.set(name, newPath)
+
+    if (fs.existsSync(`${dir}/${oldPath}`)) {
+      archive.append(fs.createReadStream(`${dir}/${oldPath}`), {
+        name: newPath,
+      })
+    } else if (!allowMissingImages) {
+      throw createHttpError(
+        400,
+        `No attachment ID found at ${url} for ${parentID}`
+      )
+    }
+
+    return url || newPath
   }
 }
 

@@ -21,9 +21,10 @@ import { authentication } from '../lib/authentication'
 import { createLiteratumJats } from '../lib/create-literatum-jats'
 import { VALID_DOI_REGEX } from '../lib/doi'
 import { emailAuthorization } from '../lib/email-authorization'
+import { AttachmentData } from '../lib/external-files'
 import { removeCodeListing } from '../lib/jats-utils'
 import { chooseManuscriptID } from '../lib/manuscript-id'
-import { parseSupplementaryDOIs } from '../lib/parseSupplementaryDOIs'
+import { parseBodyProperty } from '../lib/parseBodyParams'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { decompressManuscript } from '../lib/validate-manuscript-archive'
@@ -80,7 +81,8 @@ export const exportLiteratumJats = Router().post(
   createRequestDirectory,
   decompressManuscript,
   chooseManuscriptID,
-  parseSupplementaryDOIs,
+  parseBodyProperty('supplementaryMaterialDOIs'),
+  parseBodyProperty('attachments'),
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
@@ -93,6 +95,15 @@ export const exportLiteratumJats = Router().post(
           doi: Joi.string().pattern(VALID_DOI_REGEX).required(),
         })
         .required(),
+      attachments: Joi.array()
+        .items({
+          designation: Joi.string().required(),
+          name: Joi.string().required(),
+          url: Joi.string().required(),
+          MIME: Joi.string().required(),
+          description: Joi.string(),
+        })
+        .required(),
     },
   }),
   wrapAsync(async (req, res) => {
@@ -101,11 +112,13 @@ export const exportLiteratumJats = Router().post(
       doi,
       frontMatterOnly,
       supplementaryMaterialDOIs,
+      attachments,
     } = req.body as {
       manuscriptID: string
       doi: string
       frontMatterOnly: boolean
       supplementaryMaterialDOIs: Array<{ url: string; doi: string }>
+      attachments: Array<AttachmentData>
     }
 
     const dir = req.tempDir
@@ -114,6 +127,7 @@ export const exportLiteratumJats = Router().post(
     const doc = await createLiteratumJats(
       manuscriptID,
       data,
+      attachments,
       doi,
       supplementaryMaterialDOIs,
       frontMatterOnly

@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2022 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ describe('export PDF', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .field('attachments', '[]')
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
@@ -57,6 +58,57 @@ describe('export PDF', () => {
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
       .field('engine', 'prince')
+      .field('attachments', '[]')
+      .responseType('blob')
+
+    expect(response.status).toBe(200)
+    expect(response.get('Content-Type')).toBe('application/pdf')
+    expect(response.get('Content-Disposition')).toBe(
+      'attachment; filename="manuscript.pdf"'
+    )
+  })
+
+  test('exports to a PDF file with Prince with attachments', async () => {
+    const { app } = await import('../../app')
+
+    const response = await request(app)
+      .post('/api/v2/export/pdf')
+      .attach('file', __dirname + '/__fixtures__/attachment-ids.manuproj')
+      .field(
+        'manuscriptID',
+        'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
+      )
+      .field('engine', 'prince')
+      .field(
+        'attachments',
+        JSON.stringify([
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961add',
+            name: 'figure 2.jpg',
+            MIME: 'image/jpeg',
+            designation: 'figure',
+          },
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961ada',
+            name: 'hon-20-0144.pdf',
+            MIME: 'application/pdf',
+            designation: 'submission-pdf',
+          },
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961adc',
+            name: 'html-asset.zip',
+            MIME: 'application/pdf',
+            designation: 'interactive-html',
+          },
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961adb',
+            name: 'hon-20-0144-r1.docx',
+            MIME:
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            designation: 'document',
+          },
+        ])
+      )
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -77,6 +129,7 @@ describe('export PDF', () => {
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
       .field('engine', 'prince-html')
+      .field('attachments', '[]')
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -98,6 +151,7 @@ describe('export PDF', () => {
       )
       .field('engine', 'prince-html')
       .field('theme', 'plos-one')
+      .field('attachments', '[]')
       .responseType('blob')
 
     expect(response.status).toBe(200)
@@ -118,6 +172,7 @@ describe('export PDF', () => {
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
       .field('engine', 'weasyprint')
+      .field('attachments', '[]')
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
@@ -140,6 +195,7 @@ describe('export PDF', () => {
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
       .field('engine', 'tectonic')
+      .field('attachments', '[]')
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
@@ -166,6 +222,7 @@ describe('export PDF', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .field('attachments', '[]')
       .set('pressroom-api-key', config.api_key)
 
     expect(response.status).toBe(500)

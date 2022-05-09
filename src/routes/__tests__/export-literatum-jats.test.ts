@@ -28,7 +28,7 @@ describe('export literatum JATS', () => {
 
     const response = await request(app)
       .post('/api/v2/export/literatum-jats')
-      .attach('file', __dirname + '/__fixtures__/external-files.manuproj')
+      .attach('file', __dirname + '/__fixtures__/attachment-ids.manuproj')
       .field(
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
@@ -39,9 +39,38 @@ describe('export literatum JATS', () => {
         'supplementaryMaterialDOIs',
         JSON.stringify([
           {
-            url:
-              'https://siam-x5432.ciplit.com/action/leanworkflowDownloadAttachment?id=6db76bde-4cde-4579-b012-24dead961adb&name=html-asset.zip',
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961adc',
             doi: '10.1000/xyz123',
+          },
+        ])
+      )
+      .field(
+        'attachments',
+        JSON.stringify([
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961add',
+            name: 'figure 2.jpg',
+            MIME: 'image/jpeg',
+            designation: 'figure',
+          },
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961ada',
+            name: 'hon-20-0144.pdf',
+            MIME: 'application/pdf',
+            designation: 'submission-pdf',
+          },
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961adc',
+            name: 'html-asset.zip',
+            MIME: 'application/pdf',
+            designation: 'interactive-html',
+          },
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961adb',
+            name: 'hon-20-0144-r1.docx',
+            MIME:
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            designation: 'document',
           },
         ])
       )
@@ -83,7 +112,7 @@ describe('export literatum JATS', () => {
 
     const response = await request(app)
       .post('/api/v2/export/literatum-jats')
-      .attach('file', __dirname + '/__fixtures__/external-files.manuproj')
+      .attach('file', __dirname + '/__fixtures__/attachment-ids.manuproj')
       .field(
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
@@ -94,9 +123,38 @@ describe('export literatum JATS', () => {
         'supplementaryMaterialDOIs',
         JSON.stringify([
           {
-            url:
-              'https://siam-x5432.ciplit.com/action/leanworkflowDownloadAttachment?id=6db76bde-4cde-4579-b012-24dead961adb&name=html-asset.zip',
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961adc',
             doi: '10.1000/xyz123',
+          },
+        ])
+      )
+      .field(
+        'attachments',
+        JSON.stringify([
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961add',
+            name: 'figure 2.jpg',
+            MIME: 'image/jpeg',
+            designation: 'figure',
+          },
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961ada',
+            name: 'hon-20-0144.pdf',
+            MIME: 'application/pdf',
+            designation: 'submission-pdf',
+          },
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961adc',
+            name: 'html-asset.zip',
+            MIME: 'application/pdf',
+            designation: 'interactive-html',
+          },
+          {
+            url: 'attachment:db76bde-4cde-4579-b012-24dead961adb',
+            name: 'hon-20-0144-r1.docx',
+            MIME:
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            designation: 'document',
           },
         ])
       )
