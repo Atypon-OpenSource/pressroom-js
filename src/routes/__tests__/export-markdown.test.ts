@@ -29,6 +29,7 @@ describe('export Markdown', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .field('attachments', JSON.stringify([]))
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 

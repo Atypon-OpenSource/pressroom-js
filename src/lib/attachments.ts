@@ -1,5 +1,5 @@
 /*!
- * © 2021 Atypon Systems LLC
+ * © 2022 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 import { ContainedModel } from '@manuscripts/manuscript-transform'
-import {
-  ExternalFile,
-  Figure,
-  ObjectTypes,
-} from '@manuscripts/manuscripts-json-schema'
+import { Figure, ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 import createHttpError from 'http-errors'
 
 import { processElements, XLINK_NAMESPACE } from './data'
 import { logger } from './logger'
-
-export type ExternalFilesData = {
-  figuresMap: Map<string, Figure>
-  externalFilesMap: Map<string, ExternalFile>
-}
 
 export interface BasicAttachmentData {
   url: string
@@ -44,26 +35,6 @@ export interface AttachmentData {
 
 export type FiguresAndAttachmentsData = {
   figuresMap: Map<string, Figure>
-}
-
-export const generateFiguresWithExternalFiles = (
-  data: Array<ContainedModel>
-): ExternalFilesData => {
-  const externalFiles = data.filter(
-    (el) => el.objectType == ObjectTypes.ExternalFile
-  ) as Array<ExternalFile>
-  const externalFilesMap = new Map<string, ExternalFile>()
-  for (const externalFile of externalFiles) {
-    externalFilesMap.set(externalFile.publicUrl, externalFile)
-  }
-  const figures = data.filter(
-    (el) => el.objectType == ObjectTypes.Figure
-  ) as Array<Figure>
-  const figuresMap = new Map<string, Figure>()
-  for (const figure of figures) {
-    figuresMap.set(figure._id, figure)
-  }
-  return { figuresMap, externalFilesMap }
 }
 
 export const generateFiguresMap = (
@@ -87,6 +58,14 @@ export const generateAttachmentsMap = (
     attachmentsMap.set(attachment.url, attachment)
   }
 
+  return attachmentsMap
+}
+
+export const generateBasicAttachmentsMap = (
+  attachments: BasicAttachmentData[]
+): Map<string, BasicAttachmentData> => {
+  const attachmentsMap = new Map<string, BasicAttachmentData>()
+  attachments.forEach((a) => attachmentsMap.set(a.url, a))
   return attachmentsMap
 }
 
@@ -148,10 +127,10 @@ export const exportAttachments = async (
             const clone = graphic.cloneNode(true)
             alternatives.appendChild(clone)
             interactiveHtml.forEach((url) => {
-              const externalFile = attachmentsMap.get(url)
-              if (externalFile) {
+              const attachment = attachmentsMap.get(url)
+              if (attachment) {
                 const supplementary = createSupplementaryMaterial(
-                  externalFile,
+                  attachment,
                   document
                 )
                 const objectID = supplementaryDOI.get(url)

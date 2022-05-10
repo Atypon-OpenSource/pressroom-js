@@ -17,14 +17,14 @@ import { ContainedModel } from '@manuscripts/manuscript-transform'
 import createHttpError from 'http-errors'
 import { parseXml } from 'libxmljs2'
 
-import { createArticle } from './create-article'
-import { createJATSXML } from './create-jats-xml'
 import {
   AttachmentData,
   exportAttachments,
   generateAttachmentsMap,
   generateFiguresMap,
-} from './external-files'
+} from './attachments'
+import { createArticle } from './create-article'
+import { createJATSXML } from './create-jats-xml'
 
 export const createLiteratumJats = async (
   manuscriptID: string,

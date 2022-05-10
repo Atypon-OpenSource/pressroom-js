@@ -19,6 +19,7 @@ import { Router } from 'express'
 import fs from 'fs-extra'
 import path from 'path'
 
+import { AttachmentData } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
@@ -26,7 +27,6 @@ import { createPDF, PDFEngine } from '../lib/create-pdf'
 import { XLINK_NAMESPACE } from '../lib/data'
 import { emailAuthorization } from '../lib/email-authorization'
 import { PDFPreviewError } from '../lib/errors'
-import { AttachmentData } from '../lib/external-files'
 import { findCSL } from '../lib/find-csl'
 import { filterJATSResult } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
@@ -66,9 +66,13 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  type: string
  *                generateSectionLabels:
  *                  type: boolean
+ *                attachments:
+ *                  type: string
+ *                  example: '[{"name":"figure.jpg","url":"attachment:db76bde-4cde-4579-b012-24dead961adc","MIME":"image/jpeg","designation":"figure"}]'
  *              required:
  *                - file
  *                - manuscriptID
+ *                - attachments
  *            encoding:
  *              file:
  *                contentType: application/zip

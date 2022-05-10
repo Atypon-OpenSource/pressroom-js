@@ -19,6 +19,7 @@ import { format } from 'date-fns'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
+import { AttachmentData } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
 import { config } from '../lib/config'
 import { createLiteratumJats } from '../lib/create-literatum-jats'
@@ -27,7 +28,6 @@ import { processElements } from '../lib/data'
 import { depositFTPS } from '../lib/deposit-ftps'
 import { VALID_DOI_REGEX } from '../lib/doi'
 import { emailAuthorization } from '../lib/email-authorization'
-import { AttachmentData } from '../lib/external-files'
 import { convertJATSToWileyML } from '../lib/gaia'
 import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
@@ -77,9 +77,20 @@ type XmlType = 'jats' | 'wileyml'
  *                supplementaryMaterialDOIs:
  *                  type: string
  *                  example: '[{"url":"path/to","doi":"10.1000/xyz123"}]'
+ *                attachments:
+ *                  type: string
+ *                  example: '[{"name":"figure.jpg","url":"attachment:db76bde-4cde-4579-b012-24dead961adc","MIME":"image/jpeg","designation":"figure"}]'
  *                xmlType:
  *                  type: string
  *                  enum: ['jats', 'wileyml']
+ *              required:
+ *                - file
+ *                - doi
+ *                - groupDOI
+ *                - manuscriptID
+ *                - seriesCOde
+ *                - supplementaryMaterialDOIs
+ *                - attachments
  *            encoding:
  *              file:
  *                contentType: application/zip

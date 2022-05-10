@@ -19,10 +19,14 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
+import {
+  BasicAttachmentData,
+  generateBasicAttachmentsMap,
+  generateFiguresMap,
+} from '../lib/attachments'
 import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
-import { BasicAttachmentData, generateFiguresMap } from '../lib/external-files'
 import { createIdGenerator } from '../lib/id-generator'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseBodyProperty } from '../lib/parseBodyParams'
@@ -59,9 +63,13 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  type: string
  *                generateSectionLabels:
  *                  type: boolean
+ *                attachments:
+ *                  type: string
+ *                  example: '[{"name":"figure.jpg","url":"attachment:db76bde-4cde-4579-b012-24dead961adc"}]'
  *              required:
  *                - file
  *                - manuscriptID
+ *                - attachments
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -122,8 +130,7 @@ export const exportJats = Router().post(
     // prepare the output archive
     const archive = archiver.create('zip')
     const figuresMap = generateFiguresMap(data)
-    const attachmentsMap = new Map<string, BasicAttachmentData>()
-    attachments.forEach((a) => attachmentsMap.set(a.url, a))
+    const attachmentsMap = generateBasicAttachmentsMap(attachments)
     // create JATS XML
     const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
       version,

@@ -19,16 +19,21 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
+import {
+  BasicAttachmentData,
+  generateBasicAttachmentsMap,
+  generateFiguresMap,
+} from '../lib/attachments'
 import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createIcml } from '../lib/create-icml'
 import { createJATSXML } from '../lib/create-jats-xml'
-import { generateFiguresWithExternalFiles } from '../lib/external-files'
 import { findCSL } from '../lib/find-csl'
 import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
-import { createArchivePathGenerator } from '../lib/path-generator'
+import { parseBodyProperty } from '../lib/parseBodyParams'
+import { createAttachmentPathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -59,9 +64,13 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  type: boolean
  *                generateSectionLabels:
  *                  type: boolean
+ *                attachments:
+ *                  type: string
+ *                  example: '[{"name":"figure.jpg","url":"attachment:db76bde-4cde-4579-b012-24dead961adc"}]'
  *              required:
  *                - file
  *                - manuscriptID
+ *                - attachments
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -81,11 +90,18 @@ export const exportIcml = Router().post(
   createRequestDirectory,
   decompressManuscript,
   chooseManuscriptID,
+  parseBodyProperty('attachments'),
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
       allowMissingElements: Joi.boolean().empty('').default(false),
       generateSectionLabels: Joi.boolean().empty(''),
+      attachments: Joi.array()
+        .items({
+          name: Joi.string().required(),
+          url: Joi.string().required(),
+        })
+        .required(),
     },
   }),
   wrapAsync(async (req, res) => {
@@ -93,10 +109,12 @@ export const exportIcml = Router().post(
       manuscriptID,
       allowMissingElements,
       generateSectionLabels,
+      attachments,
     } = req.body as {
       manuscriptID: string
       allowMissingElements: boolean
       generateSectionLabels: boolean
+      attachments: Array<BasicAttachmentData>
     }
 
     const dir = req.tempDir
@@ -110,13 +128,15 @@ export const exportIcml = Router().post(
 
     // prepare the output archive
     const archive = archiver.create('zip')
-    const externals = generateFiguresWithExternalFiles(data)
+    const figuresMap = generateFiguresMap(data)
+    const attachmentsMap = generateBasicAttachmentsMap(attachments)
     // create JATS XML
     const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
-      mediaPathGenerator: createArchivePathGenerator(
+      mediaPathGenerator: createAttachmentPathGenerator(
         dir,
         archive,
-        externals,
+        figuresMap,
+        attachmentsMap,
         allowMissingElements
       ),
     })

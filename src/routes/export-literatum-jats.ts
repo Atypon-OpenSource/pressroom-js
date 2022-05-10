@@ -17,11 +17,11 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
+import { AttachmentData } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
 import { createLiteratumJats } from '../lib/create-literatum-jats'
 import { VALID_DOI_REGEX } from '../lib/doi'
 import { emailAuthorization } from '../lib/email-authorization'
-import { AttachmentData } from '../lib/external-files'
 import { removeCodeListing } from '../lib/jats-utils'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseBodyProperty } from '../lib/parseBodyParams'
@@ -57,10 +57,15 @@ import { wrapAsync } from '../lib/wrap-async'
  *                supplementaryMaterialDOIs:
  *                  type: string
  *                  example: '[{"url":"path/to","doi":"10.1000/xyz123"}]'
+ *                attachments:
+ *                  type: string
+ *                  example: '[{"name":"figure.jpg","url":"attachment:db76bde-4cde-4579-b012-24dead961adc","MIME":"image/jpeg","designation":"figure"}]'
  *              required:
  *                - file
  *                - manuscriptID
  *                - doi
+ *                - supplementaryMaterialDOIs
+ *                - attachments
  *            encoding:
  *              file:
  *                contentType: application/zip

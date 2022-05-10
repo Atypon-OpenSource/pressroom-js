@@ -18,14 +18,14 @@ import fs from 'fs-extra'
 import createHttpError from 'http-errors'
 import path from 'path'
 
-import { createArticle } from './create-article'
-import { createHTML } from './create-html'
 import {
   AttachmentData,
   generateAttachmentsMap,
   generateFiguresMap,
   replaceHTMLImgReferences,
-} from './external-files'
+} from './attachments'
+import { createArticle } from './create-article'
+import { createHTML } from './create-html'
 import { logger } from './logger'
 import { prince } from './prince'
 
