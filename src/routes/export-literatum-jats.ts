@@ -25,6 +25,7 @@ import { emailAuthorization } from '../lib/email-authorization'
 import { removeCodeListing } from '../lib/jats-utils'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseBodyProperty } from '../lib/parseBodyParams'
+import { parseSupplementaryDOIs } from '../lib/parseSupplementaryDOIs'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { decompressManuscript } from '../lib/validate-manuscript-archive'
@@ -86,7 +87,7 @@ export const exportLiteratumJats = Router().post(
   createRequestDirectory,
   decompressManuscript,
   chooseManuscriptID,
-  parseBodyProperty('supplementaryMaterialDOIs'),
+  parseSupplementaryDOIs,
   parseBodyProperty('attachments'),
   celebrate({
     body: {

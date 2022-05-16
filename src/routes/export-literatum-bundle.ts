@@ -33,6 +33,7 @@ import { removeCodeListing } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseBodyProperty } from '../lib/parseBodyParams'
+import { parseSupplementaryDOIs } from '../lib/parseSupplementaryDOIs'
 import { createPrincePDF } from '../lib/prince-html'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
@@ -111,7 +112,7 @@ export const exportLiteratumBundle = Router().post(
   createRequestDirectory,
   decompressManuscript,
   chooseManuscriptID,
-  parseBodyProperty('supplementaryMaterialDOIs'),
+  parseSupplementaryDOIs,
   parseBodyProperty('attachments'),
   celebrate({
     body: {
