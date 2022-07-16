@@ -15,12 +15,13 @@
  */
 import express from 'express'
 
-export const wrapAsync = (
-  fn: express.RequestHandler
-): express.RequestHandler => (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-): Promise<express.RequestHandler> =>
-  // eslint-disable-next-line promise/no-callback-in-promise
-  Promise.resolve(fn(req, res, next)).catch(next)
+export const wrapAsync =
+  (fn: express.RequestHandler): express.RequestHandler =>
+  (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ): Promise<express.RequestHandler> =>
+    // @ts-ignore
+    // eslint-disable-next-line promise/no-callback-in-promise
+    Promise.resolve(fn(req, res, next)).catch(next)

@@ -39,9 +39,9 @@ describe('validate manuscript', () => {
 
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/json; charset=utf-8')
-    const results = JSON.parse(response.body.toString()) as Array<
-      AnyValidationResult
-    >
+    const results = JSON.parse(
+      response.body.toString()
+    ) as Array<AnyValidationResult>
     results.forEach((result) => {
       expect(result).toMatchSnapshot(
         {

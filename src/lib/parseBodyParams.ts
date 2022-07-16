@@ -16,16 +16,14 @@
 import { RequestHandler } from 'express'
 import createHttpError from 'http-errors'
 
-export const parseBodyProperty = (paramName: string): RequestHandler => async (
-  req,
-  _res,
-  next
-): Promise<void> => {
-  const paramValue = req.body[paramName]
-  try {
-    req.body[paramName] = JSON.parse(paramValue)
-  } catch (e) {
-    next(createHttpError(400, `Invalid ${paramName} format: ${e})`))
+export const parseBodyProperty =
+  (paramName: string): RequestHandler =>
+  async (req, _res, next): Promise<void> => {
+    const paramValue = req.body[paramName]
+    try {
+      req.body[paramName] = JSON.parse(paramValue)
+    } catch (e) {
+      next(createHttpError(400, `Invalid ${paramName} format: ${e})`))
+    }
+    next()
   }
-  next()
-}

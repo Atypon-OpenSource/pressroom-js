@@ -26,9 +26,8 @@ const mockInputFile =
   __dirname + '/../__mocks__/__fixtures__/index.manuscript-json'
 describe('create article', () => {
   test('disallow missing elements', () => {
-    const { data }: { data: Array<ContainedModel> } = fs.readJSONSync(
-      mockInputFile
-    )
+    const { data }: { data: Array<ContainedModel> } =
+      fs.readJSONSync(mockInputFile)
     const modelMap = buildModelMap(data)
     modelMap.delete('MPParagraphElement:69BEE95C-ADA9-4CBB-8E4C-6E3E9D1DDADA')
     expect(() =>

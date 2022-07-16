@@ -68,6 +68,7 @@ export const convertWordToPdf = Router().post(
 
     await fs.writeFile(
       dir + '/manuscript.docx',
+      // @ts-ignore
       await getStream.buffer(req.file.stream)
     )
 

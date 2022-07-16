@@ -60,7 +60,7 @@ export const convertReferencesAnyStyle = Router().post(
   createRequestDirectory,
   wrapAsync(async (req, res) => {
     const inputFile = req.tempDir + '/references.txt'
-
+    // @ts-ignore
     await writeFile(inputFile, await getStream(req.file.stream))
 
     const output = await parseReferences(inputFile)

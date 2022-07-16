@@ -88,15 +88,12 @@ export const exportEpub = Router().post(
     },
   }),
   wrapAsync(async (req, res) => {
-    const {
-      manuscriptID,
-      allowMissingElements,
-      generateSectionLabels,
-    } = req.body as {
-      manuscriptID: string
-      allowMissingElements: boolean
-      generateSectionLabels: boolean
-    }
+    const { manuscriptID, allowMissingElements, generateSectionLabels } =
+      req.body as {
+        manuscriptID: string
+        allowMissingElements: boolean
+        generateSectionLabels: boolean
+      }
     const dir = req.tempDir
 
     // read the data

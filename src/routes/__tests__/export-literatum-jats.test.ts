@@ -17,10 +17,13 @@ import { RequestHandler } from 'express'
 import libXML, { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
-jest.mock('express-jwt', () => (): RequestHandler => (req, res, next) => {
-  req.user = { email: 'test@atypon.com' }
-  next()
-})
+jest.mock(
+  'express-jwt',
+  () => (): RequestHandler => (req, res, next) => {
+    req.user = { email: 'test@atypon.com' }
+    next()
+  }
+)
 
 describe('export literatum JATS', () => {
   test('exports to a ZIP file containing a JATS XML', async () => {
@@ -68,8 +71,7 @@ describe('export literatum JATS', () => {
           {
             url: 'attachment:db76bde-4cde-4579-b012-24dead961adb',
             name: 'hon-20-0144-r1.docx',
-            MIME:
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            MIME: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             designation: 'document',
           },
         ])
@@ -152,8 +154,7 @@ describe('export literatum JATS', () => {
           {
             url: 'attachment:db76bde-4cde-4579-b012-24dead961adb',
             name: 'hon-20-0144-r1.docx',
-            MIME:
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            MIME: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             designation: 'document',
           },
         ])

@@ -79,6 +79,7 @@ export const convertReferencesEdifix = Router().post(
     }
 
     const result = await convertBibliographyToJATS(
+      // @ts-ignore
       req.file.stream,
       editorialStyle,
       req.user.edifix

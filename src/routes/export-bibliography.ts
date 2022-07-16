@@ -75,7 +75,7 @@ export const exportBibliography = Router().post(
   createRequestDirectory,
   wrapAsync(async (req, res) => {
     const { format } = req.body as { format: BibliographyFormat }
-
+    // @ts-ignore
     const json = await getStream(req.file.stream, { encoding: 'utf-8' })
     const records = JSON.parse(json)
     const output = await generateBibliography(records, format)

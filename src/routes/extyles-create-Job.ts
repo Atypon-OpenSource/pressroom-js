@@ -73,7 +73,7 @@ export const extylesCreateJob = Router().post(
     }
 
     const token = await login(req.user.arc)
-
+    // @ts-ignore
     const job_id = await createJob(req.file.stream, extension, token)
 
     res.json({ job_id })

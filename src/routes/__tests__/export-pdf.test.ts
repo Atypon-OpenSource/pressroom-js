@@ -20,10 +20,13 @@ import { config } from '../../lib/config'
 
 jest.setTimeout(30000)
 
-jest.mock('express-jwt', () => (): RequestHandler => (req, res, next) => {
-  req.user = { email: 'test@atypon.com' }
-  next()
-})
+jest.mock(
+  'express-jwt',
+  () => (): RequestHandler => (req, res, next) => {
+    req.user = { email: 'test@atypon.com' }
+    next()
+  }
+)
 
 describe('export PDF', () => {
   test('exports to a PDF file with xelatex (default)', async () => {
@@ -103,8 +106,7 @@ describe('export PDF', () => {
           {
             url: 'attachment:db76bde-4cde-4579-b012-24dead961adb',
             name: 'hon-20-0144-r1.docx',
-            MIME:
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            MIME: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             designation: 'document',
           },
         ])
