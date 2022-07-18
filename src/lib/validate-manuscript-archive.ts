@@ -29,6 +29,7 @@ export const decompressManuscript: RequestHandler = async (req, res, next) => {
     return next(createHttpError(400, `${extension} not allowed`))
   }
   logger.debug(`Extracting ZIP archive to ${dir}`)
+  // @ts-ignore
   await unzip(req.file.stream, dir)
   const manuscriptJSONPath = dir + '/index.manuscript-json'
   if (!fs.existsSync(manuscriptJSONPath)) {

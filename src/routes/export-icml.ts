@@ -22,7 +22,7 @@ import fs from 'fs-extra'
 import {
   BasicAttachmentData,
   generateBasicAttachmentsMap,
-  generateFiguresMap,
+  generateGraphicsMap,
 } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
@@ -128,14 +128,14 @@ export const exportIcml = Router().post(
 
     // prepare the output archive
     const archive = archiver.create('zip')
-    const figuresMap = generateFiguresMap(data)
+    const graphicsMap = generateGraphicsMap(data)
     const attachmentsMap = generateBasicAttachmentsMap(attachments)
     // create JATS XML
     const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
       mediaPathGenerator: createAttachmentPathGenerator(
         dir,
         archive,
-        figuresMap,
+        graphicsMap,
         attachmentsMap,
         allowMissingElements
       ),

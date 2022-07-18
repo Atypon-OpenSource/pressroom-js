@@ -84,6 +84,7 @@ export const validateJATS = Router().post(
     const dir = req.tempDir
 
     // unzip the input
+    // @ts-ignore
     await unzip(req.file.stream, dir)
 
     const jatsPath = dir + '/manuscript.xml'
@@ -113,8 +114,8 @@ export const validateJATS = Router().post(
     const figurePath = new Map<string, string>()
     for (const model of manuscriptModels) {
       if (isFigure(model)) {
-        if (model.originalURL) {
-          const path = `${dir}/${model.originalURL}`
+        if (model.src) {
+          const path = `${dir}/${model.src}`
           figurePath.set(model._id, path)
         }
       }

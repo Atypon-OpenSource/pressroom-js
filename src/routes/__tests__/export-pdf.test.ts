@@ -76,7 +76,7 @@ describe('export PDF', () => {
 
     const response = await request(app)
       .post('/api/v2/export/pdf')
-      .attach('file', __dirname + '/__fixtures__/attachment-ids.manuproj')
+      .attach('file', __dirname + '/__fixtures__/attachment-ids.zip')
       .field(
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'

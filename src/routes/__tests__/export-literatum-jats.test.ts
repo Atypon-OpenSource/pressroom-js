@@ -31,7 +31,7 @@ describe('export literatum JATS', () => {
 
     const response = await request(app)
       .post('/api/v2/export/literatum-jats')
-      .attach('file', __dirname + '/__fixtures__/attachment-ids.manuproj')
+      .attach('file', __dirname + '/__fixtures__/attachment-ids.zip')
       .field(
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
@@ -114,7 +114,7 @@ describe('export literatum JATS', () => {
 
     const response = await request(app)
       .post('/api/v2/export/literatum-jats')
-      .attach('file', __dirname + '/__fixtures__/attachment-ids.manuproj')
+      .attach('file', __dirname + '/__fixtures__/attachment-ids.zip')
       .field(
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'

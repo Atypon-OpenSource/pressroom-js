@@ -26,7 +26,7 @@ import { XLINK_NAMESPACE } from './data'
 export const createAttachmentPathGenerator = (
   dir: string,
   archive: Archiver,
-  figuresMap: Map<string, Figure>,
+  graphicsMap: Map<string, Figure>,
   attachmentsMap: Map<string, BasicAttachmentData>,
   allowMissingImages = false,
   prefix = 'Data/'
@@ -40,8 +40,8 @@ export const createAttachmentPathGenerator = (
 
     const { name, ext } = path.parse(href)
 
-    const figure = figuresMap.get(name.replace('_', ':'))
-    const url = findImageRepresentation(figure)
+    const graphic = graphicsMap.get(name.replace('_', ':'))
+    const url = findImageRepresentation(graphic)
     const attachmentName = url && attachmentsMap.get(url)?.name
 
     // already handled

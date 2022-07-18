@@ -21,7 +21,7 @@ import path from 'path'
 import {
   AttachmentData,
   generateAttachmentsMap,
-  generateFiguresMap,
+  generateGraphicsMap,
   replaceHTMLImgReferences,
 } from './attachments'
 import { createArticle } from './create-article'
@@ -56,7 +56,7 @@ export const createPrincePDF = async (
   theme?: string
 ): Promise<string> => {
   const { article, modelMap } = createArticle(data, manuscriptID)
-
+  /* @ts-ignore */
   const html = await createHTML(article, modelMap, {
     mediaPathGenerator: async (element) => {
       const src = element.getAttribute('src')
@@ -71,11 +71,11 @@ export const createPrincePDF = async (
     html,
     'application/xhtml+xml'
   )
-  const figuresMap = generateFiguresMap(data)
+  const graphicsMap = generateGraphicsMap(data)
   const attachmentsMap = generateAttachmentsMap(attachments)
   const HTMLDoc = await replaceHTMLImgReferences(
     parsedHTML,
-    figuresMap,
+    graphicsMap,
     attachmentsMap
   )
 

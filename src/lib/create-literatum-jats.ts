@@ -22,6 +22,7 @@ import {
   exportAttachments,
   generateAttachmentsMap,
   generateFiguresMap,
+  generateGraphicsMap,
 } from './attachments'
 import { createArticle } from './create-article'
 import { createJATSXML } from './create-jats-xml'
@@ -47,11 +48,13 @@ export const createLiteratumJats = async (
     supplementaryMaterialDOIs.map((el) => [el.url, el.doi])
   )
   const figuresMap = generateFiguresMap(data)
+  const graphicsMap = generateGraphicsMap(data)
   const attachmentsMap = generateAttachmentsMap(attachments)
 
   const jats = await exportAttachments(
     parsedJATS,
     figuresMap,
+    graphicsMap,
     attachmentsMap,
     supplementaryDOI
   )

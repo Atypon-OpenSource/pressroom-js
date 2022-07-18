@@ -20,16 +20,19 @@ import request from 'supertest'
 
 import { app } from '../../app'
 
-jest.mock('express-jwt', () => (): RequestHandler => (req, res, next) => {
-  req.user = { email: 'test@atypon.com' }
-  next()
-})
+jest.mock(
+  'express-jwt',
+  () => (): RequestHandler => (req, res, next) => {
+    req.user = { email: 'test@atypon.com' }
+    next()
+  }
+)
 
 describe('export Literatum Bundle', () => {
   test('exports to Literatum Bundle', async () => {
     const response = await request(app)
       .post('/api/v2/export/literatum-bundle')
-      .attach('file', __dirname + '/__fixtures__/attachment-ids.manuproj')
+      .attach('file', __dirname + '/__fixtures__/attachment-ids.zip')
       .field(
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
@@ -72,8 +75,7 @@ describe('export Literatum Bundle', () => {
           {
             url: 'attachment:db76bde-4cde-4579-b012-24dead961adb',
             name: 'hon-20-0144-r1.docx',
-            MIME:
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            MIME: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             designation: 'document',
           },
         ])
@@ -118,7 +120,7 @@ describe('export Literatum Bundle', () => {
   test('exports to Literatum Bundle with theme', async () => {
     const response = await request(app)
       .post('/api/v2/export/literatum-bundle')
-      .attach('file', __dirname + '/__fixtures__/attachment-ids.manuproj')
+      .attach('file', __dirname + '/__fixtures__/attachment-ids.zip')
       .field(
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
@@ -162,8 +164,7 @@ describe('export Literatum Bundle', () => {
           {
             url: 'attachment:db76bde-4cde-4579-b012-24dead961adb',
             name: 'hon-20-0144-r1.docx',
-            MIME:
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            MIME: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             designation: 'document',
           },
         ])
