@@ -31,6 +31,16 @@ const environmentVariable = (name: string, defaultValue?: string): string => {
   return value
 }
 
+const booleanEnvironmentVariable = (name: string) => {
+  const value = process.env[name]
+
+  if (!value || value === '0' || value === 'false') {
+    return false
+  }
+
+  return true
+}
+
 interface Config {
   api_key: string
   arc: {
@@ -45,6 +55,7 @@ interface Config {
     url: string
   }
   jwt: {
+    disabled: boolean
     issuer: string
     root: string
   }
@@ -86,6 +97,7 @@ export const config: Config = {
     url: environmentVariable('PRESSROOM_GAIA_URL'),
   },
   jwt: {
+    disabled: booleanEnvironmentVariable('PRESSROOM_JWT_AUTH_DISABLED'),
     issuer: environmentVariable('PRESSROOM_JWT_ISSUER'),
     root: environmentVariable('PRESSROOM_JWT_ROOT'),
   },
