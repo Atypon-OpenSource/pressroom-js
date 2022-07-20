@@ -22,17 +22,22 @@ import { config } from './config'
 const allowed = new RegExp(config.authorization.emails)
 
 export const emailAuthorization: RequestHandler = (req, res, next) => {
-  const { email } = req.user
+  if (!config.jwt.disabled) {
+    const { email } = req.user
 
-  if (!email) {
-    throw createHttpError(401, 'No email address found in authentication token')
-  }
+    if (!email) {
+      throw createHttpError(
+        401,
+        'No email address found in authentication token'
+      )
+    }
 
-  if (!allowed.test(email)) {
-    throw createHttpError(
-      401,
-      'Access to this endpoint is restricted by email address domain'
-    )
+    if (!allowed.test(email)) {
+      throw createHttpError(
+        401,
+        'Access to this endpoint is restricted by email address domain'
+      )
+    }
   }
 
   next()
