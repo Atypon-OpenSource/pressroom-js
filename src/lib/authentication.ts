@@ -43,7 +43,7 @@ export const jwtAuthentication = jwt({
 export const authentication: RequestHandler = (req, res, next) => {
   if (config.api_key && 'pressroom-api-key' in req.headers) {
     apiKeyAuthentication(req, res, next)
-  } else if(!config.jwt.disabled) {
+  } else if (!config.jwt.disabled) {
     jwtAuthentication(req, res, next)
   } else {
     next()
