@@ -73,18 +73,18 @@ export const convertJATSArc = async (
 
   for (const model of manuscriptModels) {
     if (isFigure(model)) {
-      if (model.originalURL) {
-        if (await fs.pathExists(`${dir}/${model.originalURL}`)) {
+      if (model.src) {
+        if (await fs.pathExists(`${dir}/${model.src}`)) {
           const name = model._id.replace(':', '_')
 
-          logger.debug(`Adding ${model.originalURL} as Data/${name}`)
+          logger.debug(`Adding ${model.src} as Data/${name}`)
 
-          archive.append(fs.createReadStream(`${dir}/${model.originalURL}`), {
+          archive.append(fs.createReadStream(`${dir}/${model.src}`), {
             name,
             prefix: 'Data/',
           })
         } else {
-          logger.warn(`Missing file ${model.originalURL}`)
+          logger.warn(`Missing file ${model.src}`)
         }
       }
     }

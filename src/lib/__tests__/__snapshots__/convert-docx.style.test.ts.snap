@@ -26,9 +26,11 @@ exports[`Test export styles export style 1`] = `
     <w:name w:val=\\"Body Text\\"/>
     <w:basedOn w:val=\\"Normal\\"/>
     <w:link w:val=\\"BodyTextChar\\"/>
-    
+    <w:pPr>
+      <w:spacing w:before=\\"180\\" w:after=\\"180\\"/>
+    </w:pPr>
     <w:qFormat/>
-  <w:rPr><w:szCs w:val=\\"24\\"/><w:sz w:val=\\"24\\"/><w:rFonts w:ascii=\\"Charter\\" w:cs=\\"Charter\\" w:eastAsia=\\"Charter\\" w:hAnsi=\\"Charter\\"/><w:color w:val=\\"000000\\"/></w:rPr><w:pPr><w:jc w:val=\\"left\\"/><w:spacing w:before=\\"200\\" w:after=\\"200\\" w:line=\\"480\\"/></w:pPr></w:style>
+  </w:style>
   <w:style w:type=\\"paragraph\\" w:customStyle=\\"1\\" w:styleId=\\"FirstParagraph\\">
     <w:name w:val=\\"First Paragraph\\"/>
     <w:basedOn w:val=\\"BodyText\\"/>
@@ -120,9 +122,16 @@ exports[`Test export styles export style 1`] = `
     <w:basedOn w:val=\\"Normal\\"/>
     <w:next w:val=\\"BodyText\\"/>
     <w:qFormat/>
-    
-    
-  <w:rPr><w:szCs w:val=\\"24\\"/><w:sz w:val=\\"24\\"/><w:rFonts w:ascii=\\"Charter\\" w:cs=\\"Charter\\" w:eastAsia=\\"Charter\\" w:hAnsi=\\"Charter\\"/><w:color w:val=\\"000000\\"/></w:rPr><w:pPr><w:jc w:val=\\"left\\"/><w:spacing w:before=\\"200\\" w:after=\\"200\\" w:line=\\"480\\"/></w:pPr></w:style>
+    <w:pPr>
+      <w:keepNext/>
+      <w:keepLines/>
+      <w:spacing w:before=\\"300\\" w:after=\\"300\\"/>
+    </w:pPr>
+    <w:rPr>
+      <w:sz w:val=\\"20\\"/>
+      <w:szCs w:val=\\"20\\"/>
+    </w:rPr>
+  </w:style>
   <w:style w:type=\\"paragraph\\" w:styleId=\\"Bibliography\\">
     <w:name w:val=\\"Bibliography\\"/>
     <w:basedOn w:val=\\"Normal\\"/>
@@ -137,9 +146,21 @@ exports[`Test export styles export style 1`] = `
     <w:next w:val=\\"BodyText\\"/>
     <w:uiPriority w:val=\\"9\\"/>
     <w:qFormat/>
-    
-    
-  <w:rPr><w:b/><w:szCs w:val=\\"32\\"/><w:sz w:val=\\"32\\"/><w:rFonts w:ascii=\\"Charter\\" w:cs=\\"Charter\\" w:eastAsia=\\"Charter\\" w:hAnsi=\\"Charter\\"/><w:color w:val=\\"000000\\"/></w:rPr><w:pPr><w:jc w:val=\\"left\\"/><w:spacing w:before=\\"160\\" w:after=\\"100\\" w:line=\\"480\\"/></w:pPr></w:style>
+    <w:pPr>
+      <w:keepNext/>
+      <w:keepLines/>
+      <w:spacing w:before=\\"480\\" w:after=\\"0\\"/>
+      <w:outlineLvl w:val=\\"0\\"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:asciiTheme=\\"majorHAnsi\\" w:eastAsiaTheme=\\"majorEastAsia\\" w:hAnsiTheme=\\"majorHAnsi\\" w:cstheme=\\"majorBidi\\"/>
+      <w:b/>
+      <w:bCs/>
+      <w:color w:val=\\"00FF00\\" w:themeColor=\\"accent1\\"/>
+      <w:sz w:val=\\"50\\"/>
+      <w:szCs w:val=\\"50\\"/>
+    </w:rPr>
+  </w:style>
   <w:style w:type=\\"paragraph\\" w:styleId=\\"Heading2\\">
     <w:name w:val=\\"Heading 2\\"/>
     <w:basedOn w:val=\\"Normal\\"/>
@@ -147,9 +168,21 @@ exports[`Test export styles export style 1`] = `
     <w:uiPriority w:val=\\"9\\"/>
     <w:unhideWhenUsed/>
     <w:qFormat/>
-    
-    
-  <w:rPr><w:b/><w:szCs w:val=\\"28\\"/><w:sz w:val=\\"28\\"/><w:rFonts w:ascii=\\"Charter\\" w:cs=\\"Charter\\" w:eastAsia=\\"Charter\\" w:hAnsi=\\"Charter\\"/><w:color w:val=\\"000000\\"/></w:rPr><w:pPr><w:jc w:val=\\"left\\"/><w:spacing w:before=\\"160\\" w:after=\\"100\\" w:line=\\"420\\"/></w:pPr></w:style>
+    <w:pPr>
+      <w:keepNext/>
+      <w:keepLines/>
+      <w:spacing w:before=\\"200\\" w:after=\\"0\\"/>
+      <w:outlineLvl w:val=\\"1\\"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:asciiTheme=\\"majorHAnsi\\" w:eastAsiaTheme=\\"majorEastAsia\\" w:hAnsiTheme=\\"majorHAnsi\\" w:cstheme=\\"majorBidi\\"/>
+      <w:b/>
+      <w:bCs/>
+      <w:color w:val=\\"000000\\" w:themeColor=\\"accent1\\"/>
+      <w:sz w:val=\\"50\\"/>
+      <w:szCs w:val=\\"50\\"/>
+    </w:rPr>
+  </w:style>
   <w:style w:type=\\"paragraph\\" w:styleId=\\"Heading3\\">
     <w:name w:val=\\"Heading 3\\"/>
     <w:basedOn w:val=\\"Normal\\"/>
@@ -157,9 +190,21 @@ exports[`Test export styles export style 1`] = `
     <w:uiPriority w:val=\\"9\\"/>
     <w:unhideWhenUsed/>
     <w:qFormat/>
-    
-    
-  <w:rPr><w:b/><w:szCs w:val=\\"24\\"/><w:sz w:val=\\"24\\"/><w:rFonts w:ascii=\\"Charter\\" w:cs=\\"Charter\\" w:eastAsia=\\"Charter\\" w:hAnsi=\\"Charter\\"/><w:color w:val=\\"000000\\"/></w:rPr><w:pPr><w:jc w:val=\\"left\\"/><w:spacing w:before=\\"160\\" w:after=\\"100\\" w:line=\\"360\\"/></w:pPr></w:style>
+    <w:pPr>
+      <w:keepNext/>
+      <w:keepLines/>
+      <w:spacing w:before=\\"200\\" w:after=\\"0\\"/>
+      <w:outlineLvl w:val=\\"2\\"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:asciiTheme=\\"majorHAnsi\\" w:eastAsiaTheme=\\"majorEastAsia\\" w:hAnsiTheme=\\"majorHAnsi\\" w:cstheme=\\"majorBidi\\"/>
+      <w:b/>
+      <w:bCs/>
+      <w:color w:val=\\"000000\\" w:themeColor=\\"accent1\\"/>
+      <w:sz w:val=\\"24\\"/>
+      <w:szCs w:val=\\"24\\"/>
+    </w:rPr>
+  </w:style>
   <w:style w:type=\\"paragraph\\" w:styleId=\\"Heading4\\">
     <w:name w:val=\\"Heading 4\\"/>
     <w:basedOn w:val=\\"Normal\\"/>
@@ -167,9 +212,21 @@ exports[`Test export styles export style 1`] = `
     <w:uiPriority w:val=\\"9\\"/>
     <w:unhideWhenUsed/>
     <w:qFormat/>
-    
-    
-  <w:rPr><w:b/><w:szCs w:val=\\"24\\"/><w:sz w:val=\\"24\\"/><w:rFonts w:ascii=\\"Charter\\" w:cs=\\"Charter\\" w:eastAsia=\\"Charter\\" w:hAnsi=\\"Charter\\"/><w:color w:val=\\"000000\\"/></w:rPr><w:pPr><w:jc w:val=\\"left\\"/><w:spacing w:before=\\"160\\" w:after=\\"100\\" w:line=\\"360\\"/></w:pPr></w:style>
+    <w:pPr>
+      <w:keepNext/>
+      <w:keepLines/>
+      <w:spacing w:before=\\"200\\" w:after=\\"0\\"/>
+      <w:outlineLvl w:val=\\"3\\"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:asciiTheme=\\"majorHAnsi\\" w:eastAsiaTheme=\\"majorEastAsia\\" w:hAnsiTheme=\\"majorHAnsi\\" w:cstheme=\\"majorBidi\\"/>
+      <w:i/>
+      <w:bCs/>
+      <w:color w:val=\\"4F81BD\\" w:themeColor=\\"accent1\\"/>
+      <w:sz w:val=\\"24\\"/>
+      <w:szCs w:val=\\"24\\"/>
+    </w:rPr>
+  </w:style>
   <w:style w:type=\\"paragraph\\" w:styleId=\\"Heading5\\">
     <w:name w:val=\\"Heading 5\\"/>
     <w:basedOn w:val=\\"Normal\\"/>
@@ -177,9 +234,20 @@ exports[`Test export styles export style 1`] = `
     <w:uiPriority w:val=\\"9\\"/>
     <w:unhideWhenUsed/>
     <w:qFormat/>
-    
-    
-  <w:rPr><w:b/><w:szCs w:val=\\"24\\"/><w:sz w:val=\\"24\\"/><w:rFonts w:ascii=\\"Charter\\" w:cs=\\"Charter\\" w:eastAsia=\\"Charter\\" w:hAnsi=\\"Charter\\"/><w:color w:val=\\"000000\\"/></w:rPr><w:pPr><w:jc w:val=\\"left\\"/><w:spacing w:before=\\"160\\" w:after=\\"100\\" w:line=\\"360\\"/></w:pPr></w:style>
+    <w:pPr>
+      <w:keepNext/>
+      <w:keepLines/>
+      <w:spacing w:before=\\"200\\" w:after=\\"0\\"/>
+      <w:outlineLvl w:val=\\"4\\"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:asciiTheme=\\"majorHAnsi\\" w:eastAsiaTheme=\\"majorEastAsia\\" w:hAnsiTheme=\\"majorHAnsi\\" w:cstheme=\\"majorBidi\\"/>
+      <w:iCs/>
+      <w:color w:val=\\"4F81BD\\" w:themeColor=\\"accent1\\"/>
+      <w:sz w:val=\\"24\\"/>
+      <w:szCs w:val=\\"24\\"/>
+    </w:rPr>
+  </w:style>
   <w:style w:type=\\"paragraph\\" w:styleId=\\"Heading6\\">
     <w:name w:val=\\"Heading 6\\"/>
     <w:basedOn w:val=\\"Normal\\"/>
@@ -187,9 +255,19 @@ exports[`Test export styles export style 1`] = `
     <w:uiPriority w:val=\\"9\\"/>
     <w:unhideWhenUsed/>
     <w:qFormat/>
-    
-    
-  <w:rPr><w:b/><w:szCs w:val=\\"20\\"/><w:sz w:val=\\"20\\"/><w:rFonts w:ascii=\\"Charter\\" w:cs=\\"Charter\\" w:eastAsia=\\"Charter\\" w:hAnsi=\\"Charter\\"/><w:color w:val=\\"000000\\"/></w:rPr><w:pPr><w:jc w:val=\\"left\\"/><w:spacing w:before=\\"160\\" w:after=\\"100\\" w:line=\\"300\\"/></w:pPr></w:style>
+    <w:pPr>
+      <w:keepNext/>
+      <w:keepLines/>
+      <w:spacing w:before=\\"200\\" w:after=\\"0\\"/>
+      <w:outlineLvl w:val=\\"5\\"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:asciiTheme=\\"majorHAnsi\\" w:eastAsiaTheme=\\"majorEastAsia\\" w:hAnsiTheme=\\"majorHAnsi\\" w:cstheme=\\"majorBidi\\"/>
+      <w:color w:val=\\"4F81BD\\" w:themeColor=\\"accent1\\"/>
+      <w:sz w:val=\\"24\\"/>
+      <w:szCs w:val=\\"24\\"/>
+    </w:rPr>
+  </w:style>
   <w:style w:type=\\"paragraph\\" w:styleId=\\"Heading7\\">
     <w:name w:val=\\"Heading 7\\"/>
     <w:basedOn w:val=\\"Normal\\"/>

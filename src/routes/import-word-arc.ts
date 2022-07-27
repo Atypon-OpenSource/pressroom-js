@@ -87,6 +87,7 @@ export const importWordArc = Router().post(
 
     // Send Word file to eXtyles Arc, receive JATS + images in ZIP
     const zip = await convertWordToJATS(
+      // @ts-ignore
       req.file.stream,
       extension,
       req.user.arc

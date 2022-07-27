@@ -24,9 +24,8 @@ const mockManuscript =
 const mockStyles = __dirname + '/../__mocks__/__fixtures__/docx-styles.xml'
 describe('Test export styles', () => {
   test('export style', () => {
-    const { data }: { data: Array<ContainedModel> } = fs.readJSONSync(
-      mockManuscript
-    )
+    const { data }: { data: Array<ContainedModel> } =
+      fs.readJSONSync(mockManuscript)
     const styles = new DOMParser().parseFromString(
       fs.readFileSync(mockStyles).toString(),
       'application/xml'

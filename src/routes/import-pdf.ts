@@ -85,6 +85,7 @@ export const importPDF = Router().post(
     }
 
     // Send PDF file to GROBID, receive TEI XML
+    // @ts-ignore
     const teiStream = await convertPDFToTEI(req.file.stream)
     const tei = await getStream(teiStream)
 

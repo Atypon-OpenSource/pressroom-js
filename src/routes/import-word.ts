@@ -93,6 +93,7 @@ export const importWord = Router().post(
 
     await fs.writeFile(
       dir + '/manuscript.docx',
+      // @ts-ignore
       await getStream.buffer(req.file.stream)
     )
 
@@ -148,12 +149,12 @@ export const importWord = Router().post(
 
     for (const model of manuscriptModels) {
       if (isFigure(model)) {
-        if (model.originalURL) {
+        if (model.src) {
           const name = model._id.replace(':', '_')
 
-          logger.debug(`Adding ${model.originalURL} as Data/${name}`)
+          logger.debug(`Adding ${model.src} as Data/${name}`)
 
-          archive.append(fs.createReadStream(`${dir}/${model.originalURL}`), {
+          archive.append(fs.createReadStream(`${dir}/${model.src}`), {
             name,
             prefix: 'Data/',
           })

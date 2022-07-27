@@ -73,6 +73,7 @@ export const importJATSArc = Router().post(
     const { addBundledData = false } = req.body as { addBundledData?: boolean }
 
     const dir = req.tempDir
+    // @ts-ignore
     await unzip(req.file.stream, dir)
 
     // TODO move this to middleware

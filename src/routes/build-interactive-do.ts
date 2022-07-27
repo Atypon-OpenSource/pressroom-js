@@ -100,7 +100,7 @@ export const buildInteractiveAssetDO = Router().post(
 
     // unzip the input
     const dir = req.tempDir
-
+    // @ts-ignore
     await unzip(req.file.stream, dir)
     if (!fs.existsSync(dir + '/index.html')) {
       throw createHttpError(400, 'index.html not found in the archive')

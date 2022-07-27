@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import Express from 'express'
-
-declare module 'express-serve-static-core' {
-  import { ExtylesArcCredentials } from '../lib/extyles-arc'
-  import { EdifixCredentials } from '../lib/edifix'
+declare namespace Express {
+  /* @ts-ignore */
+  import { ExtylesArcCredentials } from '../../lib/extyles-arc'
+  /* @ts-ignore */
+  import { EdifixCredentials } from '../../lib/edifix'
 
   interface Request {
     user: {

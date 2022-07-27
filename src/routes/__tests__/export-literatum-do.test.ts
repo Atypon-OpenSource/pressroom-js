@@ -16,10 +16,13 @@
 import { RequestHandler } from 'express'
 import request from 'supertest'
 
-jest.mock('express-jwt', () => (): RequestHandler => (req, res, next) => {
-  req.user = { email: 'test@atypon.com' }
-  next()
-})
+jest.mock(
+  'express-jwt',
+  () => (): RequestHandler => (req, res, next) => {
+    req.user = { email: 'test@atypon.com' }
+    next()
+  }
+)
 
 describe('export Literatum DO', () => {
   test('exports to Literatum DO', async () => {

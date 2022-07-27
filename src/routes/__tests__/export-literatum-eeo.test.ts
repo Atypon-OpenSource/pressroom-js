@@ -18,10 +18,13 @@ import JSZip from 'jszip'
 import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
-jest.mock('express-jwt', () => (): RequestHandler => (req, res, next) => {
-  req.user = { email: 'test@atypon.com' }
-  next()
-})
+jest.mock(
+  'express-jwt',
+  () => (): RequestHandler => (req, res, next) => {
+    req.user = { email: 'test@atypon.com' }
+    next()
+  }
+)
 
 describe('export Literatum EEO', () => {
   test('exports to Literatum EEO', async () => {

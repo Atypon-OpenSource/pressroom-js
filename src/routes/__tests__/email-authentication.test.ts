@@ -18,10 +18,13 @@ import request from 'supertest'
 
 import { app } from '../../app'
 
-jest.mock('express-jwt', () => (): RequestHandler => (req, res, next) => {
-  req.user = { email: 'test@foo.com' }
-  next()
-})
+jest.mock(
+  'express-jwt',
+  () => (): RequestHandler => (req, res, next) => {
+    req.user = { email: 'test@foo.com' }
+    next()
+  }
+)
 
 describe('email authentication', () => {
   test('limits endpoint access by email domain', async () => {

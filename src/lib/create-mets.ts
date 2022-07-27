@@ -16,7 +16,7 @@
 import { hasObjectType } from '@manuscripts/manuscript-transform'
 import {
   Contributor,
-  Figure,
+  FigureElement,
   Manuscript,
   ManuscriptKeyword,
   Model,
@@ -77,9 +77,8 @@ const extractContent = (html: string, manuscript: Manuscript): Content => {
   }
 
   // download link for "unlicensed" images
-  const imageNodes = articleNode.querySelectorAll<HTMLImageElement>(
-    'figure > img[src]'
-  )
+  const imageNodes =
+    articleNode.querySelectorAll<HTMLImageElement>('figure > img[src]')
 
   for (const node of Array.from(imageNodes)) {
     if (node.hasAttribute('data-licensed')) {
@@ -156,7 +155,9 @@ const buildFeaturedImageData = (
   headerFigureID?: string
 ): FeaturedImageData => {
   if (headerFigureID) {
-    const headerFigure = modelMap.get(headerFigureID) as Figure | undefined
+    const headerFigure = modelMap.get(headerFigureID) as
+      | FigureElement
+      | undefined
 
     if (headerFigure) {
       return {

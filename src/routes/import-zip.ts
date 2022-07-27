@@ -82,6 +82,7 @@ export const importZip = Router().post(
     const dir = req.tempDir
 
     // unzip the input
+    // @ts-ignore
     await unzip(req.file.stream, dir)
 
     // find the main manuscript file
@@ -139,20 +140,20 @@ export const importZip = Router().post(
 
     for (const model of manuscriptModels) {
       if (isFigure(model)) {
-        if (model.originalURL) {
-          const filePath = `${dir}/${model.originalURL}`
+        if (model.src) {
+          const filePath = `${dir}/${model.src}`
 
           if (await fs.pathExists(filePath)) {
             const name = model._id.replace(':', '_')
 
-            logger.debug(`Adding ${model.originalURL} as Data/${name}`)
+            logger.debug(`Adding ${model.src} as Data/${name}`)
 
             archive.append(fs.createReadStream(filePath), {
               name,
               prefix: 'Data/',
             })
           } else {
-            logger.warn(`File ${model.originalURL} does not exist`)
+            logger.warn(`File ${model.src} does not exist`)
           }
         }
       }
