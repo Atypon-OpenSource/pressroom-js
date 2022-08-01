@@ -1,5 +1,12 @@
 # pressroom-js
 
+## 2.1.2
+
+### Patch Changes
+
+- Updated dependencies [06db9cb5]
+  - @manuscripts/manuscript-transform@0.52.0
+
 ## 2.1.1
 
 ### Patch Changes
