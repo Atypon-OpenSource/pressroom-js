@@ -38,6 +38,11 @@ export const createAttachmentPathGenerator = (
       throw new Error('Media element has no href value')
     }
 
+    if (href.startsWith('attachment')) {
+      const attachment = attachmentsMap.get(href)
+      return attachment ? attachment.name : href
+    }
+
     const { name, ext } = path.parse(href)
 
     const graphic = graphicsMap.get(name.replace('_', ':'))
