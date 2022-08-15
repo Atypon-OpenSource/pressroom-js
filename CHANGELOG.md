@@ -1,5 +1,13 @@
 # pressroom-js
 
+## 2.1.5
+
+### Patch Changes
+
+- af679221: fix attachments with other designations
+- Updated dependencies [af679221]
+  - @manuscripts/manuscript-transform@0.52.3
+
 ## 2.1.4
 
 ### Patch Changes
