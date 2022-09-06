@@ -2,7 +2,7 @@
   "name": "pressroom-js",
   "description": "A web service for manuscript conversion",
   "private": true,
-  "version": "2.1.5",
+  "version": "2.1.7",
   "license": "Apache-2.0",
   "repository": "gitlab:mpapp-public/pressroom-js",
   "scripts": {
