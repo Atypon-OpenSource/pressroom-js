@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import JSZip from 'jszip'
 import request from 'supertest'
 
 import { config } from '../../lib/config'
 
-jest.setTimeout(30000)
+const route = '/api/v2/import/jats'
 
-describe('import ZIP', () => {
-  test('imports from a Markdown file in a ZIP file', async () => {
+describe('import jats arc', () => {
+  test('imports JATS output from eXtyles Arc', async () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/api/v2/import/zip')
-      .attach('file', __dirname + '/__fixtures__/markdown.zip')
+      .post(route)
+      .attach('file', __dirname + '/__fixtures__/jats-arc.zip')
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
@@ -34,14 +35,23 @@ describe('import ZIP', () => {
     expect(response.get('Content-Disposition')).toBe(
       'attachment; filename="manuscript.manuproj"'
     )
+
+    const zip = await new JSZip().loadAsync(response.body)
+    expect(Object.keys(zip.files).length).toBe(2)
+
+    const json = await zip.files['index.manuscript-json'].async('text')
+    const { data } = JSON.parse(json)
+
+    expect(data).toHaveLength(36)
   })
 
-  test('imports from a LaTeX file in a ZIP file', async () => {
+  test('imports JATS output from eXtyles Arc with bundled data', async () => {
     const { app } = await import('../../app')
 
     const response = await request(app)
-      .post('/api/v2/import/zip')
-      .attach('file', __dirname + '/__fixtures__/latex.zip')
+      .post(route)
+      .attach('file', __dirname + '/__fixtures__/jats-arc.zip')
+      .field('addBundledData', true)
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
@@ -50,23 +60,13 @@ describe('import ZIP', () => {
     expect(response.get('Content-Disposition')).toBe(
       'attachment; filename="manuscript.manuproj"'
     )
+
+    const zip = await new JSZip().loadAsync(response.body)
+    expect(Object.keys(zip.files).length).toBe(2)
+
+    const json = await zip.files['index.manuscript-json'].async('text')
+    const { data } = JSON.parse(json)
+
+    expect(data).toHaveLength(101)
   })
-
-  test('imports from a JATS XML file in a ZIP file', async () => {
-    const { app } = await import('../../app')
-
-    const response = await request(app)
-      .post('/api/v2/import/zip')
-      .attach('file', __dirname + '/__fixtures__/jats.zip')
-      .set('pressroom-api-key', config.api_key)
-      .responseType('blob')
-
-    expect(response.status).toBe(200)
-    expect(response.get('Content-Type')).toBe('application/zip')
-    expect(response.get('Content-Disposition')).toBe(
-      'attachment; filename="manuscript.manuproj"'
-    )
-  })
-
-  // TODO: imports from a HTML file in a ZIP file
 })

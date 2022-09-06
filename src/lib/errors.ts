@@ -54,40 +54,7 @@ export class PDFPreviewError extends Error implements StatusCoded {
   }
 }
 
-export class PDFTemplateMissingError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.PDFTemplateMissingError
-  readonly statusCode = 500
-  constructor(message: string) {
-    super(message)
-    this.name = 'PDFTemplateMissingError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
-export class EPubPreviewError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.EPubPreviewError
-  readonly statusCode = 500
-  constructor(message: string) {
-    super(message)
-    this.name = 'EPubPreviewError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
-export class ManuscriptValidateError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.ManuscriptValidateError
-  readonly statusCode = 500
-  constructor(message: string) {
-    super(message)
-    this.name = 'ManuscriptValidateError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
 enum InternalErrorCode {
   HTMLPreviewError = 'PREVIEW_HTML_GENERATION_FAILED',
   PDFPreviewError = 'PREVIEW_PDF_GENERATION_FAILED',
-  PDFTemplateMissingError = 'PREVIEW_PDF_TEMPLATE_MISSING',
-  EPubPreviewError = 'PREVIEW_EPUB_GENERATION_FAILED',
-  ManuscriptValidateError = 'MANUSCRIPT_CONTENT_PARSING_FAILED',
 }

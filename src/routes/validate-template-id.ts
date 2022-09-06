@@ -37,7 +37,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *       404:
  *         description: "template not found"
  */
-export const validateTemplate = Router().post(
+export const validateTemplateId = Router().post(
   '/validate/templateId/:templateId',
   authentication,
   celebrate({

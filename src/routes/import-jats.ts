@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
+import fs from 'fs-extra'
 import createHttpError from 'http-errors'
 
-import { arcCredentials } from '../lib/arc-credentials'
 import { authentication } from '../lib/authentication'
-import { convertJATSArc } from '../lib/convert-jats-arc'
-import { convertWordToJATS } from '../lib/extyles-arc'
+import { convertJATS } from '../lib/convert-jats'
 import { logger } from '../lib/logger'
 import { parseXMLFile } from '../lib/parse-xml-file'
 import { sendArchive } from '../lib/send-archive'
@@ -31,20 +31,14 @@ import { wrapAsync } from '../lib/wrap-async'
 /**
  * @swagger
  *
- * /import/word-arc:
+ * /import/jats:
  *   post:
- *     description: Convert Word file to Manuscripts data via Arc
+ *     description: Convert JATS file to Manuscripts data
  *     security:
  *       - BearerAuth: []
  *       - ApiKeyAuth: []
- *     parameters:
- *      - in: header
- *        name: pressroom-extylesarc-secret
- *        schema:
- *          type: string
- *        required: false
  *     requestBody:
- *        description: multipart form data including Word file
+ *        description: multipart form data including ZIP file
  *        required: true
  *        content:
  *          multipart/form-data:
@@ -54,6 +48,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *                file:
  *                  type: string
  *                  format: binary
+ *                addBundledData:
+ *                  type: boolean
  *     responses:
  *       200:
  *         description: Conversion success
@@ -63,41 +59,45 @@ import { wrapAsync } from '../lib/wrap-async'
  *               type: string
  *               format: binary
  */
-export const importWordArc = Router().post(
-  '/import/word-arc',
+export const importJATS = Router().post(
+  '/import/jats',
   authentication,
-  arcCredentials,
   upload.single('file'),
+  celebrate({
+    body: Joi.object({
+      addBundledData: Joi.boolean().empty(''),
+    }),
+  }),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
-    // @ts-ignore
-    logger.debug(`Received ${req.file.originalName}`)
-
-    // allow 60 minutes for conversion
-    req.setTimeout(60 * 60 * 1000)
+    const { addBundledData = false } = req.body as { addBundledData?: boolean }
 
     const dir = req.tempDir
-
     // @ts-ignore
-    // const extension = req.file.detectedFileExtension
-    const extension = req.file.clientReportedFileExtension
-    if (!/^\.docx?$/.test(extension)) {
-      throw createHttpError(400, 'Only .docx and .doc files are supported')
+    await unzip(req.file.stream, dir)
+
+    // TODO move this to middleware
+    const lookupName = ['/manuscript.XML', '/manuscript.xml']
+    let doc = undefined
+    for (const name of lookupName) {
+      const path = dir + name
+      if (fs.existsSync(path)) {
+        try {
+          doc = await parseXMLFile(path)
+        } catch (e) {
+          logger.debug(e)
+        }
+        break
+      }
     }
 
-    // Send Word file to eXtyles Arc, receive JATS + images in ZIP
-    const zip = await convertWordToJATS(
-      // @ts-ignore
-      req.file.stream,
-      extension,
-      req.user.arc
-    )
-
-    // unzip the input
-    await unzip(zip, dir)
-
-    const doc = await parseXMLFile(dir + '/manuscript.XML')
-    const archive = await convertJATSArc(dir, doc)
+    if (!doc) {
+      throw createHttpError(
+        400,
+        'Cannot parse JATS file check if manuscript.XML exists in the archive'
+      )
+    }
+    const archive = await convertJATS(dir, doc, { addBundledData })
 
     sendArchive(res, archive, 'manuscript.manuproj')
   })

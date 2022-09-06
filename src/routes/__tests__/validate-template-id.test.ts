@@ -17,36 +17,32 @@ import request from 'supertest'
 
 import { config } from '../../lib/config'
 
-describe('import Word', () => {
-  test('imports from a Word file', async () => {
-    const { app } = await import('../../app')
+const route = (templateId: string) =>
+  `/api/v2/validate/templateId/${templateId}`
 
+describe('validate temmplate id', () => {
+  test('returns 200 if template id is found', async () => {
+    const { app } = await import('../../app')
+    const templateId =
+      'MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article'
     const response = await request(app)
-      .post('/api/v2/import/word')
-      .attach('file', __dirname + '/__fixtures__/manuscript.docx')
+      .post(route(templateId))
+      .set('Accept', 'application/json')
       .set('pressroom-api-key', config.api_key)
-      .responseType('blob')
+      .responseType('json')
 
     expect(response.status).toBe(200)
-    expect(response.get('Content-Type')).toBe('application/zip')
-    expect(response.get('Content-Disposition')).toBe(
-      'attachment; filename="manuscript.manuproj"'
-    )
   })
-  test('imports from a Word file with metadata enrichment', async () => {
+
+  test('returns 404 if template id is found', async () => {
     const { app } = await import('../../app')
-
+    const templateId = 'MPManuscriptTemplate:invalid-template'
     const response = await request(app)
-      .post('/api/v2/import/word')
-      .attach('file', __dirname + '/__fixtures__/manuscript.docx')
-      .field('enrichMetadata', true)
+      .post(route(templateId))
+      .set('Accept', 'application/json')
       .set('pressroom-api-key', config.api_key)
-      .responseType('blob')
+      .responseType('json')
 
-    expect(response.status).toBe(200)
-    expect(response.get('Content-Type')).toBe('application/zip')
-    expect(response.get('Content-Disposition')).toBe(
-      'attachment; filename="manuscript.manuproj"'
-    )
+    expect(response.status).toBe(404)
   })
 })

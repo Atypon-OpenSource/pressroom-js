@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Version } from '@manuscripts/manuscript-transform'
 import archiver from 'archiver'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
+import {
+  BasicAttachmentData,
+  generateBasicAttachmentsMap,
+  generateGraphicsMap,
+} from '../lib/attachments'
 import { authentication } from '../lib/authentication'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
-import { createPDF } from '../lib/create-pdf'
-import { depositEEO } from '../lib/deposit-eeo'
-import { emailAuthorization } from '../lib/email-authorization'
-import { removeCodeListing } from '../lib/jats-utils'
-import { logger } from '../lib/logger'
+import { createIdGenerator } from '../lib/id-generator'
 import { chooseManuscriptID } from '../lib/manuscript-id'
+import { parseBodyProperty } from '../lib/parseBodyParams'
+import { createAttachmentPathGenerator } from '../lib/path-generator'
 import { sendArchive } from '../lib/send-archive'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -36,9 +40,9 @@ import { wrapAsync } from '../lib/wrap-async'
 /**
  * @swagger
  *
- * /export/literatum-eeo:
+ * /export/bundle/jats:
  *   post:
- *     description: Convert manuscript data to Literatum EEO deposit
+ *     description: Convert manuscript data to a ZIP file containing a JATS XML file
  *     security:
  *       - BearerAuth: []
  *       - ApiKeyAuth: []
@@ -55,24 +59,17 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  type: string
  *                allowMissingElements:
  *                  type: boolean
- *                async:
- *                  type: boolean
- *                doi:
+ *                version:
  *                  type: string
- *                journalName:
- *                  type: string
- *                notificationURL:
- *                  type: string
- *                deposit:
- *                  type: boolean
  *                generateSectionLabels:
  *                  type: boolean
+ *                attachments:
+ *                  type: string
+ *                  example: '[{"name":"figure.jpg","url":"attachment:db76bde-4cde-4579-b012-24dead961adc"}]'
  *              required:
  *                - file
  *                - manuscriptID
- *                - doi
- *                - journalName
- *                - notificationURL
+ *                - attachments
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -85,54 +82,44 @@ import { wrapAsync } from '../lib/wrap-async'
  *               type: string
  *               format: binary
  */
-export const exportLiteratumEEO = Router().post(
-  '/export/literatum-eeo',
+export const exportBundleJATS = Router().post(
+  '/export/bundle/jats',
   authentication,
-  emailAuthorization,
   upload.single('file'),
   createRequestDirectory,
   decompressManuscript,
   chooseManuscriptID,
+  parseBodyProperty('attachments'),
   celebrate({
     body: {
-      deposit: Joi.boolean().empty(''),
-      doi: Joi.string().required(),
-      frontMatterOnly: Joi.boolean().empty(''),
-      journalName: Joi.string().required(),
       manuscriptID: Joi.string().required(),
-      notificationURL: Joi.string().required(),
       allowMissingElements: Joi.boolean().empty('').default(false),
-      async: Joi.boolean().empty('').default(true),
+      version: Joi.string().empty(''),
       generateSectionLabels: Joi.boolean().empty(''),
+      attachments: Joi.array()
+        .items({
+          name: Joi.string().required(),
+          url: Joi.string().required(),
+        })
+        .required(),
     },
   }),
   wrapAsync(async (req, res) => {
-    // validate the input
     const {
-      deposit = true,
-      doi,
-      frontMatterOnly = true,
-      journalName,
       manuscriptID,
-      notificationURL,
+      version,
       allowMissingElements,
-      async,
       generateSectionLabels,
+      attachments,
     } = req.body as {
-      deposit: boolean
-      doi: string
-      frontMatterOnly: boolean
-      journalName: string
       manuscriptID: string
-      notificationURL: string
+      version?: Version
       allowMissingElements: boolean
-      async: boolean
       generateSectionLabels: boolean
+      attachments: Array<BasicAttachmentData>
     }
 
-    // unzip the input
     const dir = req.tempDir
-
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
     const { article, modelMap } = createArticle(data, manuscriptID, {
@@ -140,50 +127,27 @@ export const exportLiteratumEEO = Router().post(
       generateSectionLabels,
     })
 
-    // create XML
+    // prepare the output archive
+    const archive = archiver.create('zip')
+    const graphicsMap = generateGraphicsMap(data)
+    const attachmentsMap = generateBasicAttachmentsMap(attachments)
+    // create JATS XML
     const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
-      doi,
-      frontMatterOnly,
-    })
-    await fs.writeFile(dir + '/manuscript.xml', removeCodeListing(jats))
-    const xmlStream = fs.readFileSync(dir + '/manuscript.xml')
-    try {
-      // create PDF
-      await createPDF(
+      version,
+      idGenerator: createIdGenerator(),
+      mediaPathGenerator: createAttachmentPathGenerator(
         dir,
-        'manuscript.xml',
-        'manuscript.pdf',
-        'xelatex',
-        {},
-        (childProcess) => res.on('close', () => childProcess.kill())
-      )
-    } catch (e) {
-      logger.error(e)
-      throw new Error('Conversion failed when exporting to PDF (Literatum EEO)')
-    }
-    const pdfStream = fs.readFileSync(dir + '/manuscript.pdf')
+        archive,
+        graphicsMap,
+        attachmentsMap,
+        allowMissingElements
+      ),
+    })
 
-    if (deposit) {
-      logger.debug(`Depositing to Literatum EEO`)
+    archive.append(jats, { name: 'manuscript.xml' })
 
-      const depositState = await depositEEO({
-        journalName,
-        manuscriptID,
-        notificationURL,
-        pdf: pdfStream,
-        xml: xmlStream,
-        async,
-      })
-      res.json(depositState)
-    } else {
-      const archive = archiver
-        .create('zip')
-        .append(xmlStream, { name: 'manuscript.xml' })
-        .append(pdfStream, { name: 'manuscript.pdf' })
+    archive.finalize()
 
-      archive.finalize()
-
-      sendArchive(res, archive) // for debugging
-    }
+    sendArchive(res, archive)
   })
 )

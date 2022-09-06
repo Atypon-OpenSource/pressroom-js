@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2021 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Version } from '@manuscripts/manuscript-transform'
-import archiver from 'archiver'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
-import {
-  BasicAttachmentData,
-  generateBasicAttachmentsMap,
-  generateGraphicsMap,
-} from '../lib/attachments'
+import { AttachmentData } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
-import { createArticle } from '../lib/create-article'
-import { createJATSXML } from '../lib/create-jats-xml'
-import { createIdGenerator } from '../lib/id-generator'
+import { createLiteratumJats } from '../lib/create-literatum-jats'
+import { VALID_DOI_REGEX } from '../lib/doi'
+import { emailAuthorization } from '../lib/email-authorization'
+import { removeCodeListing } from '../lib/jats-utils'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseBodyProperty } from '../lib/parseBodyParams'
-import { createAttachmentPathGenerator } from '../lib/path-generator'
-import { sendArchive } from '../lib/send-archive'
+import { parseSupplementaryDOIs } from '../lib/parseSupplementaryDOIs'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { decompressManuscript } from '../lib/validate-manuscript-archive'
@@ -57,18 +51,21 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  format: binary
  *                manuscriptID:
  *                  type: string
- *                allowMissingElements:
- *                  type: boolean
- *                version:
+ *                doi:
  *                  type: string
- *                generateSectionLabels:
+ *                frontMatterOnly:
  *                  type: boolean
+ *                supplementaryMaterialDOIs:
+ *                  type: string
+ *                  example: '[{"url":"path/to","doi":"10.1000/xyz123"}]'
  *                attachments:
  *                  type: string
- *                  example: '[{"name":"figure.jpg","url":"attachment:db76bde-4cde-4579-b012-24dead961adc"}]'
+ *                  example: '[{"name":"figure.jpg","url":"attachment:db76bde-4cde-4579-b012-24dead961adc","MIME":"image/jpeg","designation":"figure"}]'
  *              required:
  *                - file
  *                - manuscriptID
+ *                - doi
+ *                - supplementaryMaterialDOIs
  *                - attachments
  *            encoding:
  *              file:
@@ -82,24 +79,35 @@ import { wrapAsync } from '../lib/wrap-async'
  *               type: string
  *               format: binary
  */
-export const exportJats = Router().post(
+export const exportJATS = Router().post(
   '/export/jats',
   authentication,
+  emailAuthorization,
   upload.single('file'),
   createRequestDirectory,
   decompressManuscript,
   chooseManuscriptID,
+  parseSupplementaryDOIs,
   parseBodyProperty('attachments'),
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
-      allowMissingElements: Joi.boolean().empty('').default(false),
       version: Joi.string().empty(''),
-      generateSectionLabels: Joi.boolean().empty(''),
+      doi: Joi.string().pattern(VALID_DOI_REGEX).required(),
+      frontMatterOnly: Joi.boolean().empty(''),
+      supplementaryMaterialDOIs: Joi.array()
+        .items({
+          url: Joi.string().required(),
+          doi: Joi.string().pattern(VALID_DOI_REGEX).required(),
+        })
+        .required(),
       attachments: Joi.array()
         .items({
+          designation: Joi.string().required(),
           name: Joi.string().required(),
           url: Joi.string().required(),
+          MIME: Joi.string().required(),
+          description: Joi.string(),
         })
         .required(),
     },
@@ -107,47 +115,32 @@ export const exportJats = Router().post(
   wrapAsync(async (req, res) => {
     const {
       manuscriptID,
-      version,
-      allowMissingElements,
-      generateSectionLabels,
+      doi,
+      frontMatterOnly,
+      supplementaryMaterialDOIs,
       attachments,
     } = req.body as {
       manuscriptID: string
-      version?: Version
-      allowMissingElements: boolean
-      generateSectionLabels: boolean
-      attachments: Array<BasicAttachmentData>
+      doi: string
+      frontMatterOnly: boolean
+      supplementaryMaterialDOIs: Array<{ url: string; doi: string }>
+      attachments: Array<AttachmentData>
     }
 
     const dir = req.tempDir
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const { article, modelMap } = createArticle(data, manuscriptID, {
-      allowMissingElements,
-      generateSectionLabels,
-    })
+    const doc = await createLiteratumJats(
+      manuscriptID,
+      data,
+      attachments,
+      doi,
+      supplementaryMaterialDOIs,
+      frontMatterOnly
+    )
 
-    // prepare the output archive
-    const archive = archiver.create('zip')
-    const graphicsMap = generateGraphicsMap(data)
-    const attachmentsMap = generateBasicAttachmentsMap(attachments)
-    // create JATS XML
-    const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
-      version,
-      idGenerator: createIdGenerator(),
-      mediaPathGenerator: createAttachmentPathGenerator(
-        dir,
-        archive,
-        graphicsMap,
-        attachmentsMap,
-        allowMissingElements
-      ),
-    })
+    const jats = new XMLSerializer().serializeToString(doc)
 
-    archive.append(jats, { name: 'manuscript.xml' })
-
-    archive.finalize()
-
-    sendArchive(res, archive)
+    return res.type('application/xml').send(removeCodeListing(jats))
   })
 )

@@ -18,72 +18,32 @@ import swaggerUi from 'swagger-ui-express'
 
 import { isStatusCoded } from '../lib/errors'
 import { swaggerSpec } from '../lib/swagger-spec'
-import { buildInteractiveAssetDO } from './build-interactive-do'
-import { buildSubmissionBundle } from './build-submission-bundle'
-import { convertReferencesAnyStyle } from './convert-references-anystyle'
-import { convertReferencesEdifix } from './convert-references-edifix'
 import { exportBibliography } from './export-bibliography'
-import { exportDocx } from './export-docx'
-import { exportEpub } from './export-epub'
 import { exportHtml } from './export-html'
-import { exportIcml } from './export-icml'
-import { exportJats } from './export-jats'
-import { exportLatex } from './export-latex'
-import { exportLiteratumBundle } from './export-literatum-bundle'
-import { exportLiteratumDO } from './export-literatum-do'
-import { exportLiteratumEEO } from './export-literatum-eeo'
-import { exportLiteratumJats } from './export-literatum-jats'
-import { exportMarkdown } from './export-markdown'
+import { exportBundleJATS } from './export-bundle-jats'
+import { exportBundleLiteratum } from './export-bundle-literatum'
+import { exportJATS } from './export-jats'
 import { exportPDF } from './export-pdf'
-import { extylesCreateJob } from './extyles-create-Job'
-import { extylesImportResult } from './extyles-import-result'
-import { importJATSArc } from './import-jats-arc'
-import { importPDF } from './import-pdf'
-import { importWord } from './import-word'
-import { importWordArc } from './import-word-arc'
-import { importZip } from './import-zip'
-import { validateTemplate } from './template-id-validator'
-import { validateJATS } from './validate-jats'
-import { validateManuscript } from './validate-manuscript'
-import { convertWordToPdf } from './word-to-pdf'
+import { importJATS } from './import-jats'
+import { validateTemplateId } from './validate-template-id'
 
 export const routes = Router()
   // importers
-  .use('/', importPDF, importWord, importWordArc, importZip, importJATSArc)
+  .use('/', importJATS)
 
   // exporters
   .use(
     '/',
     exportPDF,
-    exportDocx,
-    exportEpub,
     exportHtml,
-    exportIcml,
-    exportJats,
-    exportLatex,
-    exportMarkdown,
+    exportBundleJATS,
     exportBibliography,
-    exportLiteratumBundle,
-    exportLiteratumDO,
-    exportLiteratumEEO,
-    exportLiteratumJats
-  )
-  // Extyles
-  .use('/', extylesCreateJob, extylesImportResult)
-
-  // builders
-  .use('/', buildSubmissionBundle, buildInteractiveAssetDO)
-
-  // converters
-  .use(
-    '/',
-    convertReferencesAnyStyle,
-    convertReferencesEdifix,
-    convertWordToPdf
+    exportBundleLiteratum,
+    exportJATS
   )
 
   // validators
-  .use('/', validateManuscript, validateJATS, validateTemplate)
+  .use('/', validateTemplateId)
 
   // OpenAPI description for people
   .use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))

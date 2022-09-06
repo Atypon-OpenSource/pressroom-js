@@ -1,5 +1,5 @@
 /*!
- * © 2021 Atypon Systems LLC
+ * © 2020 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 import { RequestHandler } from 'express'
-import libXML, { parseXml } from 'libxmljs2'
+import JSZip from 'jszip'
+import { parseXml } from 'libxmljs2'
 import request from 'supertest'
+
+import { app } from '../../app'
 
 jest.mock(
   'express-jwt',
@@ -25,18 +28,21 @@ jest.mock(
   }
 )
 
-describe('export literatum JATS', () => {
-  test('exports to a ZIP file containing a JATS XML', async () => {
-    const { app } = await import('../../app')
+const route = '/api/v2/export/bundle/literatum'
 
+describe('export Literatum Bundle', () => {
+  test('exports to Literatum Bundle', async () => {
     const response = await request(app)
-      .post('/api/v2/export/literatum-jats')
+      .post(route)
       .attach('file', __dirname + '/__fixtures__/attachment-ids.zip')
       .field(
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .field('deposit', false)
       .field('doi', '10.1234/567')
+      .field('groupDOI', '10.0000/test')
+      .field('seriesCode', '10.0000/test')
       .field('frontMatterOnly', false)
       .field(
         'supplementaryMaterialDOIs',
@@ -79,48 +85,54 @@ describe('export literatum JATS', () => {
       .responseType('blob')
 
     expect(response.status).toBe(200)
-    expect(response.get('Content-Type')).toBe('application/xml; charset=utf-8')
+    expect(response.get('Content-Type')).toBe('application/zip')
+    expect(response.get('Content-Disposition')).toBe(
+      'attachment; filename="manuscript.zip"'
+    )
 
-    const xml = response.body.toString()
+    const zip = await new JSZip().loadAsync(response.body)
+
+    const expectedFiles = [
+      'test/567/graphic/figure 2.jpg',
+      'test/567/external/hon-20-0144-r1.docx',
+      'test/567/external/hon-20-0144.pdf',
+      'test/567/external/html-asset.zip',
+      'test/567/567.xml',
+      'test/567/567.pdf',
+      'manifest.xml',
+    ]
+    const zipFiles: Array<string> = []
+    zip.forEach((path) => {
+      zipFiles.push(path)
+    })
+
+    expect(zipFiles).toStrictEqual(expectedFiles)
+    const xml = await zip.files['test/567/567.xml'].async('text')
+
     const doc = parseXml(xml, {
       dtdload: true,
       dtdvalid: true,
       nonet: true,
     })
-
     expect(doc.errors.length).toBe(0)
 
-    expect(doc.getDtd()).toEqual({
-      externalId:
-        '-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with OASIS Tables with MathML3 v1.2 20190208//EN',
-      name: 'article',
-      systemId:
-        'http://jats.nlm.nih.gov/archiving/1.2/JATS-archive-oasis-article1-mathml3.dtd',
-    })
     expect(xml).toMatchSnapshot()
   })
 
-  test('DTD validation', async () => {
-    const parseXMLMock = jest.spyOn(libXML, 'parseXml')
-    // @ts-ignore
-    parseXMLMock.mockImplementation((document: string, options) => {
-      const result = parseXml(document, options)
-      // @ts-ignore
-      result.errors = ['Invalid DTD']
-      return result
-    })
-
-    const { app } = await import('../../app')
-
+  test('exports to Literatum Bundle with theme', async () => {
     const response = await request(app)
-      .post('/api/v2/export/literatum-jats')
+      .post(route)
       .attach('file', __dirname + '/__fixtures__/attachment-ids.zip')
       .field(
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .field('deposit', false)
       .field('doi', '10.1234/567')
+      .field('groupDOI', '10.0000/test')
+      .field('seriesCode', '10.0000/test')
       .field('frontMatterOnly', false)
+      .field('theme', 'plos-one')
       .field(
         'supplementaryMaterialDOIs',
         JSON.stringify([
@@ -161,11 +173,36 @@ describe('export literatum JATS', () => {
       )
       .responseType('blob')
 
-    parseXMLMock.mockRestore()
-
-    expect(response.status).toBe(500)
-    expect(JSON.parse(response.body.toString()).message).toStrictEqual(
-      'Invalid DTD'
+    expect(response.status).toBe(200)
+    expect(response.get('Content-Type')).toBe('application/zip')
+    expect(response.get('Content-Disposition')).toBe(
+      'attachment; filename="manuscript.zip"'
     )
+
+    const zip = await new JSZip().loadAsync(response.body)
+
+    const expectedFiles = [
+      'test/567/graphic/figure 2.jpg',
+      'test/567/external/hon-20-0144-r1.docx',
+      'test/567/external/hon-20-0144.pdf',
+      'test/567/external/html-asset.zip',
+      'test/567/567.xml',
+      'test/567/567.pdf',
+      'manifest.xml',
+    ]
+    const zipFiles: Array<string> = []
+    zip.forEach((path) => {
+      zipFiles.push(path)
+    })
+
+    expect(zipFiles).toStrictEqual(expectedFiles)
+    const xml = await zip.files['test/567/567.xml'].async('text')
+
+    const doc = parseXml(xml, {
+      dtdload: true,
+      dtdvalid: true,
+      nonet: true,
+    })
+    expect(doc.errors.length).toBe(0)
   })
 })

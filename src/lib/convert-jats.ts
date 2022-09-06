@@ -34,7 +34,7 @@ interface Options {
   addBundledData?: boolean
 }
 
-export const convertJATSArc = async (
+export const convertJATS = async (
   dir: string,
   doc: Document,
   options: Options = {}
