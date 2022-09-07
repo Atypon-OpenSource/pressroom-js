@@ -29,7 +29,7 @@ jest.mock(
 describe('email authentication', () => {
   test('limits endpoint access by email domain', async () => {
     const response = await request(app)
-      .post('/api/v2/export/literatum-bundle')
+      .post('/api/v2/export/bundle/literatum')
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
       .field(
         'manuscriptID',
