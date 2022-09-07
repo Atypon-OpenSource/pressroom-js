@@ -39,10 +39,8 @@ describe('export Literatum Bundle', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
-      .field('deposit', false)
       .field('doi', '10.1234/567')
       .field('groupDOI', '10.0000/test')
-      .field('seriesCode', '10.0000/test')
       .field('frontMatterOnly', false)
       .field(
         'supplementaryMaterialDOIs',
@@ -127,10 +125,8 @@ describe('export Literatum Bundle', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
-      .field('deposit', false)
       .field('doi', '10.1234/567')
       .field('groupDOI', '10.0000/test')
-      .field('seriesCode', '10.0000/test')
       .field('frontMatterOnly', false)
       .field('theme', 'plos-one')
       .field(
