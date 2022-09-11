@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Manuscript } from '@manuscripts/manuscripts-json-schema'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
-import path from 'path'
 
 import { AttachmentData } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
-import { createArticle } from '../lib/create-article'
-import { createJATSXML } from '../lib/create-jats-xml'
-import { createPDF, PDFEngine } from '../lib/create-pdf'
-import { XLINK_NAMESPACE } from '../lib/data'
 import { emailAuthorization } from '../lib/email-authorization'
 import { PDFPreviewError } from '../lib/errors'
-import { findCSL } from '../lib/find-csl'
-import { filterJATSResult } from '../lib/jats-utils'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseBodyProperty } from '../lib/parseBodyParams'
@@ -124,7 +116,7 @@ export const exportPDF = Router().post(
       attachments,
     } = req.body as {
       manuscriptID: string
-      engine: PDFEngine | 'prince-html'
+      engine: 'prince-html'
       theme?: string
       allowMissingElements: boolean
       generateSectionLabels: boolean
@@ -151,50 +143,27 @@ export const exportPDF = Router().post(
 
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const { article, modelMap } = createArticle(data, manuscriptID, {
-      allowMissingElements,
-      generateSectionLabels,
-    })
 
     if (engine === 'prince-html') {
-      await createPrincePDF(dir, data, manuscriptID, 'Data', attachments, theme)
-    } else {
-      // create XML
-      const jats = await createJATSXML(
-        article.content,
-        modelMap,
-        manuscriptID,
-        {
-          mediaPathGenerator: async (element) => {
-            const href = element.getAttributeNS(XLINK_NAMESPACE, 'href')
-
-            const { name } = path.parse(href as string)
-
-            return `Data/${name}`
-          },
-        }
-      )
-
-      await fs.writeFile(dir + '/manuscript.xml', filterJATSResult(jats))
-
-      const manuscript = modelMap.get(manuscriptID) as Manuscript
-
-      // use the CSL style defined in the manuscript bundle
-      const csl = await findCSL(manuscript, modelMap)
       try {
-        // create PDF
-        await createPDF(
+        await createPrincePDF(
           dir,
-          'manuscript.xml',
-          'manuscript.pdf',
-          engine || 'xelatex',
-          { csl },
-          (childProcess) => res.on('close', () => childProcess.kill())
+          data,
+          manuscriptID,
+          'Data',
+          attachments,
+          theme,
+          {
+            allowMissingElements,
+            generateSectionLabels,
+          }
         )
       } catch (e) {
         logger.error(e)
         throw new PDFPreviewError('Conversion failed when exporting to PDF')
       }
+    } else {
+      throw Error('Engine not supported.')
     }
 
     // send the file as an attachment

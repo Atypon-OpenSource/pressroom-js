@@ -53,9 +53,13 @@ export const createPrincePDF = async (
   manuscriptID: string,
   imageDir = 'graphic',
   attachments: Array<AttachmentData>,
-  theme?: string
+  theme?: string,
+  articleOptions?: {
+    allowMissingElements: boolean,
+    generateSectionLabels: boolean,
+  }
 ): Promise<string> => {
-  const { article, modelMap } = createArticle(data, manuscriptID)
+  const { article, modelMap } = createArticle(data, manuscriptID, articleOptions)
   /* @ts-ignore */
   const html = await createHTML(article, modelMap, {
     mediaPathGenerator: async (element) => {
