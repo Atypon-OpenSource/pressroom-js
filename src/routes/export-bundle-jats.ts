@@ -83,7 +83,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *               format: binary
  */
 export const exportBundleJATS = Router().post(
-  '/export/bundle/jats',
+  ['/export/bundle/jats', 'export/jats'],
   authentication,
   upload.single('file'),
   createRequestDirectory,

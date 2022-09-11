@@ -90,7 +90,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *               format: binary
  */
 export const exportBundleLiteratum = Router().post(
-  '/export/bundle/literatum',
+  ['/export/bundle/literatum', 'export/literatum-bundle'],
   authentication,
   emailAuthorization,
   upload.single('file'),

@@ -80,7 +80,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *               format: binary
  */
 export const exportJATS = Router().post(
-  '/export/jats',
+  ['/export/jats', '/export/literatum-jats'],
   authentication,
   emailAuthorization,
   upload.single('file'),
