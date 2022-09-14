@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RequestHandler } from 'express'
+import { NextFunction, RequestHandler } from 'express'
 import request from 'supertest'
 
 import { config } from '../../lib/config'
@@ -74,12 +74,23 @@ describe('export PDF', () => {
 
   test('Failure in auto-generation of PDF preview', async () => {
     const { app } = await import('../../app')
-    const PDFHelpers = await import('../../lib/create-html')
+    const PDFHelpers = await import('../../lib/prince-html')
+    const EmailAuthorization = await import('../../lib/email-authorization')
 
     const createHTMLMock = jest.spyOn(PDFHelpers, 'createPrincePDF')
     createHTMLMock.mockImplementation(() => {
       throw new Error()
     })
+
+    const authenticationMock = jest.spyOn(
+      EmailAuthorization,
+      'emailAuthorization'
+    )
+    authenticationMock.mockImplementation(
+      (req: never, res: never, next: NextFunction) => {
+        return Promise.resolve(next())
+      }
+    )
 
     const response = await request(app)
       .post('/api/v2/export/pdf')
