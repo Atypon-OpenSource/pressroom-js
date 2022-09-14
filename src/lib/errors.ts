@@ -54,7 +54,18 @@ export class PDFPreviewError extends Error implements StatusCoded {
   }
 }
 
+export class PDFJobCreationError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.PDFJobCreationError
+  readonly statusCode = 500
+  constructor(message: string) {
+    super(message)
+    this.name = 'PDFJobCreationError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
 enum InternalErrorCode {
   HTMLPreviewError = 'PREVIEW_HTML_GENERATION_FAILED',
   PDFPreviewError = 'PREVIEW_PDF_GENERATION_FAILED',
+  PDFJobCreationError = 'PDF_JOB_CREATION_FAILED',
 }

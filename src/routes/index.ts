@@ -19,12 +19,14 @@ import swaggerUi from 'swagger-ui-express'
 import { isStatusCoded } from '../lib/errors'
 import { swaggerSpec } from '../lib/swagger-spec'
 import { exportBibliography } from './export-bibliography'
-import { exportHtml } from './export-html'
 import { exportBundleJATS } from './export-bundle-jats'
 import { exportBundleLiteratum } from './export-bundle-literatum'
+import { exportHtml } from './export-html'
 import { exportJATS } from './export-jats'
 import { exportPDF } from './export-pdf'
 import { importJATS } from './import-jats'
+import { pdfJobResult } from './pdf-job-result'
+import { pdfJobStatus } from './pdf-job-status'
 import { validateTemplateId } from './validate-template-id'
 
 export const routes = Router()
@@ -41,6 +43,9 @@ export const routes = Router()
     exportBundleLiteratum,
     exportJATS
   )
+
+  // Indesign
+  .use('/', pdfJobResult, pdfJobStatus)
 
   // validators
   .use('/', validateTemplateId)

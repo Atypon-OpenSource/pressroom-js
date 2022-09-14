@@ -20,7 +20,8 @@ import fs from 'fs-extra'
 import { AttachmentData } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
 import { emailAuthorization } from '../lib/email-authorization'
-import { PDFPreviewError } from '../lib/errors'
+import { PDFJobCreationError, PDFPreviewError } from '../lib/errors'
+// import { createPdfJob } from '../lib/indesign-service'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseBodyProperty } from '../lib/parseBodyParams'
@@ -29,6 +30,7 @@ import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
+import {createPdfJob} from "../lib/pdf-services";
 /**
  * @swagger
  *
@@ -116,7 +118,7 @@ export const exportPDF = Router().post(
       attachments,
     } = req.body as {
       manuscriptID: string
-      engine: 'prince-html'
+      engine: 'indesign' | 'prince-html'
       theme?: string
       allowMissingElements: boolean
       generateSectionLabels: boolean
@@ -162,11 +164,29 @@ export const exportPDF = Router().post(
         logger.error(e)
         throw new PDFPreviewError('Conversion failed when exporting to PDF')
       }
+      // send the file as an attachment
+      res.download(dir + '/manuscript.pdf')
+    } else if (engine === 'indesign') {
+      try {
+        const id = await createPdfJob(
+          dir,
+          data,
+          manuscriptID,
+          'Data',
+          attachments,
+          theme,
+          {
+            allowMissingElements,
+            generateSectionLabels,
+          }
+        )
+        res.status(201).send({ id: id })
+      } catch (e) {
+        logger.error(e)
+        throw new PDFJobCreationError('Job creation failed')
+      }
     } else {
       throw Error('Engine not supported.')
     }
-
-    // send the file as an attachment
-    res.download(dir + '/manuscript.pdf')
   })
 )
