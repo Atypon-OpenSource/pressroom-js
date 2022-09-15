@@ -1,5 +1,11 @@
 # pressroom-js
 
+## 2.2.0
+
+### Minor Changes
+
+- db30a7b1: LEAN-1577 - removing ununsed routes and adding alternative paths
+
 ## 2.1.7
 
 ### Patch Changes
