@@ -1,5 +1,11 @@
 # pressroom-js
 
+## 2.3.0
+
+### Minor Changes
+
+- 58a65222: fix(pressroom) LEAN-1696
+
 ## 2.2.0
 
 ### Minor Changes
