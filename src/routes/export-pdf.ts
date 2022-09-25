@@ -56,7 +56,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  type: boolean
  *                engine:
  *                  type: string
- *                  enum: ['prince-html', 'prince', 'weasyprint', 'xelatex', 'tectonic']
+ *                  enum: ['prince-html']
  *                theme:
  *                  type: string
  *                generateSectionLabels:
@@ -92,15 +92,9 @@ export const exportPDF = Router().post(
     body: {
       manuscriptID: Joi.string().required(),
       engine: Joi.string()
-        .allow(
-          'prince',
-          'prince-html',
-          'weasyprint',
-          'xelatex',
-          'tectonic',
-          'SampleEngine'
-        )
-        .required(),
+        .empty('')
+        .allow('prince-html', 'SampleEngine')
+        .default('xelatex'),
       theme: Joi.string().empty(''),
       allowMissingElements: Joi.boolean().empty('').default(false),
       generateSectionLabels: Joi.boolean().empty(''),
@@ -112,11 +106,10 @@ export const exportPDF = Router().post(
           MIME: Joi.string().required(),
           description: Joi.string(),
         })
-        .optional(),
+        .required(),
     },
   }),
   wrapAsync(async (req, res) => {
-    console.log(JSON.stringify(req.body))
     const {
       manuscriptID,
       engine,

@@ -60,7 +60,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *               format: binary
  */
 export const importJATS = Router().post(
-  ['/import/jats', 'import/jats-arc'],
+  ['/import/jats', '/import/jats-arc'],
   authentication,
   upload.single('file'),
   celebrate({

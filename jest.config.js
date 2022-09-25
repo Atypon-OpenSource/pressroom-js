@@ -21,6 +21,6 @@ module.exports = {
   setupFiles: ['dotenv/config', '<rootDir>/src/setup-tests.ts'],
   testEnvironment: 'node',
   testPathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/node_modules/'],
-  testTimeout: 20000,
+  testTimeout: 200000,
   verbose: true,
 }
