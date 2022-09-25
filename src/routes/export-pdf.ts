@@ -25,12 +25,13 @@ import { PDFJobCreationError, PDFPreviewError } from '../lib/errors'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseBodyProperty } from '../lib/parseBodyParams'
+import { IPDFEngine } from '../lib/PDFEngines/interfaces/IPDFEngine'
+import { PDFEngines } from '../lib/PDFEngines/PDFEngineUtils'
 import { createPrincePDF } from '../lib/prince-html'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
-import {createPdfJob} from "../lib/pdf-services";
 /**
  * @swagger
  *
@@ -91,9 +92,15 @@ export const exportPDF = Router().post(
     body: {
       manuscriptID: Joi.string().required(),
       engine: Joi.string()
-        .empty('')
-        .allow('prince', 'prince-html', 'weasyprint', 'xelatex', 'tectonic')
-        .default('xelatex'),
+        .allow(
+          'prince',
+          'prince-html',
+          'weasyprint',
+          'xelatex',
+          'tectonic',
+          'SampleEngine'
+        )
+        .required(),
       theme: Joi.string().empty(''),
       allowMissingElements: Joi.boolean().empty('').default(false),
       generateSectionLabels: Joi.boolean().empty(''),
@@ -105,10 +112,11 @@ export const exportPDF = Router().post(
           MIME: Joi.string().required(),
           description: Joi.string(),
         })
-        .required(),
+        .optional(),
     },
   }),
   wrapAsync(async (req, res) => {
+    console.log(JSON.stringify(req.body))
     const {
       manuscriptID,
       engine,
@@ -118,7 +126,7 @@ export const exportPDF = Router().post(
       attachments,
     } = req.body as {
       manuscriptID: string
-      engine: 'indesign' | 'prince-html'
+      engine: 'SampleEngine' | 'prince-html'
       theme?: string
       allowMissingElements: boolean
       generateSectionLabels: boolean
@@ -166,9 +174,10 @@ export const exportPDF = Router().post(
       }
       // send the file as an attachment
       res.download(dir + '/manuscript.pdf')
-    } else if (engine === 'indesign') {
+    } else if (PDFEngines.has(engine)) {
+      const currentEngine: IPDFEngine = PDFEngines.get(engine)
       try {
-        const id = await createPdfJob(
+        const id = await currentEngine.createJob(
           dir,
           data,
           manuscriptID,

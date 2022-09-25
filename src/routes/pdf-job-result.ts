@@ -17,7 +17,8 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 
 import { authentication } from '../lib/authentication'
-import { jobResult } from '../lib/pdf-services'
+import { IPDFEngine } from '../lib/PDFEngines/interfaces/IPDFEngine'
+import { PDFEngines, splitEngineId } from '../lib/PDFEngines/PDFEngineUtils'
 import { wrapAsync } from '../lib/wrap-async'
 
 /**
@@ -45,7 +46,14 @@ export const pdfJobResult = Router().post(
   }),
   wrapAsync(async (req, res) => {
     const { submission_id } = req.params
-    const buffer = await jobResult(submission_id)
-    res.status(200).send(buffer)
+    const { id, engine } = splitEngineId(submission_id)
+
+    if (PDFEngines.has(engine)) {
+      const currentEngine: IPDFEngine = PDFEngines.get(engine)
+      const buffer = await currentEngine.jobResult(id)
+      res.status(200).send(buffer)
+    } else {
+      throw Error('Engine not supported.')
+    }
   })
 )
