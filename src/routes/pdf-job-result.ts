@@ -36,7 +36,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *       200:
  *         description: "PDF result"
  */
-export const pdfJobResult = Router().post(
+export const pdfJobResult = Router().get(
   '/pdf/job/:submission_id/result',
   authentication,
   celebrate({

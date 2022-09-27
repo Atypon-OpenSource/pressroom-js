@@ -50,7 +50,7 @@ export class SampleEngine implements IPDFEngine {
     // } = await IndesignClient.post<{ id: string }>('/files', form, {
     //   headers: headers,
     // })
-    const id = ''
+    const id = '123123'
 
     return `${id}:${this.engineName}`
   }
@@ -85,6 +85,6 @@ export class SampleEngine implements IPDFEngine {
     // })
 
     // return status
-    return ''
+    return 'pending'
   }
 }
