@@ -13,10 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { SampleEngine } from './SampleEngine'
-
-export const PDFEngines = new Map()
-PDFEngines.set('SampleEngine', new SampleEngine())
 
 export const splitEngineId = (
   submissionId: string

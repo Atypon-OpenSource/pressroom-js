@@ -17,14 +17,14 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 
 import { authentication } from '../lib/authentication'
-import { IPDFEngine } from '../lib/PDFEngines/interfaces/IPDFEngine'
-import { PDFEngines, splitEngineId } from '../lib/PDFEngines/PDFEngineUtils'
+import { IPdf, PdfEngines } from '../lib/PDFEngines/IPdf'
+import { splitEngineId } from '../lib/PDFEngines/PdfUtils'
 import { wrapAsync } from '../lib/wrap-async'
 
 /**
  * @swagger
  *
- * /indesign/status/:submission_id:
+ * /pdf/job/:submission_id/status:
  *   get:
  *     description: get the status of indesign submission
  *     produces:
@@ -48,8 +48,8 @@ export const pdfJobStatus = Router().get(
     const { submission_id } = req.params
     const { id, engine } = splitEngineId(submission_id)
 
-    if (PDFEngines.has(engine)) {
-      const currentEngine: IPDFEngine = PDFEngines.get(engine)
+    if (PdfEngines.has(engine)) {
+      const currentEngine: IPdf = PdfEngines.get(engine)
       const status = await currentEngine.jobStatus(id)
       res.status(200).send({ status: status })
     } else {

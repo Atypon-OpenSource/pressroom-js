@@ -25,8 +25,7 @@ import { PDFJobCreationError, PDFPreviewError } from '../lib/errors'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseBodyProperty } from '../lib/parseBodyParams'
-import { IPDFEngine } from '../lib/PDFEngines/interfaces/IPDFEngine'
-import { PDFEngines } from '../lib/PDFEngines/PDFEngineUtils'
+import { IPdf, PdfEngines } from '../lib/PDFEngines/IPdf'
 import { createPrincePDF } from '../lib/prince-html'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -79,6 +78,13 @@ import { wrapAsync } from '../lib/wrap-async'
  *             schema:
  *               type: string
  *               format: binary
+ *      201:
+ *         description: Conversion success
+ *         content:
+ *           application/json
+ *             schema:
+ *               type: object
+ *               format:
  */
 export const exportPDF = Router().post(
   '/export/pdf',
@@ -167,8 +173,8 @@ export const exportPDF = Router().post(
       }
       // send the file as an attachment
       res.download(dir + '/manuscript.pdf')
-    } else if (PDFEngines.has(engine)) {
-      const currentEngine: IPDFEngine = PDFEngines.get(engine)
+    } else if (PdfEngines.has(engine)) {
+      const currentEngine: IPdf = PdfEngines.get(engine)
       try {
         const id = await currentEngine.createJob(
           dir,

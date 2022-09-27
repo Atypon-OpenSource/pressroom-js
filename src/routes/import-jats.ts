@@ -57,7 +57,7 @@ import { wrapAsync } from '../lib/wrap-async'
  *           application/zip:
  *             schema:
  *               type: string
- *               format: binary
+ *               format: { id: job_id:engine }
  */
 export const importJATS = Router().post(
   ['/import/jats', '/import/jats-arc'],
