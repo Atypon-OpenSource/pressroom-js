@@ -16,17 +16,11 @@
  */
 
 import {ContainedModel} from '@manuscripts/manuscript-transform'
-import axios, {AxiosInstance} from 'axios'
 
 import {AttachmentData} from '../attachments'
 import {IPdf} from "./IPdf";
 
 export class SampleEngine implements IPdf {
-  public get axiosInstance(): AxiosInstance {
-    return axios.create({
-      baseURL: 'SampleEngineUrl',
-    })
-  }
 
   public get engineName(): string {
     return 'SampleEngine'

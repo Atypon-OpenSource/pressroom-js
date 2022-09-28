@@ -15,7 +15,6 @@
  */
 
 import { ContainedModel } from '@manuscripts/manuscript-transform'
-import { AxiosInstance } from 'axios'
 
 import { AttachmentData } from '../attachments'
 import { SampleEngine } from './SampleEngine'
@@ -24,8 +23,6 @@ export const PdfEngines = new Map()
 PdfEngines.set('SampleEngine', new SampleEngine())
 
 export interface IPdf {
-  axiosInstance: AxiosInstance
-
   engineName: string
 
   createJob(
