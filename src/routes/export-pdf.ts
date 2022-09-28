@@ -78,13 +78,8 @@ import { wrapAsync } from '../lib/wrap-async'
  *             schema:
  *               type: string
  *               format: binary
- *      201:
- *         description: Conversion success
- *         content:
- *           application/json
- *             schema:
- *               type: object
- *               format:
+ *       201:
+ *         description: Job created successfully
  */
 export const exportPDF = Router().post(
   '/export/pdf',
