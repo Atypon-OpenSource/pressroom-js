@@ -76,6 +76,12 @@ describe('export literatum JATS', () => {
             MIME: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             designation: 'document',
           },
+          {
+            url: 'attachment:1e2364ea-3c36-4801-b523-70c660fcc2a4',
+            name: 'supporting information.pdf',
+            MIME: 'application/pdf',
+            designation: 'supplementary',
+          },
         ])
       )
       .responseType('blob')
@@ -158,6 +164,12 @@ describe('export literatum JATS', () => {
             name: 'hon-20-0144-r1.docx',
             MIME: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             designation: 'document',
+          },
+          {
+            url: 'attachment:1e2364ea-3c36-4801-b523-70c660fcc2a4',
+            name: 'supporting information.pdf',
+            MIME: 'application/pdf',
+            designation: 'supplementary',
           },
         ])
       )

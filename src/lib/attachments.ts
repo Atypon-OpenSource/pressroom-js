@@ -186,6 +186,24 @@ export const exportAttachments = async (
     }
   }
 
+  await processElements(
+    document,
+    `//supplementary-material`,
+    async (supplementaryMaterial) => {
+      const href = supplementaryMaterial.getAttributeNS(XLINK_NAMESPACE, 'href')
+      if (href) {
+        const attachment = attachmentsMap.get(href)
+        if (attachment) {
+          supplementaryMaterial.setAttributeNS(
+            XLINK_NAMESPACE,
+            'href',
+            attachment.name
+          )
+        }
+      }
+    }
+  )
+
   return document
 }
 
