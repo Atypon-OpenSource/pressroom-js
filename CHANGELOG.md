@@ -1,5 +1,19 @@
 # pressroom-js
 
+## 2.4.0
+
+### Minor Changes
+
+- ce99f63c: LEAN-1337 - fix supplements elements 'href'
+
+### Patch Changes
+
+- 78ad3efa: LEAN-1078
+- Updated dependencies [268a0bba]
+- Updated dependencies [ce99f63c]
+- Updated dependencies [78ad3efa]
+  - @manuscripts/manuscript-transform@0.56.0
+
 ## 2.3.1
 
 ### Patch Changes
