@@ -1,5 +1,16 @@
 # pressroom-js
 
+## 2.5.0
+
+### Minor Changes
+
+- 16f11008: LEAN-1912 -- remove empty title from XML
+
+### Patch Changes
+
+- Updated dependencies [16f11008]
+  - @manuscripts/manuscript-transform@0.58.0
+
 ## 2.4.2
 
 ### Patch Changes
