@@ -4,3 +4,5 @@ logs/
 node_modules/
 *.log
 junit.xml
+
+/.idea/
