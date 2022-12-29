@@ -34,7 +34,7 @@ describe('authentication', () => {
     // @ts-ignore
     authentication(mockRequest as Request, mockResponse as Response, mockNext)
 
-    expect(mockNext).toBeCalledTimes(1)
+    expect(mockNext).toHaveBeenCalledTimes(1)
   })
 
   test('rejects an invalid API key', () => {

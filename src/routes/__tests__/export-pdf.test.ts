@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NextFunction, RequestHandler } from 'express'
 import request from 'supertest'
 
 import { config } from '../../lib/config'
 
 jest.setTimeout(30000)
 
-jest.mock(
-  'express-jwt',
-  () => (): RequestHandler => (req, res, next) => {
-    req.user = { email: 'test@atypon.com' }
+jest.mock('express-jwt', () => ({
+  expressjwt: () => (req, res, next) => {
+    req.auth = { email: 'test@atypon.com' }
     next()
-  }
-)
+  },
+}))
 
 describe('export PDF', () => {
   test('exports to a PDF file with Prince via HTML', async () => {
@@ -73,24 +71,14 @@ describe('export PDF', () => {
   })
 
   test('Failure in auto-generation of PDF preview', async () => {
-    const { app } = await import('../../app')
     const PDFHelpers = await import('../../lib/prince-html')
-    const EmailAuthorization = await import('../../lib/email-authorization')
 
     const createHTMLMock = jest.spyOn(PDFHelpers, 'createPrincePDF')
     createHTMLMock.mockImplementation(() => {
       throw new Error()
     })
 
-    const authenticationMock = jest.spyOn(
-      EmailAuthorization,
-      'emailAuthorization'
-    )
-    authenticationMock.mockImplementation(
-      (req: never, res: never, next: NextFunction) => {
-        return Promise.resolve(next())
-      }
-    )
+    const { app } = await import('../../app')
 
     const response = await request(app)
       .post('/api/v2/export/pdf')

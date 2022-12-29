@@ -23,14 +23,13 @@ import { unzip } from './unzip'
 export const decompressManuscript: RequestHandler = async (req, res, next) => {
   const dir = req.tempDir
   // @ts-ignore
-  const extension = req.file.detectedFileExtension
-  const allowedExtension = /\.zip$/
-  if (!allowedExtension.test(extension)) {
-    return next(createHttpError(400, `${extension} not allowed`))
+  const name = req.file?.originalname
+  if (!name?.endsWith('.zip') && !name?.endsWith('.manuproj')) {
+    return next(createHttpError(400, `Only ZIP files are allowed`))
   }
   logger.debug(`Extracting ZIP archive to ${dir}`)
   // @ts-ignore
-  await unzip(req.file.stream, dir)
+  await unzip(req.file.buffer, dir)
   const manuscriptJSONPath = dir + '/index.manuscript-json'
   if (!fs.existsSync(manuscriptJSONPath)) {
     return next(createHttpError(400, 'index.manuscript-json not found'))

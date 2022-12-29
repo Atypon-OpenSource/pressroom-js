@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { NextFunction, Request, Response, Router } from 'express'
-import swaggerUi from 'swagger-ui-express'
 
 import { isStatusCoded } from '../lib/errors'
 import { swaggerSpec } from '../lib/swagger-spec'
@@ -49,9 +48,6 @@ export const routes = Router()
 
   // validators
   .use('/', validateTemplateId)
-
-  // OpenAPI description for people
-  .use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
   // OpenAPI description for machines
   .get('/docs.json', (req, res) => res.json(swaggerSpec))

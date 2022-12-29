@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 import { ContainedModel } from '@manuscripts/manuscript-transform'
-import createHttpError from 'http-errors'
-import { parseXml } from 'libxmljs2'
 
 import {
   AttachmentData,
@@ -58,22 +56,6 @@ export const createLiteratumJats = async (
     attachmentsMap,
     supplementaryDOI
   )
-
-  // Validate against JATS DTD for early error detection
-  const result = parseXml(new XMLSerializer().serializeToString(jats))
-  result.setDtd(
-    'article',
-    '-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with OASIS Tables with MathML3 v1.2 20190208//EN',
-    `${__dirname}/../assets/JATS-Archiving-1-2-OASIS-MathML3-DTD/JATS-archive-oasis-article1-mathml3.dtd`
-  )
-  const { errors } = parseXml(result.toString(), {
-    dtdvalid: true,
-    dtdload: true,
-  })
-
-  if (errors.length) {
-    throw createHttpError(500, errors.toString())
-  }
 
   return jats
 }

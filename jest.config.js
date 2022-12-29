@@ -23,4 +23,8 @@ module.exports = {
   testPathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/node_modules/'],
   testTimeout: 200000,
   verbose: true,
+  snapshotFormat: {
+    printBasicPrototype: true,
+    escapeString: true,
+  },
 }

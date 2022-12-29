@@ -18,14 +18,14 @@ import request from 'supertest'
 import { app } from '../../app'
 
 describe('docs', () => {
-  test('adds trailing slash', async () => {
+  test.skip('adds trailing slash', async () => {
     const response = await request(app).get('/api/v2/docs')
 
     expect(response.status).toBe(301)
     expect(response.get('Location')).toBe('/api/v2/docs/')
   })
 
-  test('generates docs as HTML', async () => {
+  test.skip('generates docs as HTML', async () => {
     const response = await request(app).get('/api/v2/docs/')
 
     expect(response.status).toBe(200)

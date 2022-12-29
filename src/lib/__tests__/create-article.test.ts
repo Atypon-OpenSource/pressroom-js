@@ -35,6 +35,6 @@ describe('create article', () => {
         [...modelMap.values()],
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
-    ).toThrowError(MissingElement)
+    ).toThrow(MissingElement)
   })
 })

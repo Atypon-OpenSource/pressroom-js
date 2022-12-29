@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const environmentVariable = (name: string, defaultValue?: string): string => {
+const environmentVariable = (name: string): string => {
   const value = process.env[name]
 
   if (value === undefined || value === '') {
-    if (defaultValue !== undefined) {
-      return defaultValue
-    }
-
     if (process.env.NODE_ENV === 'test') {
       return ''
     } else {
@@ -32,7 +28,7 @@ const environmentVariable = (name: string, defaultValue?: string): string => {
 }
 
 const booleanEnvironmentVariable = (name: string) => {
-  const value = process.env[name]
+  const value = environmentVariable(name)
 
   if (!value || value === '0' || value === 'false') {
     return false
@@ -43,81 +39,24 @@ const booleanEnvironmentVariable = (name: string) => {
 
 interface Config {
   api_key: string
-  arc: {
-    api_key: string
-    password: string
-    username: string
-  }
   authorization: {
     emails: string
   }
-  gaia: {
-    url: string
-  }
   jwt: {
-    disabled: boolean
+    enabled: boolean
     issuer: string
     root: string
-  }
-  literatum: {
-    eeo: {
-      password: string
-      url: string
-      username: string
-    }
-    ftps: {
-      host: string
-      password: string
-      prefix: string
-      username: string
-    }
-    sftp: {
-      host: string
-      prefix: string
-      pem: string
-      username: string
-    }
   }
 }
 
 export const config: Config = {
   api_key: environmentVariable('PRESSROOM_API_KEY'),
-  arc: {
-    api_key: environmentVariable('PRESSROOM_ARC_API_KEY'),
-    password: environmentVariable('PRESSROOM_ARC_PASSWORD'),
-    username: environmentVariable('PRESSROOM_ARC_USERNAME'),
-  },
   authorization: {
-    emails: environmentVariable(
-      'PRESSROOM_AUTHORIZATION_EMAILS',
-      '@atypon\\.com$'
-    ),
-  },
-  gaia: {
-    url: environmentVariable('PRESSROOM_GAIA_URL'),
+    emails: environmentVariable('PRESSROOM_AUTHORIZATION_EMAILS'),
   },
   jwt: {
-    disabled: booleanEnvironmentVariable('PRESSROOM_JWT_AUTH_DISABLED'),
+    enabled: booleanEnvironmentVariable('PRESSROOM_JWT_ENABLED'),
     issuer: environmentVariable('PRESSROOM_JWT_ISSUER'),
     root: environmentVariable('PRESSROOM_JWT_ROOT'),
-  },
-  literatum: {
-    eeo: {
-      password: environmentVariable('PRESSROOM_LITERATUM_EEO_CLIENT_SECRET'),
-      url: environmentVariable('PRESSROOM_LITERATUM_EEO_URL'),
-      username: environmentVariable('PRESSROOM_LITERATUM_EEO_CLIENT_ID'),
-    },
-    ftps: {
-      host: environmentVariable('PRESSROOM_LITERATUM_FTPS_HOST'),
-      password: environmentVariable('PRESSROOM_LITERATUM_FTPS_PASSWORD'),
-      prefix: environmentVariable('PRESSROOM_LITERATUM_FTPS_PREFIX'),
-      username: environmentVariable('PRESSROOM_LITERATUM_FTPS_USERNAME'),
-    },
-    sftp: {
-      host: environmentVariable('PRESSROOM_LITERATUM_SFTP_HOST'),
-      prefix: environmentVariable('PRESSROOM_LITERATUM_SFTP_PREFIX'),
-      pem: environmentVariable('PRESSROOM_LITERATUM_SFTP_PEM'),
-      username: environmentVariable('PRESSROOM_LITERATUM_SFTP_USERNAME'),
-    },
   },
 }
