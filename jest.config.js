@@ -21,6 +21,14 @@ module.exports = {
   setupFiles: ['dotenv/config', '<rootDir>/src/setup-tests.ts'],
   testEnvironment: 'node',
   testPathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/node_modules/'],
+  transform: {
+    '^.+\\.(j|t)sx?$': 'babel-jest',
+  },
+  transformIgnorePatterns: ['<rootDir>/node_modules/(?!(lodash-es|@manuscripts|strtok3|peek-readable|token-types)/)'],
   testTimeout: 200000,
   verbose: true,
+  snapshotFormat: {
+    printBasicPrototype: true,
+    escapeString: true,
+  },
 }

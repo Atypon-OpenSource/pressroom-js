@@ -18,7 +18,7 @@ import {
   JATSExporter,
   JATSExporterOptions,
   ManuscriptFragment,
-} from '@manuscripts/manuscript-transform'
+} from '@manuscripts/transform'
 
 export const createJATSXML = async (
   fragment: ManuscriptFragment,

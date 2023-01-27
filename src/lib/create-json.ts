@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ContainedModel } from '@manuscripts/manuscript-transform'
+import { ContainedModel } from '@manuscripts/transform'
 
 export const createJSON = (data: ContainedModel[]): string =>
   JSON.stringify({ version: '2.0', data }, null, 2)

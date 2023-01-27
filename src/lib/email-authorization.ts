@@ -22,8 +22,8 @@ import { config } from './config'
 const allowed = new RegExp(config.authorization.emails)
 
 export const emailAuthorization: RequestHandler = (req, res, next) => {
-  if (!config.jwt.disabled) {
-    const { email } = req.user
+  if (config.jwt.enabled) {
+    const { email } = req.auth
 
     if (!email) {
       throw createHttpError(

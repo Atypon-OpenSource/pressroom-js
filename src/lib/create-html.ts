@@ -18,7 +18,7 @@ import {
   HTMLExporterOptions,
   HTMLTransformer,
   ManuscriptFragment,
-} from '@manuscripts/manuscript-transform'
+} from '@manuscripts/transform'
 
 export const createHTML = (
   fragment: ManuscriptFragment,

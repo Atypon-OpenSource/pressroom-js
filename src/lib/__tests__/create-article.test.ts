@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  ContainedModel,
-  MissingElement,
-} from '@manuscripts/manuscript-transform'
+import { ContainedModel, MissingElement } from '@manuscripts/transform'
 import fs from 'fs-extra'
 
 import { createArticle } from '../create-article'
@@ -35,6 +32,6 @@ describe('create article', () => {
         [...modelMap.values()],
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
-    ).toThrowError(MissingElement)
+    ).toThrow(MissingElement)
   })
 })

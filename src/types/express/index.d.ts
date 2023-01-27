@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 declare namespace Express {
-  /* @ts-ignore */
-  import { ExtylesArcCredentials } from '../../lib/extyles-arc'
-  /* @ts-ignore */
-  import { EdifixCredentials } from '../../lib/edifix'
-
   interface Request {
-    user: {
-      arc?: ExtylesArcCredentials
-      edifix?: EdifixCredentials
+    auth: {
       email?: string
     }
     tempDir: string

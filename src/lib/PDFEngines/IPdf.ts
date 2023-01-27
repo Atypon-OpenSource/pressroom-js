@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ContainedModel } from '@manuscripts/manuscript-transform'
+import { ContainedModel } from '@manuscripts/transform'
 
 import { AttachmentData } from '../attachments'
 import { SampleEngine } from './SampleEngine'

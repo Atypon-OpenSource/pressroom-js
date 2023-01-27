@@ -74,7 +74,7 @@ export const importJATS = Router().post(
 
     const dir = req.tempDir
     // @ts-ignore
-    await unzip(req.file.stream, dir)
+    await unzip(req.file.buffer, dir)
 
     // TODO move this to middleware
     const lookupName = ['/manuscript.XML', '/manuscript.xml']

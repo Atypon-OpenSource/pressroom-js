@@ -19,9 +19,7 @@ import fs from 'fs-extra'
 
 import { AttachmentData } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
-import { emailAuthorization } from '../lib/email-authorization'
 import { PDFJobCreationError, PDFPreviewError } from '../lib/errors'
-// import { createPdfJob } from '../lib/indesign-service'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseBodyProperty } from '../lib/parseBodyParams'
@@ -125,21 +123,6 @@ export const exportPDF = Router().post(
       allowMissingElements: boolean
       generateSectionLabels: boolean
       attachments: Array<AttachmentData>
-    }
-
-    // restrict access to Prince by email address
-    const restrictedEngines = ['prince', 'prince-html']
-
-    if (restrictedEngines.includes(engine)) {
-      await new Promise((resolve, reject) =>
-        emailAuthorization(req, res, (error?: unknown) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(error)
-          }
-        })
-      )
     }
 
     // unzip the input

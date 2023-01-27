@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RequestHandler } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
 import { app } from '../../app'
 
-jest.mock(
-  'express-jwt',
-  () => (): RequestHandler => (req, res, next) => {
-    req.user = { email: 'test@foo.com' }
+jest.mock('express-jwt', () => ({
+  expressjwt: () => (req: Request, res: Response, next: NextFunction) => {
+    req.auth = { email: 'test@foo.com' }
     next()
-  }
-)
+  },
+}))
 
 describe('email authentication', () => {
   test('limits endpoint access by email domain', async () => {

@@ -16,16 +16,13 @@
 import { errors } from 'celebrate'
 import cors from 'cors'
 import express from 'express'
-import createHttpError from 'http-errors'
 import morgan from 'morgan'
 
-import { errorResponder } from './lib/error-responder'
-import { logger } from './lib/logger'
 import { routes } from './routes'
 
 export const app = express()
   // log requests
-  .use(morgan('combined', { stream: { write: logger.info.bind(logger) } }))
+  .use(morgan('combined'))
 
   // cors
   .use(cors())
@@ -39,25 +36,9 @@ export const app = express()
   })
 
   // not found handler
-  .use((req, res, next) => {
-    next(createHttpError(404))
+  .use((req, res) => {
+    res.status(404)
   })
-
-  // error logger
-  .use(
-    (
-      error: Error,
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction
-    ) => {
-      logger.error(`${error.message}: ${error.stack}`)
-      next(error)
-    }
-  )
 
   // celebrate error handler
   .use(errors())
-
-  // error response
-  .use(errorResponder)

@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { MediaPathGenerator } from '@manuscripts/manuscript-transform'
-import { Figure } from '@manuscripts/manuscripts-json-schema'
+import { Figure } from '@manuscripts/json-schema'
+import { MediaPathGenerator } from '@manuscripts/transform'
 import { Archiver } from 'archiver'
 import fs from 'fs-extra'
 import createHttpError from 'http-errors'

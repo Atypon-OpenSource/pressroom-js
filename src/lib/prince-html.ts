@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ContainedModel } from '@manuscripts/manuscript-transform'
+import { ContainedModel } from '@manuscripts/transform'
 import fs from 'fs-extra'
 import createHttpError from 'http-errors'
 import path from 'path'
@@ -55,11 +55,15 @@ export const createPrincePDF = async (
   attachments: Array<AttachmentData>,
   theme?: string,
   articleOptions?: {
-    allowMissingElements: boolean,
-    generateSectionLabels: boolean,
+    allowMissingElements: boolean
+    generateSectionLabels: boolean
   }
 ): Promise<string> => {
-  const { article, modelMap } = createArticle(data, manuscriptID, articleOptions)
+  const { article, modelMap } = createArticle(
+    data,
+    manuscriptID,
+    articleOptions
+  )
   /* @ts-ignore */
   const html = await createHTML(article, modelMap, {
     mediaPathGenerator: async (element) => {

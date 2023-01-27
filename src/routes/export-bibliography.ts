@@ -15,7 +15,6 @@
  */
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
-import getStream from 'get-stream'
 
 import { authentication } from '../lib/authentication'
 import {
@@ -76,8 +75,7 @@ export const exportBibliography = Router().post(
   wrapAsync(async (req, res) => {
     const { format } = req.body as { format: BibliographyFormat }
     // @ts-ignore
-    const json = await getStream(req.file.stream, { encoding: 'utf-8' })
-    const records = JSON.parse(json)
+    const records = JSON.parse(req.file.buffer)
     const output = await generateBibliography(records, format)
 
     // TODO: more specific content-type?
