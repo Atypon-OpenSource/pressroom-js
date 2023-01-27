@@ -16,4 +16,5 @@
 
 module.exports = {
   extends: '@manuscripts/eslint-config',
+  ignorePatterns: ['src/assets/**']
 }

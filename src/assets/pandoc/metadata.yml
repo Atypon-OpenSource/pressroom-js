@@ -1,6 +1,0 @@
-mathjax.typeset:
-  em: 16,
-  ex: 8,
-  lineWidth: 100000,
-  scale: 1,
-#  containerWidth: 800,
