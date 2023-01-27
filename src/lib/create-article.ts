@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ObjectTypes, Section } from '@manuscripts/json-schema'
 import {
   ContainedModel,
   Decoder,
   hasObjectType,
   ManuscriptNode,
   MissingElement,
-} from '@manuscripts/manuscript-transform'
-import { ObjectTypes, Section } from '@manuscripts/manuscripts-json-schema'
+} from '@manuscripts/transform'
 import createHttpError from 'http-errors'
 
 export const createArticle = (

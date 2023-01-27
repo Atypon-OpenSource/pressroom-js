@@ -36,7 +36,7 @@ export const app = express()
   })
 
   // not found handler
-  .use((req, res, next) => {
+  .use((req, res) => {
     res.status(404)
   })
 

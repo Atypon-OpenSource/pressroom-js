@@ -20,7 +20,7 @@ import {
   isFigure,
   loadBundledDependencies,
   parseJATSArticle,
-} from '@manuscripts/manuscript-transform'
+} from '@manuscripts/transform'
 import archiver, { Archiver } from 'archiver'
 import fs from 'fs-extra'
 import createHttpError from 'http-errors'

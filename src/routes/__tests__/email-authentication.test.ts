@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
 import { app } from '../../app'
 
 jest.mock('express-jwt', () => ({
-  expressjwt: () => (req, res, next) => {
+  expressjwt: () => (req: Request, res: Response, next: NextFunction) => {
     req.auth = { email: 'test@foo.com' }
     next()
   },

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Version } from '@manuscripts/manuscript-transform'
+import { Version } from '@manuscripts/transform'
 import archiver from 'archiver'
 import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'

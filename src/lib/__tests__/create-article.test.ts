@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  ContainedModel,
-  MissingElement,
-} from '@manuscripts/manuscript-transform'
+import { ContainedModel, MissingElement } from '@manuscripts/transform'
 import fs from 'fs-extra'
 
 import { createArticle } from '../create-article'

@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ContainedModel } from '@manuscripts/manuscript-transform'
-import {
-  Figure,
-  FigureElement,
-  ObjectTypes,
-} from '@manuscripts/manuscripts-json-schema'
+import { Figure, FigureElement, ObjectTypes } from '@manuscripts/json-schema'
+import { ContainedModel } from '@manuscripts/transform'
 import createHttpError from 'http-errors'
 
 import { processElements, XLINK_NAMESPACE } from './data'
