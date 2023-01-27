@@ -1,20 +1,12 @@
-# pressroom-js
+# Pressroom JS
 
-A web service for manuscript conversion.
+A web service to convert various formats into a manuproj archive, and vice versa.  
 
 ## Building a Docker image
 
-To build a Docker image, run the following command in the repository root: `docker build . -f docker/pressroom-full/Dockerfile`
+Run `docker build .`
 
 ## Development
 
 1. Copy `.env.example` to `.env` and edit the values as needed.
-2. In the repository root, run `pnpm --filter pressroom-js dev`
-
-## OpenAPI
-
-* The API documentation is served at `/api/v2/docs`.
-* TBF
-
-## PDF themes & Citation styles
-...
+2. Run `yarn dev`
