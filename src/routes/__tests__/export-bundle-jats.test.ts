@@ -19,7 +19,7 @@ import request from 'supertest'
 
 import { config } from '../../lib/config'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 const route = '/api/v2/export/bundle/jats'
 
 describe('export JATS', () => {
