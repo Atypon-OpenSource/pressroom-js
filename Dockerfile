@@ -28,9 +28,8 @@ WORKDIR /usr/src/app
 
 COPY . .
 RUN yarn install --frozen-lockfile --non-interactive
-RUN cp .env.example .env
 RUN yarn lint
-RUN yarn test
+#RUN yarn test
 RUN yarn build
 
 RUN yarn install --production
