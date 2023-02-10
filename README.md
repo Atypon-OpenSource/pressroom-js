@@ -10,3 +10,4 @@ To run a local instance:
 1. Copy `.env.example` to `.env` and edit the values as needed.
 2. Run `yarn dev`
 ffff
+f
