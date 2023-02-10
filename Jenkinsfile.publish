@@ -1,0 +1,41 @@
+#!groovy
+node {
+    // push to private registry
+    REGISTRY="${env.PRIVATE_ARTIFACT_REGISTRY}"
+    stage ("Checkout") {
+        // keep the original branch name before the checkout step overrides it
+        if (env.GIT_BRANCH != null) {
+            BRANCH="$GIT_BRANCH"
+            echo "BRANCH: $BRANCH"
+        }
+        VARS = checkout scm
+        echo "VARS: $VARS"
+        DOCKER_IMAGE="manuscripts/pressroom-js"
+        if (VARS.GIT_BRANCH == "origin/master") {
+            IMG_TAG=sh(script: "jq .version < package.json | tr -d '\"' ", returnStdout: true).trim()
+        } else {
+            IMG_TAG=BRANCH + "-" + VARS.GIT_COMMIT.substring(0,6)
+        }
+    }
+
+    stage("Build") {
+        nodejs(nodeJSInstallationName: 'node_16_14_2') {
+            sh("yarn install --non-interactive --frozen-lock-file")
+            sh("yarn typecheck")
+            sh("yarn lint")
+            sh("yarn build")
+//            sh("yarn test")
+        }
+    }
+
+    stage("Build docker image") {
+        sh("docker build -t ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} .")
+    }
+
+    stage("Push to registry") {
+        sh ("""
+            docker push ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} && \
+            docker push ${REGISTRY}/${DOCKER_IMAGE}
+            """)
+    }
+}
