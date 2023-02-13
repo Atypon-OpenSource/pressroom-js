@@ -9,7 +9,7 @@ node {
         if (VARS.GIT_BRANCH == "origin/master") {
             IMG_TAG=sh(script: "jq .version < package.json | tr -d '\"' ", returnStdout: true).trim()
         } else {
-            IMG_TAG="${GIT_BRANCH#*/}-" + VARS.GIT_COMMIT.substring(0,6)
+            IMG_TAG="${params.gbranch}-" + VARS.GIT_COMMIT.substring(0,6)
         }
     }
 
