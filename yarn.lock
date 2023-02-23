@@ -1346,10 +1346,10 @@
     eslint-config-prettier "^8.5.0"
     prettier "^2.8.1"
 
-"@manuscripts/json-schema@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/json-schema/-/json-schema-1.0.0.tgz#26ff4fea70c74d64f83a7e7361f1b5036de84a5d"
-  integrity sha512-2514pjCDqPLLisy0xL/H6Y1vPTesZYHkw7SQa5Cuehx57CmLk3NAxFI3EJkLIFslJDNJes886+U+TLwHGMxrCg==
+"@manuscripts/json-schema@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/json-schema/-/json-schema-1.1.0.tgz#cfed4d7dac5944e785234c3add0a35fb9e3f65d3"
+  integrity sha512-4Dnsmt8OBhLaZQZqgtUfE1gPNcFpJhzm2k4pVkBakw0touuxto6zKF6YowjsmOZgW2UUL80O1f5miaVNtoAVfA==
   dependencies:
     ajv "^6.10.0"
     deepmerge "^4.2.2"
@@ -1367,10 +1367,10 @@
     image-size "^1.0.2"
     uuid "^9.0.0"
 
-"@manuscripts/transform@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.0.1.tgz#1eccad9924beef97a5b6ae9e944ca9704f09b2a7"
-  integrity sha512-cI89dy3vY2+81TjiHRE6cxK4EDJbI21np0ueUeZGK+8wA4/8+QVh0pj1qdt+ZCiSV2XYh7epXQV9WAwajTYQ1g==
+"@manuscripts/transform@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.1.0.tgz#61edc4bf8a9beb7221a708d80920e93abf69ebc1"
+  integrity sha512-I5gUUSoQfXNFh18Gtrt7MP6AHFbFL6mcmpX16ZlgTGUfSRF6HjkM7gcRN4Wy0GppOHLjed/qHs2JZVXnCIKgFw==
   dependencies:
     debug "^4.3.4"
     mathjax-full "^3.2.2"
