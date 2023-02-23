@@ -1367,10 +1367,10 @@
     image-size "^1.0.2"
     uuid "^9.0.0"
 
-"@manuscripts/transform@^1.0.1-LEAN-2105":
-  version "1.0.1-LEAN-2105"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.0.1-LEAN-2105.tgz#b56b822b808db4f5add6e2ec42aa5104a5b832b9"
-  integrity sha512-VwSZVWuDYyZbJ3M3gw7C8EEgo+4PNucbtL8hJBnN8pRU5GWHjAl2hsviOPh/lWxr3FSRQLuM60kfh9ZFVInVxg==
+"@manuscripts/transform@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.1.0.tgz#61edc4bf8a9beb7221a708d80920e93abf69ebc1"
+  integrity sha512-I5gUUSoQfXNFh18Gtrt7MP6AHFbFL6mcmpX16ZlgTGUfSRF6HjkM7gcRN4Wy0GppOHLjed/qHs2JZVXnCIKgFw==
   dependencies:
     debug "^4.3.4"
     mathjax-full "^3.2.2"
