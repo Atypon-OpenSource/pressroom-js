@@ -17,7 +17,7 @@ import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 
 import { authentication } from '../lib/authentication'
-import { IPdf, PdfEngines } from '../lib/PDFEngines/IPdf'
+import { AsyncPdfEngines, IPdf } from '../lib/PDFEngines/IPdf'
 import { splitEngineId } from '../lib/PDFEngines/PdfUtils'
 import { wrapAsync } from '../lib/wrap-async'
 
@@ -48,8 +48,8 @@ export const pdfJobStatus = Router().get(
     const { submission_id } = req.params
     const { id, engine } = splitEngineId(submission_id)
 
-    if (PdfEngines.has(engine)) {
-      const currentEngine: IPdf = PdfEngines.get(engine)
+    if (AsyncPdfEngines.has(engine)) {
+      const currentEngine: IPdf = AsyncPdfEngines.get(engine)
       const status = await currentEngine.jobStatus(id)
       res.status(200).send({ status: status })
     } else {

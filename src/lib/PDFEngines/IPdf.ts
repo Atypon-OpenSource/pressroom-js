@@ -19,9 +19,13 @@ import { ContainedModel } from '@manuscripts/transform'
 import { AttachmentData } from '../attachments'
 import { SampleEngine } from './SampleEngine'
 
-export const PdfEngines = new Map()
-PdfEngines.set('SampleEngine', new SampleEngine())
-
+export const AsyncPdfEngines = new Map()
+AsyncPdfEngines.set('SampleEngine', new SampleEngine())
+export const SyncPdfEngines: Set<string> = new Set(['dummy-pdf', 'prince-html'])
+export const allowedEngines = [
+  ...Array.from(SyncPdfEngines),
+  ...Array.from(AsyncPdfEngines.keys()),
+]
 export interface IPdf {
   engineName: string
 

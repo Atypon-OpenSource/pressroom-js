@@ -23,7 +23,12 @@ import { PDFJobCreationError, PDFPreviewError } from '../lib/errors'
 import { logger } from '../lib/logger'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseBodyProperty } from '../lib/parseBodyParams'
-import { IPdf, PdfEngines } from '../lib/PDFEngines/IPdf'
+import {
+  allowedEngines,
+  AsyncPdfEngines,
+  IPdf,
+  SyncPdfEngines,
+} from '../lib/PDFEngines/IPdf'
 import { createPrincePDF } from '../lib/prince-html'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -92,7 +97,7 @@ export const exportPDF = Router().post(
       manuscriptID: Joi.string().required(),
       engine: Joi.string()
         .empty('')
-        .allow('prince-html', 'SampleEngine')
+        .valid(...allowedEngines)
         .default('xelatex'),
       theme: Joi.string().empty(''),
       allowMissingElements: Joi.boolean().empty('').default(false),
@@ -118,7 +123,7 @@ export const exportPDF = Router().post(
       attachments,
     } = req.body as {
       manuscriptID: string
-      engine: 'SampleEngine' | 'prince-html'
+      engine: typeof allowedEngines[number]
       theme?: string
       allowMissingElements: boolean
       generateSectionLabels: boolean
@@ -131,28 +136,39 @@ export const exportPDF = Router().post(
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
 
-    if (engine === 'prince-html') {
+    if (SyncPdfEngines.has(engine)) {
       try {
-        await createPrincePDF(
-          dir,
-          data,
-          manuscriptID,
-          'Data',
-          attachments,
-          theme,
-          {
-            allowMissingElements,
-            generateSectionLabels,
-          }
-        )
+        if (engine === 'prince-html') {
+          await createPrincePDF(
+            dir,
+            data,
+            manuscriptID,
+            'Data',
+            attachments,
+            theme,
+            {
+              allowMissingElements,
+              generateSectionLabels,
+            }
+          )
+          res.download(dir + '/manuscript.pdf')
+        } else if (engine === 'dummy-pdf') {
+          const pdfFile = fs.readFileSync(
+            'src/assets/dummy-pdf/pressroom-pdf-sample.pdf'
+          )
+          res.setHeader('Content-Type', 'application/pdf')
+          res.setHeader(
+            'Content-Disposition',
+            `attachment; filename=${engine}.pdf`
+          )
+          res.status(200).send(pdfFile)
+        }
       } catch (e) {
         logger.error(e)
         throw new PDFPreviewError('Conversion failed when exporting to PDF')
       }
-      // send the file as an attachment
-      res.download(dir + '/manuscript.pdf')
-    } else if (PdfEngines.has(engine)) {
-      const currentEngine: IPdf = PdfEngines.get(engine)
+    } else if (AsyncPdfEngines.has(engine)) {
+      const currentEngine: IPdf = AsyncPdfEngines.get(engine)
       try {
         const id = await currentEngine.createJob(
           dir,
