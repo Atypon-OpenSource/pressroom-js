@@ -26,7 +26,7 @@ pipeline {
             environment {
                 REGISTRY = "${env.PRIVATE_ARTIFACT_REGISTRY}"
                 DOCKER_IMAGE = 'manuscripts/pressroom-js'
-                IMG_TAG = getImgTag(params.GIT_COMMIT)
+                IMG_TAG = getImgTag(params.GIT_BRANCH)
             }
             stages {
                 stage('Build docker image') {
