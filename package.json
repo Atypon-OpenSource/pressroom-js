@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@manuscripts/data": "^0.1.2",
-    "@manuscripts/transform": "^1.1.1-LEAN-2322",
+    "@manuscripts/transform": "^1.1.1-LEAN-2322-1",
     "@manuscripts/json-schema": "^1.1.0",
     "@manuscripts/requirements": "^1.0.1",
     "archiver": "^5.3.1",
