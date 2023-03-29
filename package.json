@@ -19,7 +19,6 @@
     "version": "yarn build"
   },
   "dependencies": {
-    "@manuscripts/data": "^0.1.2",
     "@manuscripts/transform": "^1.1.0",
     "@manuscripts/json-schema": "^1.1.0",
     "@manuscripts/requirements": "^1.0.1",
@@ -38,9 +37,6 @@
     "jwks-rsa": "^3.0.0",
     "morgan": "^1.10.0",
     "multer": "1.4.5-lts.1",
-    "prosemirror-model": "~1.18.3",
-    "prosemirror-state": "~1.4.2",
-    "prosemirror-view": "~1.29.2",
     "rimraf": "^3.0.2",
     "swagger-jsdoc": "^5.0.1",
     "swagger-ui-express": "^4.1.4",
