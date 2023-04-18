@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { celebrate, Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 import createHttpError from 'http-errors'
@@ -63,15 +62,8 @@ export const importJATS = Router().post(
   ['/import/jats', '/import/jats-arc'],
   authentication,
   upload.single('file'),
-  celebrate({
-    body: Joi.object({
-      addBundledData: Joi.boolean().empty(''),
-    }),
-  }),
   createRequestDirectory,
   wrapAsync(async (req, res) => {
-    const { addBundledData = false } = req.body as { addBundledData?: boolean }
-
     const dir = req.tempDir
     // @ts-ignore
     await unzip(req.file.buffer, dir)
@@ -97,7 +89,7 @@ export const importJATS = Router().post(
         'Cannot parse JATS file check if manuscript.XML exists in the archive'
       )
     }
-    const archive = await convertJATS(dir, doc, { addBundledData })
+    const archive = await convertJATS(dir, doc)
 
     sendArchive(res, archive, 'manuscript.manuproj')
   })
