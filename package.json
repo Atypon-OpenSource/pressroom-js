@@ -1,7 +1,7 @@
 {
   "name": "@manuscripts/pressroom-js",
   "description": "A web service for manuscript conversion",
-  "version": "3.0.3-LEAN-2410",
+  "version": "3.0.3-LEAN-2410-d33d215",
   "license": "Apache-2.0",
   "repository": "github:Atypon-OpenSource/manuscripts-pressroom-js",
   "scripts": {
@@ -19,7 +19,7 @@
     "version": "yarn build"
   },
   "dependencies": {
-    "@manuscripts/transform": "^1.1.4-LEAN-2410",
+    "@manuscripts/transform": "^1.1.5-LEAN-2410",
     "@manuscripts/json-schema": "^1.1.0",
     "@manuscripts/requirements": "^1.0.3",
     "archiver": "^5.3.1",
