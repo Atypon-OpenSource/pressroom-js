@@ -13,61 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import fs from 'fs'
+import { promises as fs } from 'fs'
+// import { readJson } from 'fs-extra'
 import client from 'prom-client'
+import { parse, SemVer } from 'semver'
 
 const metricsMap = [
   {
     name: 'json_schema_version_info',
     packageName: 'json-schema',
-    help: 'The json-schema version by package.json',
+    help: 'The @manuscripts/json-schema version by package.json',
     labelNames: ['version', 'major', 'minor', 'patch'],
   },
   {
     name: 'transformer_version_info',
     packageName: 'transform',
-    help: 'The transform version by package.json',
+    help: 'The @manuscripts/transform version by package.json',
     labelNames: ['version', 'major', 'minor', 'patch'],
   },
   {
     name: 'requirements_version_info',
     packageName: 'requirements',
-    help: 'The requirements version by package.json',
+    help: 'The @manuscripts/requirements version by package.json',
     labelNames: ['version', 'major', 'minor', 'patch'],
   },
 ]
-export function configurePromClientRegistry() {
+export async function configurePromClientRegistry() {
   for (const metric of metricsMap) {
-    if (!client.register.getSingleMetric(metric.name)) {
-      const gauge = new client.Gauge({
-        name: metric.name,
-        help: metric.help,
-        labelNames: metric.labelNames,
-      })
-      const processedVersion = processVersion(metric.packageName)
-      gauge
-        .labels(processedVersion.version, ...processedVersion.versionParts)
-        .set(1)
+    const semver = await getVersion(metric.packageName)
+    if (semver) {
+      if (!client.register.getSingleMetric(metric.name)) {
+        const gauge = new client.Gauge({
+          name: metric.name,
+          help: metric.help,
+          labelNames: metric.labelNames,
+        })
+        gauge
+          .labels(
+            semver.version,
+            `${semver.major}`,
+            `${semver.minor}`,
+            `${semver.patch}`
+          )
+          .set(1)
+      }
     }
   }
 }
-function processVersion(packageName: string): {
-  version: string
-  versionParts: string[]
-} {
-  const versionFromNodeModule = getVersion(packageName)
-  const vSplit = versionFromNodeModule.split('.')
-  return {
-    version: versionFromNodeModule,
-    versionParts: [vSplit[0], vSplit[1], vSplit[2]],
-  }
-}
 
-function getVersion(packageName: string): string {
-  const f1 = fs.readFileSync(
+async function getVersion(packageName: string): Promise<SemVer | null> {
+  const packageFile = await fs.readFile(
     `./node_modules/@manuscripts/${packageName}/package.json`,
     'utf-8'
   )
-  const jsonPackageFile = JSON.parse(f1)
-  return jsonPackageFile.version
+  const pJson = JSON.parse(packageFile)
+  return parse(pJson.version)
 }
