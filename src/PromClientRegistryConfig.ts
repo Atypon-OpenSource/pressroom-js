@@ -13,38 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import fs from 'fs'
 import client from 'prom-client'
-
-import pjson from '../package.json'
 
 const metricsMap = [
   {
-    name: 'app_version',
-    value: pjson.version,
-    help: 'The API version by package.json',
-    labelNames: ['version'],
-  },
-  {
-    name: 'json_schema_version',
-    value: pjson.dependencies['@manuscripts/json-schema'],
+    name: 'json_schema_version_info',
+    packageName: 'json-schema',
     help: 'The json-schema version by package.json',
-    labelNames: ['version'],
+    labelNames: ['version', 'major', 'minor', 'patch'],
   },
   {
-    name: 'transformer_version',
-    value: pjson.dependencies['@manuscripts/transform'],
+    name: 'transformer_version_info',
+    packageName: 'transform',
     help: 'The transform version by package.json',
-    labelNames: ['version'],
+    labelNames: ['version', 'major', 'minor', 'patch'],
   },
   {
-    name: 'requirements_version',
-    value: pjson.dependencies['@manuscripts/requirements'],
+    name: 'requirements_version_info',
+    packageName: 'requirements',
     help: 'The requirements version by package.json',
-    labelNames: ['version'],
+    labelNames: ['version', 'major', 'minor', 'patch'],
   },
 ]
 export function configurePromClientRegistry() {
-  client.register.clear()
   for (const metric of metricsMap) {
     if (!client.register.getSingleMetric(metric.name)) {
       const gauge = new client.Gauge({
@@ -52,7 +44,30 @@ export function configurePromClientRegistry() {
         help: metric.help,
         labelNames: metric.labelNames,
       })
-      gauge.labels(metric.value).set(1)
+      const processedVersion = processVersion(metric.packageName)
+      gauge
+        .labels(processedVersion.version, ...processedVersion.versionParts)
+        .set(1)
     }
   }
+}
+function processVersion(packageName: string): {
+  version: string
+  versionParts: string[]
+} {
+  const versionFromNodeModule = getVersion(packageName)
+  const vSplit = versionFromNodeModule.split('.')
+  return {
+    version: versionFromNodeModule,
+    versionParts: [vSplit[0], vSplit[1], vSplit[2]],
+  }
+}
+
+function getVersion(packageName: string): string {
+  const f1 = fs.readFileSync(
+    `./node_modules/@manuscripts/${packageName}/package.json`,
+    'utf-8'
+  )
+  const jsonPackageFile = JSON.parse(f1)
+  return jsonPackageFile.version
 }
