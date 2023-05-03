@@ -1,7 +1,7 @@
 {
   "name": "@manuscripts/pressroom-js",
   "description": "A web service for manuscript conversion",
-  "version": "3.0.4-LEAN-2361-1",
+  "version": "3.0.4-LEAN-2361-2",
   "license": "Apache-2.0",
   "repository": "github:Atypon-OpenSource/manuscripts-pressroom-js",
   "scripts": {
@@ -40,6 +40,7 @@
     "prom-client": "^14.2.0",
     "prometheus-api-metrics": "^3.2.2",
     "rimraf": "^3.0.2",
+    "semver": "^7.5.0",
     "swagger-jsdoc": "^5.0.1",
     "swagger-ui-express": "^4.1.4",
     "tempy": "^1.0.0",
