@@ -15,10 +15,8 @@
  */
 import {
   ContainedModel,
-  fromPrototype,
   InvalidInput,
   isFigure,
-  loadBundledDependencies,
   parseJATSArticle,
 } from '@manuscripts/transform'
 import archiver, { Archiver } from 'archiver'
@@ -30,14 +28,9 @@ import { fixImageReferences } from './fix-jats-references'
 import { logger } from './logger'
 import { promiseHandler } from './utils'
 
-interface Options {
-  addBundledData?: boolean
-}
-
 export const convertJATS = async (
   dir: string,
-  doc: Document,
-  options: Options = {}
+  doc: Document
 ): Promise<Archiver> => {
   logger.debug('Converting Word file to JATS XML with Arc')
 
@@ -54,12 +47,6 @@ export const convertJATS = async (
     throw new Error(error)
   }
   const manuscriptModels = data as ContainedModel[]
-
-  // add bundled data if needed
-  if (options.addBundledData) {
-    const dependencies = await loadBundledDependencies()
-    manuscriptModels.push(...dependencies.map(fromPrototype))
-  }
 
   // TODO: add template data and requirements if needed
   // TODO: set manuscript.pageLayout?

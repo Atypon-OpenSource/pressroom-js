@@ -51,7 +51,6 @@ describe('import jats arc', () => {
     const response = await request(app)
       .post(route)
       .attach('file', __dirname + '/__fixtures__/jats-arc.zip')
-      .field('addBundledData', true)
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
 
@@ -67,6 +66,6 @@ describe('import jats arc', () => {
     const json = await zip.files['index.manuscript-json'].async('text')
     const { data } = JSON.parse(json)
 
-    expect(data).toHaveLength(103)
+    expect(data).toHaveLength(38)
   })
 })
