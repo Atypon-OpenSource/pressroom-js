@@ -17,6 +17,8 @@ import { promises as fs } from 'fs'
 import client from 'prom-client'
 import { parse, SemVer } from 'semver'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pjson = require('../package.json')
 const appMetricMap = {
   name: 'app_version',
   packageName: 'app_version',
@@ -71,7 +73,7 @@ function register(
 }
 
 export async function configurePromClientRegistry(): Promise<void> {
-  const appVersion: SemVer | null = parse(process.env.npm_package_version, {})
+  const appVersion: SemVer | null = parse(pjson.version, {})
   if (appVersion) {
     register(appMetricMap, appVersion)
   }
