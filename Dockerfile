@@ -38,6 +38,7 @@ WORKDIR /app
 
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
+COPY --from=build /usr/src/app/package.json ./package.json
 
 EXPOSE 5000
 CMD [ "node", "dist/server.js" ]

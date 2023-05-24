@@ -17,7 +17,9 @@ import { errors } from 'celebrate'
 import cors from 'cors'
 import express from 'express'
 import morgan from 'morgan'
+import apiMetrics from 'prometheus-api-metrics'
 
+import { configurePromClientRegistry } from './PromClientRegistryConfig'
 import { routes } from './routes'
 
 export const app = express()
@@ -30,6 +32,7 @@ export const app = express()
   // routes
   .use('/api/v2', routes)
 
+  .use(apiMetrics())
   // root: health check
   .get('/', (req, res) => {
     res.json({ uptime: process.uptime() })
@@ -42,3 +45,5 @@ export const app = express()
 
   // celebrate error handler
   .use(errors())
+
+configurePromClientRegistry()
