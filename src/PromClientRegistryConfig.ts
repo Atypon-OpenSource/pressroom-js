@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 import { promises as fs } from 'fs'
-// import { readJson } from 'fs-extra'
 import client from 'prom-client'
 import { parse, SemVer } from 'semver'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pjson = require('../package.json')
+const appMetricMap = {
+  name: 'app_version',
+  packageName: 'app_version',
+  help: 'The service version by package.json',
+  labelNames: ['version', 'major', 'minor', 'patch'],
+}
 const metricsMap = [
   {
     name: 'json_schema_version_info',
@@ -38,25 +45,42 @@ const metricsMap = [
     labelNames: ['version', 'major', 'minor', 'patch'],
   },
 ]
-export async function configurePromClientRegistry() {
+
+function register(
+  metric: {
+    help: string
+    labelNames: string[]
+    name: string
+    packageName: string
+  },
+  semver: SemVer
+) {
+  if (!client.register.getSingleMetric(metric.name)) {
+    const gauge = new client.Gauge({
+      name: metric.name,
+      help: metric.help,
+      labelNames: metric.labelNames,
+    })
+    gauge
+      .labels(
+        semver.version,
+        `${semver.major}`,
+        `${semver.minor}`,
+        `${semver.patch}`
+      )
+      .set(1)
+  }
+}
+
+export async function configurePromClientRegistry(): Promise<void> {
+  const appVersion: SemVer | null = parse(pjson.version, {})
+  if (appVersion) {
+    register(appMetricMap, appVersion)
+  }
   for (const metric of metricsMap) {
     const semver = await getVersion(metric.packageName)
     if (semver) {
-      if (!client.register.getSingleMetric(metric.name)) {
-        const gauge = new client.Gauge({
-          name: metric.name,
-          help: metric.help,
-          labelNames: metric.labelNames,
-        })
-        gauge
-          .labels(
-            semver.version,
-            `${semver.major}`,
-            `${semver.minor}`,
-            `${semver.patch}`
-          )
-          .set(1)
-      }
+      register(metric, semver)
     }
   }
 }
