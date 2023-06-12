@@ -16,11 +16,15 @@
 import { errors } from 'celebrate'
 import cors from 'cors'
 import express from 'express'
+import promBundle from 'express-prom-bundle'
 import morgan from 'morgan'
-import apiMetrics from 'prometheus-api-metrics'
 
 import { configurePromClientRegistry } from './PromClientRegistryConfig'
 import { routes } from './routes'
+
+const metricsMiddleware = promBundle({
+  promClient: { collectDefaultMetrics: {} },
+})
 
 export const app = express()
   // log requests
@@ -32,7 +36,7 @@ export const app = express()
   // routes
   .use('/api/v2', routes)
 
-  .use(apiMetrics())
+  .use(metricsMiddleware)
   // root: health check
   .get('/', (req, res) => {
     res.json({ uptime: process.uptime() })
