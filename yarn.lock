@@ -1332,11 +1332,6 @@
   resolved "https://registry.yarnpkg.com/@jsdevtools/ono/-/ono-7.1.3.tgz#9df03bbd7c696a5c58885c34aa06da41c8543796"
   integrity sha512-4JQNk+3mVzK3xh2rqd6RB4J46qUR19azEHBneZyTZM+c456qOrbbM/5xcR8huNCCcbVt7+UmizG6GuUvPvKUYg==
 
-"@manuscripts/data@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@manuscripts/data/-/data-1.0.4.tgz#0220da86299d96243ace2ba932fd32e7f6643344"
-  integrity sha512-LDPyUqXUwhcYoaOPXVpKNCj4FHl6Gcu/AohAMdgubDTkhK18Xm48uSwN9GVNvEGmY3BwivbSEaP/uaPQaLG4Rg==
-
 "@manuscripts/eslint-config@^0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@manuscripts/eslint-config/-/eslint-config-0.5.1.tgz#dd68abc2976aed76296258aa81581f661d24ee56"
@@ -1354,15 +1349,14 @@
     ajv "^8.12.0"
     deepmerge "^4.3.1"
 
-"@manuscripts/requirements@^1.1.3":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@manuscripts/requirements/-/requirements-1.1.3.tgz#cfd4d23660b0183ca87f9ce8e2c40f39a98073d9"
-  integrity sha512-BeZ53g1TvNMqErhMPoWjSH55fAlnxmyPB1TmlAz2RsflHtJqos4ovV/APhVXKL52Rtih/ngorWs/7bhMHuFN8g==
+"@manuscripts/requirements@1.1.3-LEAN-2651":
+  version "1.1.3-LEAN-2651"
+  resolved "https://registry.yarnpkg.com/@manuscripts/requirements/-/requirements-1.1.3-LEAN-2651.tgz#9da995cf1cd6d0b2f4e6da19fd5992c7079e2cce"
+  integrity sha512-TpEgx+Z6eWw6+AIRnU+XZ+req8h33+zeUhin5RohMQCM8yhhIklFmrQzQBSzzAe/bLQrPKEDkg4xnTa6o/zPAA==
   dependencies:
     "@iarna/word-count" "^1.1.2"
-    "@manuscripts/data" "^1.0.4"
     "@manuscripts/json-schema" "^2.1.0"
-    "@manuscripts/transform" "^1.3.4"
+    "@manuscripts/transform" "1.3.6-LEAN-2650"
     deep-equal "^2.2.0"
     file-type "^16.5.4"
     grapheme-splitter "^1.0.4"
@@ -1372,24 +1366,10 @@
     prosemirror-view "^1.29.1"
     uuid "^9.0.0"
 
-"@manuscripts/transform@^1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.3.4.tgz#f78b73ecc667606d64f3e3194bda14516a372d8b"
-  integrity sha512-NJY+LMDBBEFllSJsh/x6ygnDMY2bK1y3qTvFHEZTZO0Pty2N0dUDPtd2l95fv7F5THlCcCLlBRFXAI1Q0TJ2Sw==
-  dependencies:
-    "@manuscripts/json-schema" "^2.1.0"
-    debug "^4.3.4"
-    jszip "^3.10.1"
-    mathjax-full "^3.2.2"
-    mime "^3.0.0"
-    prosemirror-model "^1.18.3"
-    uuid "^9.0.0"
-    w3c-xmlserializer "^4.0.0"
-
-"@manuscripts/transform@^1.3.6":
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.3.6.tgz#8e735d99bf17e8bef615cf668664f8072ef30332"
-  integrity sha512-xBw2XDTrAksi+Y9r+YTASsqmpxca4/hFehIksqKSYKzm+9jAorEtuWx1X0AWhhjV324mIndgiBymePkegD29sQ==
+"@manuscripts/transform@1.3.6-LEAN-2650":
+  version "1.3.6-LEAN-2650"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.3.6-LEAN-2650.tgz#511b83d62f531caded39c5aee5563131f06e3086"
+  integrity sha512-RfbgxDMwFuEo4oiJRSD7V6dSSNzGWxJru+9MXvrBZKJRJ+GL5wXtKAErkMjh5fsdPcb++lSNV3Ol2IUkaU7Hbw==
   dependencies:
     "@manuscripts/json-schema" "^2.1.0"
     debug "^4.3.4"
