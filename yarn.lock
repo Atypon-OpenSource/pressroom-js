@@ -1354,15 +1354,15 @@
     ajv "^8.12.0"
     deepmerge "^4.3.1"
 
-"@manuscripts/requirements@^1.1.3":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@manuscripts/requirements/-/requirements-1.1.3.tgz#cfd4d23660b0183ca87f9ce8e2c40f39a98073d9"
-  integrity sha512-BeZ53g1TvNMqErhMPoWjSH55fAlnxmyPB1TmlAz2RsflHtJqos4ovV/APhVXKL52Rtih/ngorWs/7bhMHuFN8g==
+"@manuscripts/requirements@1.1.3-LEAN-2707-0":
+  version "1.1.3-LEAN-2707-0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/requirements/-/requirements-1.1.3-LEAN-2707-0.tgz#cb56e8c736b0cc143842960bbb67163315263f1b"
+  integrity sha512-aYe51vkQRk8cnE1HRPlB8VPX1Fi0GqTncGviYbgLxztNVZosat7XYbEulvbM/aRdBhQCp0sG67IL2nIwPhlycw==
   dependencies:
     "@iarna/word-count" "^1.1.2"
     "@manuscripts/data" "^1.0.4"
     "@manuscripts/json-schema" "^2.1.0"
-    "@manuscripts/transform" "^1.3.4"
+    "@manuscripts/transform" "1.3.7-LEAN-2707-NaN"
     deep-equal "^2.2.0"
     file-type "^16.5.4"
     grapheme-splitter "^1.0.4"
@@ -1372,24 +1372,10 @@
     prosemirror-view "^1.29.1"
     uuid "^9.0.0"
 
-"@manuscripts/transform@^1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.3.4.tgz#f78b73ecc667606d64f3e3194bda14516a372d8b"
-  integrity sha512-NJY+LMDBBEFllSJsh/x6ygnDMY2bK1y3qTvFHEZTZO0Pty2N0dUDPtd2l95fv7F5THlCcCLlBRFXAI1Q0TJ2Sw==
-  dependencies:
-    "@manuscripts/json-schema" "^2.1.0"
-    debug "^4.3.4"
-    jszip "^3.10.1"
-    mathjax-full "^3.2.2"
-    mime "^3.0.0"
-    prosemirror-model "^1.18.3"
-    uuid "^9.0.0"
-    w3c-xmlserializer "^4.0.0"
-
-"@manuscripts/transform@^1.3.6":
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.3.6.tgz#8e735d99bf17e8bef615cf668664f8072ef30332"
-  integrity sha512-xBw2XDTrAksi+Y9r+YTASsqmpxca4/hFehIksqKSYKzm+9jAorEtuWx1X0AWhhjV324mIndgiBymePkegD29sQ==
+"@manuscripts/transform@1.3.7-LEAN-2707-NaN":
+  version "1.3.7-LEAN-2707-NaN"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.3.7-LEAN-2707-NaN.tgz#b2ee6a4f5d54b4a381fccb7bc0dee0087763c95c"
+  integrity sha512-wRLQDm2jp9LIVYME6l93eiFqLbK4CuIiSzMOg1IsbkKjuUJluoIfKXzOhLk/LhsS4SMnGyKS72vtgrzi/4b9nA==
   dependencies:
     "@manuscripts/json-schema" "^2.1.0"
     debug "^4.3.4"
