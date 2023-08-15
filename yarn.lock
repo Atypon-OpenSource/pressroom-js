@@ -1349,14 +1349,14 @@
     ajv "^8.12.0"
     deepmerge "^4.3.1"
 
-"@manuscripts/requirements@1.1.3-LEAN-2651":
-  version "1.1.3-LEAN-2651"
-  resolved "https://registry.yarnpkg.com/@manuscripts/requirements/-/requirements-1.1.3-LEAN-2651.tgz#9da995cf1cd6d0b2f4e6da19fd5992c7079e2cce"
-  integrity sha512-TpEgx+Z6eWw6+AIRnU+XZ+req8h33+zeUhin5RohMQCM8yhhIklFmrQzQBSzzAe/bLQrPKEDkg4xnTa6o/zPAA==
+"@manuscripts/requirements@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@manuscripts/requirements/-/requirements-1.1.5.tgz#2fffa84f49fad9a708510abc01d31251bab4017b"
+  integrity sha512-4zEEoFwTQ8owmVHbdiRDDV7aSijq0VqCnmUHoDhEVno3Bi0fdUXH/PMOzP7p4pwLcpLxUEkQsL4IBeXsWl7bEw==
   dependencies:
     "@iarna/word-count" "^1.1.2"
     "@manuscripts/json-schema" "^2.1.0"
-    "@manuscripts/transform" "1.3.6-LEAN-2650"
+    "@manuscripts/transform" "^1.3.10"
     deep-equal "^2.2.0"
     file-type "^16.5.4"
     grapheme-splitter "^1.0.4"
@@ -1366,10 +1366,10 @@
     prosemirror-view "^1.29.1"
     uuid "^9.0.0"
 
-"@manuscripts/transform@1.3.6-LEAN-2650":
-  version "1.3.6-LEAN-2650"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.3.6-LEAN-2650.tgz#511b83d62f531caded39c5aee5563131f06e3086"
-  integrity sha512-RfbgxDMwFuEo4oiJRSD7V6dSSNzGWxJru+9MXvrBZKJRJ+GL5wXtKAErkMjh5fsdPcb++lSNV3Ol2IUkaU7Hbw==
+"@manuscripts/transform@^1.3.10":
+  version "1.3.10"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.3.10.tgz#fa0cefc6beb3f6f7729c368ec976bfe83bb01c54"
+  integrity sha512-t5bB1AMCDW0O+ojqJHDw9XgtB0qJU+LDOUMYimnlKf2DL8UmV9LGDLppzAXobgKnygrVHQiCBhiES7rDwe85Nw==
   dependencies:
     "@manuscripts/json-schema" "^2.1.0"
     debug "^4.3.4"
