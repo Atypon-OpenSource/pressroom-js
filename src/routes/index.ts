@@ -26,7 +26,6 @@ import { exportPDF } from './export-pdf'
 import { importJATS } from './import-jats'
 import { pdfJobResult } from './pdf-job-result'
 import { pdfJobStatus } from './pdf-job-status'
-import { validateTemplateId } from './validate-template-id'
 
 export const routes = Router()
   // importers
@@ -45,9 +44,6 @@ export const routes = Router()
 
   // Indesign
   .use('/', pdfJobResult, pdfJobStatus)
-
-  // validators
-  .use('/', validateTemplateId)
 
   // OpenAPI description for machines
   .get('/docs.json', (req, res) => res.json(swaggerSpec))
