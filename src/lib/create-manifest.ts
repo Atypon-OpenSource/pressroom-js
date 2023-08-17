@@ -18,18 +18,16 @@ import builder from 'xmlbuilder'
 
 interface ProcessingInstructions {
   priorityLevel: 'high'
-  makeLiveCondition?: 'no-errors'
+  makeLiveCondition?: 'no-errors' | 'no-fatals'
 }
 
-const buildProcessingInstructions = (
-  processingInstructions: ProcessingInstructions
-) => ({
+const buildProcessingInstructions = (instructions: ProcessingInstructions) => ({
   priority: {
-    '@level': processingInstructions.priorityLevel,
+    '@level': instructions.priorityLevel,
   },
-  // 'make-live': {
-  //   '@on-condition': processingInstructions.makeLiveCondition,
-  // },
+  'make-live': {
+    '@on-condition': instructions.makeLiveCondition,
+  },
 })
 
 interface ManifestOptions {

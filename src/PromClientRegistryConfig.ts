@@ -38,12 +38,6 @@ const metricsMap = [
     help: 'The @manuscripts/transform version by package.json',
     labelNames: ['version', 'major', 'minor', 'patch'],
   },
-  {
-    name: 'requirements_version_info',
-    packageName: 'requirements',
-    help: 'The @manuscripts/requirements version by package.json',
-    labelNames: ['version', 'major', 'minor', 'patch'],
-  },
 ]
 
 function register(
