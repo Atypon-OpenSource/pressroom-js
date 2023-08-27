@@ -12,6 +12,7 @@ exports[`manifest builder builds manifest with processing instructions 1`] = `
 <submission dtd-version=\\"4.2\\" submission-type=\\"partial\\" group-doi=\\"10.0000/test\\">
   <processing-instructions>
     <priority level=\\"high\\"/>
+    <make-live on-condition=\\"no-errors\\"/>
   </processing-instructions>
 </submission>"
 `;

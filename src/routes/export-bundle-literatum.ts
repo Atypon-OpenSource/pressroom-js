@@ -217,7 +217,7 @@ export const exportBundleLiteratum = Router().post(
       groupDoi: groupDOI,
       processingInstructions: {
         priorityLevel: 'high',
-        // makeLiveCondition: 'no-errors',
+        makeLiveCondition: 'no-fatals',
       },
       submissionType: 'partial',
     })
