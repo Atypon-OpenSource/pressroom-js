@@ -1344,10 +1344,10 @@
     ajv "^8.12.0"
     deepmerge "^4.3.1"
 
-"@manuscripts/transform@1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.5.0.tgz#3426e528facebac96fdd9c02a66909539363e36a"
-  integrity sha512-6NVYOPoUpuqxIo3Rnkb3SiflV78nkzpBttNxFboWV5Xkw3m0gnlDoig4v6wJzZQ2lP/cScsnuJUZfYqj+jNOQg==
+"@manuscripts/transform@1.5.0-LEAN-3014-B-0":
+  version "1.5.0-LEAN-3014-B-0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-1.5.0-LEAN-3014-B-0.tgz#8a7249b268aaa2791dc154d5ddf97d12fafd62ab"
+  integrity sha512-m1HZ5+6AM9T8/8jbFnaHvGefOp5HGN5ySoApcPvPVa4MmclUFjyGeiXleG2T3pKvClYPJMIhHLFEryghBL3eVQ==
   dependencies:
     "@manuscripts/json-schema" "^2.2.0"
     debug "^4.3.4"
