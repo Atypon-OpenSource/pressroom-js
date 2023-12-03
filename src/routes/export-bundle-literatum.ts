@@ -104,6 +104,8 @@ export const exportBundleLiteratum = Router().post(
       doi: Joi.string().pattern(VALID_DOI_REGEX).required(),
       frontMatterOnly: Joi.boolean().empty(''),
       groupDOI: Joi.string().pattern(VALID_DOI_REGEX).required(),
+      citationStyle: Joi.string(),
+      locale: Joi.string(),
       manuscriptID: Joi.string().required(),
       theme: Joi.string().empty(''),
       supplementaryMaterialDOIs: Joi.array()
@@ -133,6 +135,8 @@ export const exportBundleLiteratum = Router().post(
       theme,
       supplementaryMaterialDOIs,
       attachments,
+      citationStyle,
+      locale,
     } = req.body as {
       doi: string
       frontMatterOnly: boolean
@@ -141,6 +145,8 @@ export const exportBundleLiteratum = Router().post(
       theme?: string
       supplementaryMaterialDOIs: Array<{ url: string; doi: string }>
       attachments: Array<AttachmentData>
+      citationStyle?: string
+      locale?: string
     }
     const [, articleID] = doi.split('/', 2) // TODO: only article ID?
     const [, groupID] = groupDOI.split('/', 2) // TODO: only group ID?
@@ -160,7 +166,9 @@ export const exportBundleLiteratum = Router().post(
       attachments,
       doi,
       supplementaryMaterialDOIs,
-      frontMatterOnly
+      frontMatterOnly,
+      citationStyle,
+      locale
     )
 
     const prefix = `${groupID}/${articleID}`

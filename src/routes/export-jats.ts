@@ -95,6 +95,8 @@ export const exportJATS = Router().post(
       version: Joi.string().empty(''),
       doi: Joi.string().pattern(VALID_DOI_REGEX).required(),
       frontMatterOnly: Joi.boolean().empty(''),
+      citationStyle: Joi.string(),
+      locale: Joi.string(),
       supplementaryMaterialDOIs: Joi.array()
         .items({
           url: Joi.string().required(),
@@ -119,12 +121,16 @@ export const exportJATS = Router().post(
       frontMatterOnly,
       supplementaryMaterialDOIs,
       attachments,
+      citationStyle,
+      locale,
     } = req.body as {
       manuscriptID: string
       doi: string
       frontMatterOnly: boolean
       supplementaryMaterialDOIs: Array<{ url: string; doi: string }>
       attachments: Array<AttachmentData>
+      citationStyle?: string
+      locale?: string
     }
 
     const dir = req.tempDir
@@ -136,7 +142,9 @@ export const exportJATS = Router().post(
       attachments,
       doi,
       supplementaryMaterialDOIs,
-      frontMatterOnly
+      frontMatterOnly,
+      citationStyle,
+      locale
     )
 
     const jats = new XMLSerializer().serializeToString(doc)
