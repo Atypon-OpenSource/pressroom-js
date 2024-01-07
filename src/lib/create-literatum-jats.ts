@@ -40,7 +40,7 @@ export const createLiteratumJats = async (
   const xml = await createJATSXML(article.content, modelMap, manuscriptID, {
     doi,
     frontMatterOnly,
-    csl: {style: citationStyle, locale}
+    csl: { style: citationStyle, locale },
   })
 
   const parsedJATS = new DOMParser().parseFromString(xml, 'application/xml')
