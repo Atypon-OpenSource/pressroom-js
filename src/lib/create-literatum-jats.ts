@@ -32,16 +32,15 @@ export const createLiteratumJats = async (
   doi: string,
   supplementaryMaterialDOIs: Array<{ url: string; doi: string }>,
   frontMatterOnly: boolean,
-  citationStyle?: string,
-  locale?: string
+  citationStyle: string,
+  locale: string
 ): Promise<Document> => {
   const { article, modelMap } = createArticle(data, manuscriptID)
   // create JATS XML
   const xml = await createJATSXML(article.content, modelMap, manuscriptID, {
     doi,
     frontMatterOnly,
-    citationStyle,
-    locale,
+    csl: {style: citationStyle, locale}
   })
 
   const parsedJATS = new DOMParser().parseFromString(xml, 'application/xml')

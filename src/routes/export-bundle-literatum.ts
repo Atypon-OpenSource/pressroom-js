@@ -145,8 +145,8 @@ export const exportBundleLiteratum = Router().post(
       theme?: string
       supplementaryMaterialDOIs: Array<{ url: string; doi: string }>
       attachments: Array<AttachmentData>
-      citationStyle?: string
-      locale?: string
+      citationStyle: string
+      locale: string
     }
     const [, articleID] = doi.split('/', 2) // TODO: only article ID?
     const [, groupID] = groupDOI.split('/', 2) // TODO: only group ID?

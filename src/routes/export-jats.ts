@@ -129,8 +129,8 @@ export const exportJATS = Router().post(
       frontMatterOnly: boolean
       supplementaryMaterialDOIs: Array<{ url: string; doi: string }>
       attachments: Array<AttachmentData>
-      citationStyle?: string
-      locale?: string
+      citationStyle: string
+      locale: string
     }
 
     const dir = req.tempDir
