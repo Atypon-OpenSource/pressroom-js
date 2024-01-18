@@ -18,6 +18,7 @@ import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
 import { config } from '../../lib/config'
+import { csl, locale } from './__fixtures__/csl'
 
 jest.setTimeout(60000)
 const route = '/api/v2/export/bundle/jats'
@@ -33,6 +34,8 @@ describe('export JATS', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .field('citationStyle', csl)
+      .field('locale', locale)
       .field(
         'attachments',
         JSON.stringify([
@@ -92,6 +95,8 @@ describe('export JATS', () => {
         'manuscriptID',
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
+      .field('citationStyle', csl)
+      .field('locale', locale)
       .field('attachments', JSON.stringify([]))
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
@@ -142,6 +147,8 @@ describe('export JATS', () => {
         'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232'
       )
       .field('version', '1.1')
+      .field('citationStyle', csl)
+      .field('locale', locale)
       .field('attachments', JSON.stringify([]))
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
@@ -182,6 +189,8 @@ describe('export JATS', () => {
       .post(route)
       .attach('file', __dirname + '/__fixtures__/manuscript.manuproj')
       .field('manuscriptID', 'auto')
+      .field('citationStyle', csl)
+      .field('locale', locale)
       .field('attachments', JSON.stringify([]))
       .set('pressroom-api-key', config.api_key)
       .responseType('blob')
