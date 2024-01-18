@@ -18,7 +18,7 @@ import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
 import { config } from '../../lib/config'
-import { csl, locale } from './__fixtures__/csl'
+import { csl, locale } from './__fixtures__/mockCSL'
 
 jest.setTimeout(60000)
 const route = '/api/v2/export/bundle/jats'

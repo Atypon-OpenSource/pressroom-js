@@ -19,7 +19,7 @@ import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
 import { app } from '../../app'
-import { csl, locale } from './__fixtures__/csl'
+import { csl, locale } from './__fixtures__/mockCSL'
 
 jest.mock('express-jwt', () => ({
   expressjwt: () => (req: Request, res: Response, next: NextFunction) => {
