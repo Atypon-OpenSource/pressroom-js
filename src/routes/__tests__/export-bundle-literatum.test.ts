@@ -19,6 +19,7 @@ import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
 import { app } from '../../app'
+import { csl, locale } from './__fixtures__/mockCSL'
 
 jest.mock('express-jwt', () => ({
   expressjwt: () => (req: Request, res: Response, next: NextFunction) => {
@@ -41,6 +42,8 @@ describe('export Literatum Bundle', () => {
       .field('doi', '10.1234/567')
       .field('groupDOI', '10.0000/test')
       .field('frontMatterOnly', false)
+      .field('citationStyle', csl)
+      .field('locale', locale)
       .field(
         'supplementaryMaterialDOIs',
         JSON.stringify([
@@ -134,6 +137,8 @@ describe('export Literatum Bundle', () => {
       .field('groupDOI', '10.0000/test')
       .field('frontMatterOnly', false)
       .field('theme', 'plos-one')
+      .field('citationStyle', csl)
+      .field('locale', locale)
       .field(
         'supplementaryMaterialDOIs',
         JSON.stringify([

@@ -17,6 +17,8 @@ import { NextFunction, Request, Response } from 'express'
 import { parseXml } from 'libxmljs2'
 import request from 'supertest'
 
+import { csl, locale } from './__fixtures__/mockCSL'
+
 jest.mock('express-jwt', () => ({
   expressjwt: () => (req: Request, res: Response, next: NextFunction) => {
     req.auth = { email: 'test@atypon.com' }
@@ -39,6 +41,8 @@ describe('export literatum JATS', () => {
       )
       .field('doi', '10.1234/567')
       .field('frontMatterOnly', false)
+      .field('citationStyle', csl)
+      .field('locale', locale)
       .field(
         'supplementaryMaterialDOIs',
         JSON.stringify([

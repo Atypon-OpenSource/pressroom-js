@@ -24,6 +24,6 @@ export const createJATSXML = async (
   fragment: ManuscriptFragment,
   modelMap: Map<string, ContainedModel>,
   manuscriptID: string,
-  options: JATSExporterOptions = {}
+  options: JATSExporterOptions
 ): Promise<string> =>
   new JATSExporter().serializeToJATS(fragment, modelMap, manuscriptID, options)
