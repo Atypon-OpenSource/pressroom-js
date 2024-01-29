@@ -19,8 +19,8 @@
     "version": "yarn build"
   },
   "dependencies": {
-    "@manuscripts/transform": "2.0.4",
-    "@manuscripts/json-schema": "^2.2.2",
+    "@manuscripts/transform": "2.0.4-LEAN-3094",
+    "@manuscripts/json-schema": "2.2.2-LEAN-3094",
     "archiver": "^5.3.1",
     "celebrate": "^15.0.1",
     "citeproc": "^2.4.62",
