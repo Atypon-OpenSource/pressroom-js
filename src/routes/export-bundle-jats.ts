@@ -96,6 +96,8 @@ export const exportBundleJATS = Router().post(
       allowMissingElements: Joi.boolean().empty('').default(false),
       version: Joi.string().empty(''),
       generateSectionLabels: Joi.boolean().empty(''),
+      citationStyle: Joi.string().required(),
+      locale: Joi.string().required(),
       attachments: Joi.array()
         .items({
           name: Joi.string().required(),
@@ -111,12 +113,16 @@ export const exportBundleJATS = Router().post(
       allowMissingElements,
       generateSectionLabels,
       attachments,
+      citationStyle,
+      locale,
     } = req.body as {
       manuscriptID: string
       version?: Version
       allowMissingElements: boolean
       generateSectionLabels: boolean
       attachments: Array<BasicAttachmentData>
+      citationStyle: string
+      locale: string
     }
 
     const dir = req.tempDir
@@ -134,6 +140,7 @@ export const exportBundleJATS = Router().post(
     // create JATS XML
     const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
       version,
+      csl: { style: citationStyle, locale },
       idGenerator: createIdGenerator(),
       mediaPathGenerator: createAttachmentPathGenerator(
         dir,

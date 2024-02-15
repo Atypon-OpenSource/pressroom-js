@@ -15,18 +15,15 @@
  */
 import {
   ContainedModel,
-  InvalidInput,
   isFigure,
   parseJATSArticle,
 } from '@manuscripts/transform'
 import archiver, { Archiver } from 'archiver'
 import fs from 'fs-extra'
-import createHttpError from 'http-errors'
 
 import { createJSON } from './create-json'
 import { fixImageReferences } from './fix-jats-references'
 import { logger } from './logger'
-import { promiseHandler } from './utils'
 
 export const convertJATS = async (
   dir: string,
@@ -40,12 +37,7 @@ export const convertJATS = async (
   await fixImageReferences(imageDirPath, doc)
 
   // convert JATS XML to Manuscripts data
-  const [data, error] = await promiseHandler(parseJATSArticle(doc))
-  if (error instanceof InvalidInput) {
-    throw createHttpError(400, error)
-  } else if (error) {
-    throw new Error(error)
-  }
+  const data = parseJATSArticle(doc)
   const manuscriptModels = data as ContainedModel[]
 
   // TODO: add template data and requirements if needed
