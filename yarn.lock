@@ -1336,7 +1336,7 @@
     eslint-config-prettier "^8.5.0"
     prettier "^2.8.1"
 
-"@manuscripts/json-schema@2.2.3-LEAN-3092-1", "@manuscripts/json-schema@^2.2.3-LEAN-3092-1":
+"@manuscripts/json-schema@2.2.3-LEAN-3092-1":
   version "2.2.3-LEAN-3092-1"
   resolved "https://registry.yarnpkg.com/@manuscripts/json-schema/-/json-schema-2.2.3-LEAN-3092-1.tgz#9cfdb7fc3354fd1ffa5f8e58e3c7b7c061fc02ae"
   integrity sha512-pEL756qUchrLJjxxjpFAamQ3egn4BRVFZRQVqIfliyn6sWpHxKtsQHBUPzB74qsVwGcZSWL+35AjGcU9j9ezVg==
