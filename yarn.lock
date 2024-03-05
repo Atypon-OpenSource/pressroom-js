@@ -1336,7 +1336,7 @@
     eslint-config-prettier "^8.5.0"
     prettier "^2.8.1"
 
-"@manuscripts/json-schema@^2.2.4":
+"@manuscripts/json-schema@^2.2.2", "@manuscripts/json-schema@^2.2.4":
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/@manuscripts/json-schema/-/json-schema-2.2.4.tgz#490ae5ac0187ff52626d509ceb557872a3956b8f"
   integrity sha512-7IPaLiDQyY1RnYmuQNqU+Jnv1zn6rf74aEPhUXJxYvkC3GvDGvN2JPnQ5As7gl9rHUrqPsK8ywUhi4vLIaUQvg==
@@ -1356,10 +1356,10 @@
     citeproc "^2.4.62"
     fontoxpath "^3.28.2"
 
-"@manuscripts/transform@2.1.1-LEAN-3352-1":
-  version "2.1.1-LEAN-3352-1"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.1.1-LEAN-3352-1.tgz#b75692441a81757fcac845b43f1e10cbbbacead9"
-  integrity sha512-H6Xi33Ek0VSWY0VLdv+ykQG4Fsz71vNYypNiq7MCLzXrRhwMezPgZ28FcMq0Mh295LTVXb8RNQ1USFZ4XZ8/Kw==
+"@manuscripts/transform@2.1.1-LEAN-3352-3":
+  version "2.1.1-LEAN-3352-3"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.1.1-LEAN-3352-3.tgz#1c50236947c48a2f680c71c2229f9ae83d491b9b"
+  integrity sha512-71s/t3ED7aDGuyyauiPGZSP4Gvp9EEMTaXejtO5dziwiG4Ii/GN5Hz+QvBq/Z0+Gy3+Q5vudW7N2UVu4CzhD8g==
   dependencies:
     "@manuscripts/json-schema" "^2.2.4"
     "@manuscripts/library" "^1.3.3"
