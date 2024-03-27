@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { celebrate, Joi } from 'celebrate'
+import { Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
 import { AttachmentData } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
+import { celebrate } from '../lib/celebrate'
 import { createLiteratumJats } from '../lib/create-literatum-jats'
 import { VALID_DOI_REGEX } from '../lib/doi'
 import { emailAuthorization } from '../lib/email-authorization'
