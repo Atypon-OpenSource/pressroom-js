@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 import archiver from 'archiver'
-import { celebrate, Joi } from 'celebrate'
+import { Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
 import { authentication } from '../lib/authentication'
+import { celebrate } from '../lib/celebrate'
 import { createArticle } from '../lib/create-article'
 import { createHTML } from '../lib/create-html'
 import { HTMLPreviewError } from '../lib/errors'

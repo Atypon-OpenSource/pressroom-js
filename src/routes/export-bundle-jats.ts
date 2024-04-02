@@ -15,7 +15,7 @@
  */
 import { Version } from '@manuscripts/transform'
 import archiver from 'archiver'
-import { celebrate, Joi } from 'celebrate'
+import { Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
@@ -25,6 +25,7 @@ import {
   generateGraphicsMap,
 } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
+import { celebrate } from '../lib/celebrate'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { createIdGenerator } from '../lib/id-generator'

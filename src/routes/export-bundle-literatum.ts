@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 import archiver from 'archiver'
-import { celebrate, Joi } from 'celebrate'
+import { Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
 import { AttachmentData } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
+import { celebrate } from '../lib/celebrate'
 import { createLiteratumJats } from '../lib/create-literatum-jats'
 import { buildManifest } from '../lib/create-manifest'
 import { processElements } from '../lib/data'
