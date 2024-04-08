@@ -1356,10 +1356,10 @@
     citeproc "^2.4.62"
     fontoxpath "^3.28.2"
 
-"@manuscripts/transform@2.1.10-LEAN-3321":
-  version "2.1.10-LEAN-3321"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.1.10-LEAN-3321.tgz#830cf5c9e84e0640c8c7b897660601e132ebd9b8"
-  integrity sha512-o1dQej3ooR1HXG+9WQm8QoHRGEyxCDxAgscVTyGNS1o5QJkUVE10sfxQpsq4T6gqA+QAS4IKw7+Lwjb1vHFtHQ==
+"@manuscripts/transform@2.1.10-LEAN-3321-1":
+  version "2.1.10-LEAN-3321-1"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.1.10-LEAN-3321-1.tgz#17f5156bf44c90820a72eae3d8d0ae443f12f91e"
+  integrity sha512-hsLeRmgVZ7IqqATSA/j2mHYN6s+trXBB4QMGk+C+FnfgePMt54mZz7Xd5jvjlVe8y3XXzf8raVav6d0vVdWlPg==
   dependencies:
     "@manuscripts/json-schema" "^2.2.7"
     "@manuscripts/library" "^1.3.6"
