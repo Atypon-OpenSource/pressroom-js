@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { celebrate, Joi } from 'celebrate'
+import { Joi } from 'celebrate'
 import { Router } from 'express'
 
 import { authentication } from '../lib/authentication'
+import { celebrate } from '../lib/celebrate'
 import { IPdf, PdfEngines } from '../lib/PDFEngines/IPdf'
 import { splitEngineId } from '../lib/PDFEngines/PdfUtils'
 import { wrapAsync } from '../lib/wrap-async'
