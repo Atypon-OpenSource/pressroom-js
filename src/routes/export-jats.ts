@@ -20,17 +20,15 @@ import fs from 'fs-extra'
 import { AttachmentData } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
 import { celebrate } from '../lib/celebrate'
-import { createLiteratumJats } from '../lib/create-literatum-jats'
 import { VALID_DOI_REGEX } from '../lib/doi'
 import { emailAuthorization } from '../lib/email-authorization'
-import { removeCodeListing } from '../lib/jats-utils'
 import { chooseManuscriptID } from '../lib/manuscript-id'
-import { parseBodyProperty } from '../lib/parseBodyParams'
-import { parseSupplementaryDOIs } from '../lib/parseSupplementaryDOIs'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
+import {createArticle} from "../lib/create-article";
+import {createJATSXML} from "../lib/create-jats-xml";
 
 /**
  * @swagger
@@ -52,22 +50,9 @@ import { wrapAsync } from '../lib/wrap-async'
  *                  format: binary
  *                manuscriptID:
  *                  type: string
- *                doi:
- *                  type: string
- *                frontMatterOnly:
- *                  type: boolean
- *                supplementaryMaterialDOIs:
- *                  type: string
- *                  example: '[{"url":"path/to","doi":"10.1000/xyz123"}]'
- *                attachments:
- *                  type: string
- *                  example: '[{"name":"figure.jpg","url":"attachment:db76bde-4cde-4579-b012-24dead961adc","MIME":"image/jpeg","designation":"figure"}]'
  *              required:
  *                - file
  *                - manuscriptID
- *                - doi
- *                - supplementaryMaterialDOIs
- *                - attachments
  *            encoding:
  *              file:
  *                contentType: application/zip
@@ -88,40 +73,18 @@ export const exportJATS = Router().post(
   createRequestDirectory,
   decompressManuscript,
   chooseManuscriptID,
-  parseSupplementaryDOIs,
-  parseBodyProperty('attachments'),
   celebrate({
     body: {
       manuscriptID: Joi.string().required(),
       version: Joi.string().empty(''),
       doi: Joi.string().pattern(VALID_DOI_REGEX).required(),
-      frontMatterOnly: Joi.boolean().empty(''),
       citationStyle: Joi.string(),
       locale: Joi.string(),
-      supplementaryMaterialDOIs: Joi.array()
-        .items({
-          url: Joi.string().required(),
-          doi: Joi.string().pattern(VALID_DOI_REGEX).required(),
-        })
-        .required(),
-      attachments: Joi.array()
-        .items({
-          designation: Joi.string().required(),
-          name: Joi.string().required(),
-          url: Joi.string().required(),
-          MIME: Joi.string().required(),
-          description: Joi.string(),
-        })
-        .required(),
     },
   }),
   wrapAsync(async (req, res) => {
     const {
       manuscriptID,
-      doi,
-      frontMatterOnly,
-      supplementaryMaterialDOIs,
-      attachments,
       citationStyle,
       locale,
     } = req.body as {
@@ -137,19 +100,16 @@ export const exportJATS = Router().post(
     const dir = req.tempDir
     // read the data
     const { data } = await fs.readJSON(dir + '/index.manuscript-json')
-    const doc = await createLiteratumJats(
-      manuscriptID,
-      data,
-      attachments,
-      doi,
-      supplementaryMaterialDOIs,
-      frontMatterOnly,
-      citationStyle,
-      locale
-    )
 
-    const jats = new XMLSerializer().serializeToString(doc)
+    const { article, modelMap } = createArticle(data, manuscriptID)
+    // create JATS XML
+    const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
+      csl: {
+        style: citationStyle,
+        locale
+      },
+    })
 
-    return res.type('application/xml').send(removeCodeListing(jats))
+    return res.type('application/xml').send(jats)
   })
 )
