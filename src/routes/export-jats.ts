@@ -20,6 +20,8 @@ import fs from 'fs-extra'
 import { AttachmentData } from '../lib/attachments'
 import { authentication } from '../lib/authentication'
 import { celebrate } from '../lib/celebrate'
+import { createArticle } from '../lib/create-article'
+import { createJATSXML } from '../lib/create-jats-xml'
 import { VALID_DOI_REGEX } from '../lib/doi'
 import { emailAuthorization } from '../lib/email-authorization'
 import { chooseManuscriptID } from '../lib/manuscript-id'
@@ -27,8 +29,6 @@ import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
 import { decompressManuscript } from '../lib/validate-manuscript-archive'
 import { wrapAsync } from '../lib/wrap-async'
-import {createArticle} from "../lib/create-article";
-import {createJATSXML} from "../lib/create-jats-xml";
 
 /**
  * @swagger
@@ -83,11 +83,7 @@ export const exportJATS = Router().post(
     },
   }),
   wrapAsync(async (req, res) => {
-    const {
-      manuscriptID,
-      citationStyle,
-      locale,
-    } = req.body as {
+    const { manuscriptID, citationStyle, locale } = req.body as {
       manuscriptID: string
       doi: string
       frontMatterOnly: boolean
@@ -106,7 +102,7 @@ export const exportJATS = Router().post(
     const jats = await createJATSXML(article.content, modelMap, manuscriptID, {
       csl: {
         style: citationStyle,
-        locale
+        locale,
       },
     })
 
