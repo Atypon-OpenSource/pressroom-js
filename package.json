@@ -19,7 +19,7 @@
     "version": "yarn build"
   },
   "dependencies": {
-    "@manuscripts/transform": "2.3.3-LEAN-2746.0",
+    "@manuscripts/transform": "2.3.3",
     "@manuscripts/json-schema": "^2.2.7",
     "archiver": "^5.3.1",
     "celebrate": "^15.0.1",
