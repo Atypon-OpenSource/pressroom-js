@@ -25,7 +25,6 @@ import { createLiteratumJats } from '../lib/create-literatum-jats'
 import { buildManifest } from '../lib/create-manifest'
 import { processElements } from '../lib/data'
 import { VALID_DOI_REGEX } from '../lib/doi'
-import { emailAuthorization } from '../lib/email-authorization'
 import { removeCodeListing } from '../lib/jats-utils'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { parseBodyProperty } from '../lib/parseBodyParams'
@@ -93,7 +92,6 @@ import { wrapAsync } from '../lib/wrap-async'
 export const exportBundleLiteratum = Router().post(
   ['/export/bundle/literatum', '/export/literatum-bundle'],
   authentication,
-  emailAuthorization,
   upload.single('file'),
   createRequestDirectory,
   decompressManuscript,
