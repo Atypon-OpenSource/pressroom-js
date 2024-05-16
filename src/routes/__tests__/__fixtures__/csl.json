@@ -16,16 +16,10 @@
       }
     ],
     "issued": {
-      "date-parts": [
-        [
-          "2019",
-          "",
-          ""
-        ]
-      ]
+      "date-parts": [["2019", "", ""]]
     },
     "publisher": "National Center for Biotechnology Information (US)",
-    "title": "Introducing Manuscripts.io: open source editing environment for structured, computationally reproducible research documents",
+    "title": "Introducing Ops Editor: open source editing environment for structured, computationally reproducible research documents",
     "type": "book"
   }
 ]
