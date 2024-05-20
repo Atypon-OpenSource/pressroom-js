@@ -13,14 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ContainedModel, ManuscriptFragment } from '@manuscripts/transform'
 
-import { JATSExporter, JATSExporterOptions } from '../jats'
+export { parseJATSFront, parseJATSBody, parseJATSArticle } from './importer'
 
-export const createJATSXML = async (
-  fragment: ManuscriptFragment,
-  modelMap: Map<string, ContainedModel>,
-  manuscriptID: string,
-  options: JATSExporterOptions
-): Promise<string> =>
-  new JATSExporter().serializeToJATS(fragment, modelMap, manuscriptID, options)
+export * from './jats-exporter'
+export * from './jats-versions'

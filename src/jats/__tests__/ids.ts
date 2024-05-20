@@ -13,14 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ContainedModel, ManuscriptFragment } from '@manuscripts/transform'
+import { Model } from '@manuscripts/json-schema'
 
-import { JATSExporter, JATSExporterOptions } from '../jats'
+export const normalizeIDs = (models: Model[]) => {
+  const json = JSON.stringify(models)
+  let normalizedJSON = json.replace(/(MP[A-Za-z]+):[A-Z0-9-]+/g, '$1:test')
+  normalizedJSON = normalizedJSON.replace(
+    /(InlineMathFragment):[0-9a-zA-Z-]+/g,
+    '$1:test'
+  )
 
-export const createJATSXML = async (
-  fragment: ManuscriptFragment,
-  modelMap: Map<string, ContainedModel>,
-  manuscriptID: string,
-  options: JATSExporterOptions
-): Promise<string> =>
-  new JATSExporter().serializeToJATS(fragment, modelMap, manuscriptID, options)
+  return JSON.parse(normalizedJSON)
+}
+
+export const normalizeTimestamps = (models: Model[]) => {
+  const json = JSON.stringify(models)
+  const normalizedJSON = json.replace(
+    /("timestamp"):[0-9]{10}/g,
+    '$1:1111111111'
+  )
+
+  return JSON.parse(normalizedJSON)
+}

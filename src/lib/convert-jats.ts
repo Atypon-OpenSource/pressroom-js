@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  ContainedModel,
-  isFigure,
-  parseJATSArticle,
-} from '@manuscripts/transform'
+import { ContainedModel, isFigure } from '@manuscripts/transform'
 import archiver, { Archiver } from 'archiver'
 import fs from 'fs-extra'
 
+import { parseJATSArticle } from '../jats'
 import { createJSON } from './create-json'
 import { fixImageReferences } from './fix-jats-references'
 import { logger } from './logger'

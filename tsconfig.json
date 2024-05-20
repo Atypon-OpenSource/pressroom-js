@@ -2,7 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["es2017", "dom", "es2019.array"],
+    "lib": ["es2017", "dom", "es2019.array", "dom.iterable"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,

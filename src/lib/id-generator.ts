@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createCounter, IDGenerator } from '@manuscripts/transform'
+
+import { IDGenerator } from '@manuscripts/transform'
+
+import { createCounter } from '../jats'
 
 export const createIdGenerator = (): IDGenerator => {
   const counter = createCounter()
