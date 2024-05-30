@@ -23,15 +23,15 @@
     },
     {
       "elementType": "div",
-      "contents": "<div xmlns=\"http://www.w3.org/1999/xhtml\" class=\"csl-bib-body\" id=\"MPBibliographyElement:C65083EA-1727-4AC4-900B-B89FA4376CFB\">  <div class=\"csl-entry\">\n    <div class=\"csl-left-margin\">1.</div><div class=\"csl-right-inline\">Piipari, M., Eaton, A. &amp; Pepe, A. <a href=\"https://www.ncbi.nlm.nih.gov/books/NBK540955/\"><i>Introducing Manuscripts.io: open source editing environment for structured, computationally reproducible research documents</i></a>. (National Center for Biotechnology Information (US), 2019).</div>\n  </div>\n</div>",
+      "contents": "<div xmlns=\"http://www.w3.org/1999/xhtml\" class=\"csl-bib-body\" id=\"MPBibliographyElement:C65083EA-1727-4AC4-900B-B89FA4376CFB\">  <div class=\"csl-entry\">\n    <div class=\"csl-left-margin\">1.</div><div class=\"csl-right-inline\">Piipari, M., Eaton, A. &amp; Pepe, A. <a href=\"https://www.ncbi.nlm.nih.gov/books/NBK540955/\"><i>Introducing Ops Editor: open source editing environment for structured, computationally reproducible research documents</i></a>. (National Center for Biotechnology Information (US), 2019).</div>\n  </div>\n</div>",
       "paragraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
       "_id": "MPBibliographyElement:C65083EA-1727-4AC4-900B-B89FA4376CFB",
       "objectType": "MPBibliographyElement"
     },
     {
       "type": "book",
-      "title": "Introducing Manuscripts.io: open source editing environment for structured, computationally reproducible research documents",
-      "abstract": "Manuscripts.io is an open source collaborative editing environment, tailored for scholarly and research papers. It features a structured editor which can validate content against the requirements of a target publication outlet (e.g. a specific article type in a journal), and it allows for embedding authorship metadata, bibliographic references, experimental data, code and interactive visualizations. It ties collaborative projects together with strong content semantics and project management capabilities, in one environment. The effort has as its origin the macOS based editor Manuscripts.app, with Manuscripts.io fully rebuilt for collaboration on the web while retaining the most-loved features of the desktop application.",
+      "title": "Introducing Ops Editor: open source editing environment for structured, computationally reproducible research documents",
+      "abstract": "Ops Editor is an open source collaborative editing environment, tailored for scholarly and research papers. It features a structured editor which can validate content against the requirements of a target publication outlet (e.g. a specific article type in a journal), and it allows for embedding authorship metadata, bibliographic references, experimental data, code and interactive visualizations. It ties collaborative projects together with strong content semantics and project management capabilities, in one environment. The effort has as its origin the macOS based editor Manuscripts.app, with Ops Editor fully rebuilt for collaboration on the web while retaining the most-loved features of the desktop application.",
       "issued": {
         "date-parts": [
           [
@@ -44,7 +44,7 @@
       "archive": "www.ncbi.nlm.nih.gov",
       "language": "en",
       "publisher": "National Center for Biotechnology Information (US)",
-      "shortTitle": "Introducing Manuscripts.io",
+      "shortTitle": "Introducing Ops Editor",
       "URL": "https://www.ncbi.nlm.nih.gov/books/NBK540955/",
       "accessed": {
         "date-parts": [
