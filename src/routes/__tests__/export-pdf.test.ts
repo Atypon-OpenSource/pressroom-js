@@ -22,7 +22,6 @@ jest.setTimeout(30000)
 
 jest.mock('express-jwt', () => ({
   expressjwt: () => (req: Request, res: Response, next: NextFunction) => {
-    req.auth = { email: 'test@atypon.com' }
     next()
   },
 }))
@@ -41,7 +40,7 @@ describe('export PDF', () => {
       .field('engine', 'prince-html')
       .field('attachments', '[]')
       .responseType('blob')
-
+      .set('pressroom-api-key', config.api_key)
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/pdf')
     expect(response.get('Content-Disposition')).toBe(
@@ -63,7 +62,7 @@ describe('export PDF', () => {
       .field('theme', 'plos-one')
       .field('attachments', '[]')
       .responseType('blob')
-
+      .set('pressroom-api-key', config.api_key)
     expect(response.status).toBe(200)
     expect(response.get('Content-Type')).toBe('application/pdf')
     expect(response.get('Content-Disposition')).toBe(
