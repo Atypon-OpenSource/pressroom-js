@@ -23,7 +23,6 @@ import { celebrate } from '../lib/celebrate'
 import { createArticle } from '../lib/create-article'
 import { createJATSXML } from '../lib/create-jats-xml'
 import { VALID_DOI_REGEX } from '../lib/doi'
-import { emailAuthorization } from '../lib/email-authorization'
 import { chooseManuscriptID } from '../lib/manuscript-id'
 import { createRequestDirectory } from '../lib/temp-dir'
 import { upload } from '../lib/upload'
@@ -68,7 +67,6 @@ import { wrapAsync } from '../lib/wrap-async'
 export const exportJATS = Router().post(
   ['/export/jats', '/export/literatum-jats'],
   authentication,
-  emailAuthorization,
   upload.single('file'),
   createRequestDirectory,
   decompressManuscript,

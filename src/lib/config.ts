@@ -27,36 +27,10 @@ const environmentVariable = (name: string): string => {
   return value
 }
 
-const booleanEnvironmentVariable = (name: string) => {
-  const value = environmentVariable(name)
-
-  if (!value || value === '0' || value === 'false') {
-    return false
-  }
-
-  return true
-}
-
 interface Config {
   api_key: string
-  authorization: {
-    emails: string
-  }
-  jwt: {
-    enabled: boolean
-    issuer: string
-    root: string
-  }
 }
 
 export const config: Config = {
   api_key: environmentVariable('PRESSROOM_API_KEY'),
-  authorization: {
-    emails: environmentVariable('PRESSROOM_AUTHORIZATION_EMAILS'),
-  },
-  jwt: {
-    enabled: booleanEnvironmentVariable('PRESSROOM_JWT_ENABLED'),
-    issuer: environmentVariable('PRESSROOM_JWT_ISSUER'),
-    root: environmentVariable('PRESSROOM_JWT_ROOT'),
-  },
 }
