@@ -15,11 +15,15 @@
  */
 import fs from 'fs-extra'
 
+const clearUnsupportedChars = (input = '') => {
+  return input.replace(/[\u2028\u2029]/gim, '<break/>')
+}
+
 export const parseXMLFile = async (
   path: string,
   type: DOMParserSupportedType = 'application/xml'
 ): Promise<Document> => {
   const xml = await fs.readFile(path, 'UTF-8')
 
-  return new DOMParser().parseFromString(xml, type)
+  return new DOMParser().parseFromString(clearUnsupportedChars(xml), type)
 }
