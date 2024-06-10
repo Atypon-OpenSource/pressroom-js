@@ -1,4 +1,4 @@
-FROM node:18-bullseye-slim as node
+FROM node:iron-bullseye-slim as node
 
 # build bibutils (https://sourceforge.net/projects/bibutils)
 FROM node as build-bibutils
