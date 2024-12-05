@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2023 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ContainedModel, ManuscriptFragment } from '@manuscripts/transform'
 
-import { JATSExporter, JATSExporterOptions } from '../jats'
+export type SectionGroupTypeID = 'abstracts' | 'body' | 'backmatter'
 
-export const createJATSXML = async (
-  fragment: ManuscriptFragment,
-  modelMap: Map<string, ContainedModel>,
-  manuscriptID: string,
-  options: JATSExporterOptions
-): Promise<string> =>
-  new JATSExporter().serializeToJATS(fragment, modelMap, manuscriptID, options)
+export type SectionGroupType = {
+  _id: SectionGroupTypeID
+  title: string
+}
+
+export const abstractsType: SectionGroupType = {
+  _id: 'abstracts',
+  title: 'Abstracts',
+}
+
+export const bodyType: SectionGroupType = {
+  _id: 'body',
+  title: 'Body',
+}
+
+export const backmatterType: SectionGroupType = {
+  _id: 'backmatter',
+  title: 'Backmatter',
+}

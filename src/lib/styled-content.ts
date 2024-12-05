@@ -13,14 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ContainedModel, ManuscriptFragment } from '@manuscripts/transform'
 
-import { JATSExporter, JATSExporterOptions } from '../jats'
+import { InlineStyle } from '@manuscripts/json-schema'
 
-export const createJATSXML = async (
-  fragment: ManuscriptFragment,
-  modelMap: Map<string, ContainedModel>,
-  manuscriptID: string,
-  options: JATSExporterOptions
-): Promise<string> =>
-  new JATSExporter().serializeToJATS(fragment, modelMap, manuscriptID, options)
+interface StyledContentAttrs {
+  rid?: string
+}
+
+export const normalizeStyleName = (title: string) =>
+  title.replace(/\W+/, '-').toLowerCase()
+
+export const buildStyledContentClass = (
+  attrs: StyledContentAttrs,
+  inlineStyle?: InlineStyle
+): string => {
+  const classes = ['styled-content']
+
+  if (inlineStyle && inlineStyle.title) {
+    classes.push(normalizeStyleName(inlineStyle.title))
+  }
+
+  return classes.join(' ')
+}

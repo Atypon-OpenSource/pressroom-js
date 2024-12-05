@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Version } from '@manuscripts/transform'
 import archiver from 'archiver'
 import { Joi } from 'celebrate'
 import { Router } from 'express'
 import fs from 'fs-extra'
 
+import { Version } from '../jats'
 import {
   BasicAttachmentData,
   generateBasicAttachmentsMap,

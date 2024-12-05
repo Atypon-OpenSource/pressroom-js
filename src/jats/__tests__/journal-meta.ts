@@ -13,30 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ManuscriptNode } from '@manuscripts/transform'
+import { Journal } from '@manuscripts/json-schema'
 
-export function* iterateChildren(
-  node: ManuscriptNode,
-  recurse = false
-): Iterable<ManuscriptNode> {
-  for (let i = 0; i < node.childCount; i++) {
-    const child = node.child(i)
-    yield child
-
-    if (recurse) {
-      for (const grandchild of iterateChildren(child, true)) {
-        yield grandchild
-      }
-    }
-  }
-}
-
-export const getTrimmedTextContent = (
-  node: Element | Document | null,
-  querySelector: string
-) => {
-  if (!node) {
-    return null
-  }
-  return node.querySelector(querySelector)?.textContent?.trim()
+export const journalMeta: Journal = {
+  _id: 'MPJournal:1',
+  manuscriptID: 'MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9',
+  containerID: 'MPProject:1',
+  objectType: 'MPJournal',
+  updatedAt: 1,
+  createdAt: 1,
+  ISSNs: [{ ISSN: '123-45', publicationType: 'print' }],
+  abbreviatedTitles: [{ abbreviatedTitle: 'title', abbrevType: 'publisher' }],
+  journalIdentifiers: [{ journalID: 'Some id', journalIDType: 'pmc' }],
+  title: 'journal title',
+  publisherName: 'publisher',
+  submittable: false,
 }
